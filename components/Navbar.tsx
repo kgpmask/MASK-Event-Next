@@ -1,21 +1,23 @@
 import Image from "next/image"
 import Styles from '@/styles/Navbar.module.css'
 import Link from "next/link"
-import { useState, MouseEvent } from "react"
+import { useState } from "react"
 
 interface NavItem {
     name: string;
     index: number;
 }
 
-function Navbar() {
-    const [active, setActive] = useState<string | null>(null)
-    const handleHover = (item: NavItem) => {
-        // handle hover event
+type NavItems = string[];
+
+const Navbar: React.FC = () => {
+    const [active, setActive] = useState<number>(0); // Initialize active state to the first item
+    const navItems: NavItems = ['Information', 'Quiz Portal'];
+
+    const handleClick = (index: number): void => {
+        setActive(index); // Set active state to the currently clicked item
     }
-    const handleClick = (item: NavItem) => {
-        // handle click event
-    }
+
     return (
         <div className={Styles["container"]}>
             <div className={Styles["content"]}>
@@ -31,9 +33,11 @@ function Navbar() {
                     <Image src="/logo.jpeg" alt="Logo" width={40} height={40} className={Styles['logo']} />
                 </Link>
                 <ul className={Styles["list"]}>
-                    {['Information', 'Quiz Portal'].map((item, index) =>
-                        <li key={index} onMouseOver={() => handleHover({ name: item, index })} onClick={() => handleClick({ name: item, index })} >
-                            <Link href='/' className={Styles['navlink']}>{item}</Link>
+                    {navItems.map((item, index) =>
+                        <li key={index}
+                            onClick={() => handleClick(index)}
+                        >
+                            <Link href='/' className={Styles['navlink']} >{item}</Link>
                         </li>
                     )}
                     <button className={Styles["list-item"]} >Profile</button>
@@ -43,4 +47,4 @@ function Navbar() {
     )
 }
 
-export default Navbar
+export default Navbar;

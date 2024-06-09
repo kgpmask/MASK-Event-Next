@@ -1,0 +1,20 @@
+.container {
+    position: relative;
+    background-color: black;
+}
+
+.content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.about {
+    color: var(--white);
+}
+
+.socials {
+    display: flex;
+    gap: 1rem;
+}

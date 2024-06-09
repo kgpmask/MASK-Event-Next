@@ -1,8 +1,14 @@
 import Styles from '@/styles/Footer.module.css'
 import { SocialIcon } from 'react-social-icons'
 
+interface FooterLink {
+    name: string;
+    href: string;
+    network: string;
+}
+
 function Footer() {
-    const footerLinks = [
+    const footerLinks: FooterLink[] = [
         {
             name: 'YouTube',
             href: 'https://www.youtube.com/@maskiitkgp',

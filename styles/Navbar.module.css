@@ -31,6 +31,7 @@
 
 .list>li {
     padding: 0 40px;
+    text-decoration: none;
 }
 
 .list-item {
@@ -47,4 +48,28 @@
 
 .logo {
     border-radius: 50%;
+}
+
+.navlink {
+    /* Additional styling */
+    position: relative;
+    outline: none !important;
+    transition: 0.2s;
+}
+
+.navlink::after {
+    content: "";
+    background-color: black;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 0;
+    transition: 0.2s;
+}
+
+.navlink:hover::after,
+.navlink:focus::after {
+    background-color: var(--red);
+    width: 100px;
 }

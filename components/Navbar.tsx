@@ -1,15 +1,20 @@
 import Image from "next/image"
 import Styles from '@/styles/Navbar.module.css'
 import Link from "next/link"
-import { useState } from "react"
+import { useState, MouseEvent } from "react"
+
+interface NavItem {
+  name: string;
+  index: number;
+}
 
 function Navbar() {
-    const [active, setActive] = useState(null)
-    const handleHover = () => {
-
+    const [active, setActive] = useState<string | null>(null)
+    const handleHover = (item: NavItem) => {
+        // handle hover event
     }
-    const handleClick = () => {
-
+    const handleClick = (item: NavItem) => {
+        // handle click event
     }
     return (
         <div className={Styles["container"]}>
@@ -27,7 +32,7 @@ function Navbar() {
                 </Link>
                 <ul className={Styles["list"]}>
                     {['Information', 'Quiz Portal'].map((item, index) =>
-                        <li key={index} onMouseOver={handleHover } onClick={handleClick}>{item}</li>
+                        <li key={index} onMouseOver={() => handleHover({name: item, index})} onClick={() => handleClick({name: item, index})} className={Styles['navlink']}>{item}</li>
                     )}
                     <button className={Styles["list-item"]} >Profile</button>
                 </ul>

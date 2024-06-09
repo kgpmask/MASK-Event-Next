@@ -76,7 +76,8 @@
     border-radius: 2px;
 }
 
+/* change to adjust the underline effect */
 .navlink:hover:after {
-    width: 80%;
-    left: 9%;
+    width: 70%;
+    left: 15%;
 }

@@ -4,8 +4,8 @@ import Link from "next/link"
 import { useState, MouseEvent } from "react"
 
 interface NavItem {
-  name: string;
-  index: number;
+    name: string;
+    index: number;
 }
 
 function Navbar() {
@@ -32,7 +32,9 @@ function Navbar() {
                 </Link>
                 <ul className={Styles["list"]}>
                     {['Information', 'Quiz Portal'].map((item, index) =>
-                        <li key={index} onMouseOver={() => handleHover({name: item, index})} onClick={() => handleClick({name: item, index})} ><Link href='/' className={Styles['navlink']}>{item}</Link></li>
+                        <li key={index} onMouseOver={() => handleHover({ name: item, index })} onClick={() => handleClick({ name: item, index })} >
+                            <Link href='/' className={Styles['navlink']}>{item}</Link>
+                        </li>
                     )}
                     <button className={Styles["list-item"]} >Profile</button>
                 </ul>

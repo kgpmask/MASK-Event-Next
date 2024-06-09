@@ -50,26 +50,33 @@
     border-radius: 50%;
 }
 
-.navlink {
-    /* Additional styling */
+.navlink{
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--white);
+    letter-spacing: 1px;
+
+    display: inline-block;
+    padding: 8px 20px;
     position: relative;
-    outline: none !important;
-    transition: 0.2s;
 }
 
-.navlink::after {
-    content: "";
-    background-color: black;
-    position: absolute;
+.navlink:after {
+    background: none repeat scroll 0 0 transparent;
     bottom: 0;
-    left: 0;
-    height: 4px;
+    content: "";
+    display: block;
+    height: 3px;
+    left: 50%;
+    position: absolute;
+    background: var(--red);
+    transition: width 0.3s ease 0s, left 0.3s ease 0s;
     width: 0;
-    transition: 0.2s;
+    border-radius: 2px;
 }
 
-.navlink:hover::after,
-.navlink:focus::after {
-    background-color: var(--red);
-    width: 100px;
+.navlink:hover:after {
+    width: 80%;
+    left: 9%;
 }

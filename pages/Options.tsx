@@ -24,6 +24,7 @@ function QuesOptions() {
             <h2 style={{ color: 'white' }}>Shiri Masu Ka?</h2>
             <h4>Question #5</h4>
           </div>
+        {/* need to implement timer */}
           <div className={Styles["timer"]}>
             <h3>Round 2</h3>
             <h1>00:00</h1>

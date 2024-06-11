@@ -1,0 +1,74 @@
+.container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.card {
+    /* width: 50vw; */
+    /* height: 50vh; */
+    border-radius: 30px;
+    background: black;
+    padding: 40px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.round {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    line-height: 29.16px;
+}
+
+.round>h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: aliceblue;
+}
+
+.timer>h1 {
+    color: var(--red);
+}
+
+
+.questions {
+    margin: 20px 0;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 19.44px;
+    text-align: center;
+    color: aliceblue;
+}
+
+.options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.option-button {
+    padding: 10px 20px;
+    background-color:var(--off-white);
+    outline: none;
+    border: none;
+    display: flex;
+    align-items: center;
+}
+.option-numbering {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    margin: 0 20px;
+    color: var(--white);
+    background-color: black;
+}

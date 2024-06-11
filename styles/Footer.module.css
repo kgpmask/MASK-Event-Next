@@ -1,6 +1,7 @@
 .container {
-    position: relative;
+    position: static;
     background-color: black;
+    bottom: 0;
 }
 
 .content {

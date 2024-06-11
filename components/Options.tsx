@@ -41,6 +41,9 @@ function QuesOptions() {
               </button>
             ))}
           </div>
+          <div className={Styles["submit"]}>
+            <button className={Styles["submit-btn"]}>Submit</button>
+          </div>
         </div>
       </div>
     </div>

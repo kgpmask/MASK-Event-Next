@@ -3,7 +3,6 @@
     top: 0;
     display: flex;
     justify-content: center;
-    /* align-items: center; */
 }
 
 .content {
@@ -15,6 +14,14 @@
     margin: 40px;
     border-radius: 10px;
     padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+    .content {
+        flex-direction: column;
+        width: 90vw;
+        margin: 20px;
+    }
 }
 
 .list {
@@ -29,7 +36,17 @@
     cursor: pointer;
 }
 
-.list>li {
+@media (max-width: 768px) {
+    .list {
+        flex-direction: column;
+        align-items: start;
+    }
+    .list > li {
+        padding: 10px 0;
+    }
+}
+
+.list > li {
     padding: 0 40px;
     text-decoration: none;
 }
@@ -56,7 +73,6 @@
     font-weight: bold;
     color: var(--white);
     letter-spacing: 1px;
-
     display: inline-block;
     padding: 8px 20px;
     position: relative;
@@ -76,7 +92,6 @@
     border-radius: 2px;
 }
 
-/* change to adjust the underline effect */
 .navlink:hover:after {
     width: 70%;
     left: 15%;

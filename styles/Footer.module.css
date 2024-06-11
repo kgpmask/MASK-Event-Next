@@ -1,7 +1,8 @@
 .container {
-    position: static;
+    position: fixed;
     background-color: black;
     bottom: 0;
+    width: 100vw;
 }
 
 .content {

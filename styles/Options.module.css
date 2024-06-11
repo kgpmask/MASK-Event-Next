@@ -3,15 +3,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    margin: 0 5rem;
 }
 
 .card {
-    /* width: 50vw; */
-    /* height: 50vh; */
     border-radius: 30px;
     background: black;
-    padding: 40px;
+    padding: 6rem;
 }
 
 .header {
@@ -38,29 +36,36 @@
 
 
 .questions {
-    margin: 20px 0;
-    font-size: 16px;
+    margin: 40px 0;
+    font-size: 20px;
     font-weight: 400;
     line-height: 19.44px;
     text-align: center;
-    color: aliceblue;
+    color: var(--white);
 }
 
 .options {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    gap: 10px;
+    gap: 1.3rem;
 }
 
 .option-button {
     padding: 10px 20px;
-    background-color:var(--off-white);
+    background-color: var(--off-white);
     outline: none;
     border: none;
+    font-size: 16px;
     display: flex;
     align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
 }
+.option-button:hover {
+    box-shadow: 0 0 14px 0 var(--off-white);
+}
+
 .option-numbering {
     display: flex;
     justify-content: center;
@@ -71,4 +76,28 @@
     margin: 0 20px;
     color: var(--white);
     background-color: black;
+}
+
+.submit {
+    display: flex;
+    justify-content: center;
+}
+
+.submit-btn {
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 25px;
+    padding: 14px 20px;
+    background-color: var(--red);
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    color: var(--off-white);
+    letter-spacing: 1px;
+}
+.submit-btn:hover {
+    box-shadow: 0 0 14px 0 var(--red);
 }

@@ -62,6 +62,7 @@
     border-radius: 10px;
     cursor: pointer;
 }
+
 .option-button:hover {
     box-shadow: 0 0 14px 0 var(--off-white);
 }
@@ -98,6 +99,47 @@
     color: var(--off-white);
     letter-spacing: 1px;
 }
+
 .submit-btn:hover {
     box-shadow: 0 0 14px 0 var(--red);
+}
+
+/* Media query for screens smaller than 600px */
+@media screen and (max-width: 600px) {
+    .container {
+        margin: 0 1rem;
+    }
+
+    .card {
+        padding: 2rem;
+    }
+
+    .options {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 1fr);
+    }
+
+    .submit-btn {
+        width: 100%;
+    }
+}
+
+/* Media query for screens smaller than 900px */
+@media screen and (max-width: 900px) {
+    .container {
+        margin: 0 2rem;
+    }
+
+    .card {
+        padding: 4rem;
+    }
+
+    .options {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+    }
+
+    .submit-btn {
+        width: 80%;
+    }
 }

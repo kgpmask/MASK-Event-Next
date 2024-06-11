@@ -14,6 +14,7 @@ export default function Home() {
       <Head>
         <title>MASK | OCAQ</title>
         <meta name="description" content="MASK Event" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
       </Head>

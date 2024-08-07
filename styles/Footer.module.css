@@ -1,0 +1,55 @@
+.container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    background-color: black;
+}
+
+.content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.about {
+    color: var(--white);
+}
+
+.socials {
+    display: flex;
+    gap: 1rem;
+}
+
+@media screen and (max-width: 800px) {
+    .container {
+        position: relative;
+        height: auto;
+    }
+
+    .content {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .socials {
+        gap: 0.5rem;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .socials {
+        gap: 0.2rem;
+    }
+
+    .socials>div {
+        transform: scale(0.5);
+    }
+
+    .about {
+        font-size: 0.8rem;
+        text-align: center;
+    }
+}

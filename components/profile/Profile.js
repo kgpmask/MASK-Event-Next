@@ -5,16 +5,22 @@ import next from 'next'
 import { IoClose } from "react-icons/io5";
 import { FaCamera } from 'react-icons/fa';
 import LogOutModal from './LogOutModal';
+import ProfilePicModal from './ProfilePicModal';
 
 
 function Profile() {
     const [showLogOutModal, setShowLogOutModal] = React.useState(false)
+    const [showProfilePicModal, setShowProfilePicModal] = React.useState(false)
     const handleClose = () => {
         console.log('close')
     }
     const handleLogout = () => {
         console.log('logout')
         setShowLogOutModal(true)
+    }
+    const handleProfilePicChange = () => {
+        console.log('profile pic change')
+        setShowProfilePicModal(true)
     }
     return (
         <div className={Styles['container']}>
@@ -24,7 +30,7 @@ function Profile() {
                         <IoClose className={Styles["cross"]} color='white' onClick={handleClose} />
                         <img src='/deku.webp' alt='MASK' />
                     </div>
-                    <div className={Styles['profile-img-wrapper']}>
+                    <div className={Styles['profile-img-wrapper']} onClick={handleProfilePicChange} >
                         <img src='/deku.webp' alt='MASK' className={Styles['profile-img']} />
                         <FaCamera className={Styles['camera-icon']} />
                     </div>
@@ -38,6 +44,7 @@ function Profile() {
                 </div>
             </div>
             {showLogOutModal && <LogOutModal showModal={setShowLogOutModal} />}
+            {showProfilePicModal && <ProfilePicModal showModal={setShowProfilePicModal} />}
         </div >
     )
 }

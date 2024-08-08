@@ -194,3 +194,41 @@
     background-color: red;
     color: white;
 }
+
+.profile-pics-array {
+    margin: 1rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.profile-pics-array>img {
+    width: min(40vw, 60px);
+    height: min(40vw, 60px);
+    border: solid 2px rgba(139, 135, 135, 0.5);
+    cursor: pointer;
+}
+
+.profile-pics-array .selected,
+.profile-pics-array img:hover {
+    border: solid 2px red;
+
+}
+
+#edit-pic-modal.hidden {
+    display: none;
+}
+.edit-profilepic-btn{
+    width: 70%;
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 1rem 0;
+    margin-right: 10px;
+}

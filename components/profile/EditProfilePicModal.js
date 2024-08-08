@@ -4,6 +4,17 @@ import Styles from '@/styles/Profile.module.css'
 import next from 'next'
 import { IoClose } from "react-icons/io5";
 
+const profilePictures = [
+    null,
+    'bankai',
+    'eggy-sensei',
+    'poke-ball',
+    'straw-hat',
+    'dragon-ball',
+    'itachi-mangekyou',
+    'rimuru-slime'
+]
+
 function LogOutModal({ showModal }) {
     const handleClose = () => {
         console.log('close')
@@ -16,16 +27,19 @@ function LogOutModal({ showModal }) {
                     <div style={{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}>
                         <IoClose className={Styles['modal-cross']} color='white' onClick={handleClose} />
                     </div>
-
-                    <div className={Styles['modal-text']}>
-                        <h1>Log Out</h1>
-                        <p>Are you sure you want to logout?</p>
-                    </div>
-                    <div className={Styles["modal-btn"]}>
-                        <button className={Styles['modal-cancel-btn']} >No. Return to Home</button>
-                        <button className={Styles['modal-logout-btn']} >Log Out</button>
+                    <div className={Styles["profile-pics-array"]}>
+                        {
+                            profilePictures.map(pic => (
+                                <img
+                                    key={pic}
+                                    src={pic ? `/profile-pics/${pic}.webp` : `/logo.webp`}
+                                    onClick={() => toggleSelect(pic)}
+                                />
+                            ))
+                        }
                     </div>
                 </div>
+                <div style={{textAlign:'center'}}><button className={Styles['edit-profilepic-btn']} > Update </button></div>
             </div>
         </div>
     )

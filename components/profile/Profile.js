@@ -5,7 +5,7 @@ import next from 'next'
 import { IoClose } from "react-icons/io5";
 import { FaCamera } from 'react-icons/fa';
 import LogOutModal from './LogOutModal';
-import ProfilePicModal from './ProfilePicModal';
+import ProfilePicModal from './EditProfilePicModal';
 
 
 function Profile() {

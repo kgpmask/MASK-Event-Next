@@ -3,6 +3,7 @@ import Styles from '@/styles/Profile.module.css'
 // import Image from @next/image
 import next from 'next'
 import { IoClose } from "react-icons/io5";
+import { FaCamera } from 'react-icons/fa';
 import LogOutModal from './LogOutModal';
 
 
@@ -23,7 +24,10 @@ function Profile() {
                         <IoClose className={Styles["cross"]} color='white' onClick={handleClose} />
                         <img src='/deku.webp' alt='MASK' />
                     </div>
-                    <img src="/deku.webp" alt="MASK" className={Styles['profile-img']} />
+                    <div className={Styles['profile-img-wrapper']}>
+                        <img src='/deku.webp' alt='MASK' className={Styles['profile-img']} />
+                        <FaCamera className={Styles['camera-icon']} />
+                    </div>
                 </div>
                 <div className={Styles["bottom-content"]}>
                     <div className={Styles["profile-info"]}>

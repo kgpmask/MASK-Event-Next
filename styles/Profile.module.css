@@ -42,16 +42,6 @@
     border-radius: 10px;
 }
 
-.profile-img {
-    height: 12vw;
-    width: 12vw;
-    border-radius: 50%;
-    border: 3px solid black;
-    position: absolute;
-    /* top: 50%; */
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
 
 .cross {
     position: absolute;
@@ -62,6 +52,40 @@
     cursor: pointer;
     z-index: 20;
 }
+
+.profile-img-wrapper {
+    /* position: relative; */
+    position: absolute;
+    /* top: 50%; */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: inline-block;
+    cursor: pointer;
+}
+
+.profile-img {
+    display: block;
+    height: 12vw;
+    width: 12vw;
+    border-radius: 50%;
+    border: 3px solid black;
+}
+
+.camera-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    color: white;
+    font-size: 24px;
+}
+
+.profile-img-wrapper:hover .camera-icon {
+    opacity: 1;
+}
+
 
 .bottom-content {
     position: relative;

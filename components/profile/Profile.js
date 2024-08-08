@@ -11,6 +11,7 @@ import ProfilePicModal from './EditProfilePicModal';
 function Profile() {
     const [showLogOutModal, setShowLogOutModal] = React.useState(false)
     const [showProfilePicModal, setShowProfilePicModal] = React.useState(false)
+    const [profilePic, setProfilePic] = React.useState('/profile-pics/bankai.webp')
     const handleClose = () => {
         console.log('close')
     }
@@ -18,7 +19,7 @@ function Profile() {
         console.log('logout')
         setShowLogOutModal(true)
     }
-    const handleProfilePicChange = () => {
+    const handleProfilePicModal = () => {
         console.log('profile pic change')
         setShowProfilePicModal(true)
     }
@@ -28,10 +29,10 @@ function Profile() {
                 <div style={{ borderRadius: '10px' }}>
                     <div className={Styles["block"]}>
                         <IoClose className={Styles["cross"]} color='white' onClick={handleClose} />
-                        <img src='/deku.webp' alt='MASK' />
+                        <img src={profilePic} alt='MASK' />
                     </div>
-                    <div className={Styles['profile-img-wrapper']} onClick={handleProfilePicChange} >
-                        <img src='/deku.webp' alt='MASK' className={Styles['profile-img']} />
+                    <div className={Styles['profile-img-wrapper']} onClick={handleProfilePicModal} >
+                        <img src={profilePic} alt='MASK' className={Styles['profile-img']} />
                         <FaCamera className={Styles['camera-icon']} />
                     </div>
                 </div>
@@ -44,7 +45,7 @@ function Profile() {
                 </div>
             </div>
             {showLogOutModal && <LogOutModal showModal={setShowLogOutModal} />}
-            {showProfilePicModal && <ProfilePicModal showModal={setShowProfilePicModal} />}
+            {showProfilePicModal && <ProfilePicModal showModal={setShowProfilePicModal} profilePicChange={setProfilePic}/>}
         </div >
     )
 }

@@ -15,9 +15,14 @@ const profilePictures = [
     'rimuru-slime'
 ]
 
-function LogOutModal({ showModal }) {
+function LogOutModal({ showModal, profilePicChange }) {
     const handleClose = () => {
         console.log('close')
+        showModal(false)
+    }
+    function toggleSelect(value) {
+
+        profilePicChange(`/profile-pics/${value}.webp`)
         showModal(false)
     }
     return (
@@ -39,7 +44,7 @@ function LogOutModal({ showModal }) {
                         }
                     </div>
                 </div>
-                <div style={{textAlign:'center'}}><button className={Styles['edit-profilepic-btn']} > Update </button></div>
+                {/* <div style={{ textAlign: 'center' }}><button className={Styles['edit-profilepic-btn']} onClick={} > Update </button></div> */}
             </div>
         </div>
     )

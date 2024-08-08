@@ -62,4 +62,17 @@
     z-index: 20;
 }
 
-.bottom-content {}
+.bottom-content {
+    position: relative;
+    top: 20%;
+    /* left: 40%; */
+    text-align: center;
+    /* transform: translate(-50%, -50%); */
+    width: 100%;
+
+}
+
+.profile-info {
+   
+    color: white;
+}

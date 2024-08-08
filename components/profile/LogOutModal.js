@@ -13,11 +13,17 @@ function LogOutModal({ showModal }) {
         <div className={Styles['modal-container']}>
             <div className={Styles['modal-wrapper']}>
                 <div className={Styles['modal-block']}>
-                    <div > <IoClose className={Styles['modal-cross']} color='black' handleClick={handleClose} /></div>
-                    <h1>Are you sure you want to logout?</h1>
-                    <div className={Styles['modal-btns']}>
-                        <button className={Styles['modal-logout-btn']} handleClick={handleClose} >Yes</button>
-                        <button className={Styles['modal-cancel-btn']}>Cancel</button>
+                    <div style={{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}>
+                        <IoClose className={Styles['modal-cross']} color='white' onClick={handleClose} />
+                    </div>
+
+                    <div className={Styles['modal-text']}>
+                        <h1>Log Out</h1>
+                        <p>Are you sure you want to logout?</p>
+                    </div>
+                    <div className={Styles["modal-btn"]}>
+                        <button className={Styles['modal-cancel-btn']} >No. Return to Home</button>
+                        <button className={Styles['modal-logout-btn']} >Log Out</button>
                     </div>
                 </div>
             </div>

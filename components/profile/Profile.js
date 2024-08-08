@@ -28,13 +28,12 @@ function Profile() {
                 <div className={Styles["bottom-content"]}>
                     <div className={Styles["profile-info"]}>
                         <h1>{'Goose'}</h1>
-                        <p><span>{'Goose-of-war'}</span></p>
-                        <button onClick={handleLogout} className={Styles['logout-btn']} >LogOut</button>
-
+                        <span>{'Goose-of-war'}</span>
                     </div>
+                    <button onClick={handleLogout} className={Styles['logout-btn']} >LogOut</button>
                 </div>
             </div>
-            {showLogOutModal && <LogOutModal showModal={setShowLogOutModal}/>}
+            {showLogOutModal && <LogOutModal showModal={setShowLogOutModal} />}
         </div >
     )
 }

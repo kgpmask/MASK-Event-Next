@@ -37,14 +37,14 @@ function LogOutModal({ showModal, profilePicChange }) {
                             profilePictures.map(pic => (
                                 <img
                                     key={pic}
-                                    src={pic ? `/profile-pics/${pic}.webp` : `/logo.webp`}
+                                    src={pic != null ? `/profile-pics/${pic}.webp` : `/logo.webp`}
                                     onClick={() => toggleSelect(pic)}
                                 />
                             ))
                         }
                     </div>
                 </div>
-                {/* <div style={{ textAlign: 'center' }}><button className={Styles['edit-profilepic-btn']} onClick={} > Update </button></div> */}
+                <div style={{ textAlign: 'center' }}><button className={Styles['edit-profilepic-btn']} > Update </button></div>
             </div>
         </div>
     )

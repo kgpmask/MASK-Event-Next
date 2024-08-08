@@ -9,7 +9,7 @@
 
 .wrapper {
     height: 70vh;
-    background-color: grey;
+    background-color: black;
     border-radius: 10px;
 }
 
@@ -41,12 +41,9 @@
     border-radius: 10px;
 }
 
-.bottom-content {
-    
-}
-.profile-img{
-    height: 200px;
-    width: 200px;
+.profile-img {
+    height: 12vw;
+    width: 12vw;
     border-radius: 50%;
     border: 2px solid white;
     position: absolute;
@@ -54,3 +51,15 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+.cross {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 20;
+}
+
+.bottom-content {}

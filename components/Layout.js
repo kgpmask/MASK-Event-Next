@@ -5,7 +5,7 @@ import Styles from "@/styles/Layout.module.css";
 export default function Home({ children }) {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className={Styles["container"]}>
         {children}
       </div>

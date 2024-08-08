@@ -4,7 +4,7 @@ import Styles from '@/styles/MainBody.module.css'
 function QuesOptions() {
   const [selectedOption, setSelectedOption] = React.useState('')
   const [isQuizStarted, setIsQuizStarted] = React.useState(false)
-  const [isTypeOptions, setIsTypeOptions] = React.useState(true)
+  const [isTypeOptions, setIsTypeOptions] = React.useState(false)
   const [isQuestionAnswered, setIsQuestionAnswered] = React.useState(false)
   const options = [{
     option: 'Shadow Clone Jutsu',

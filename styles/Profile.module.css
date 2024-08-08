@@ -1,0 +1,56 @@
+.container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    color: black;
+}
+
+.wrapper {
+    height: 70vh;
+    background-color: grey;
+    border-radius: 10px;
+}
+
+
+
+.block {
+    height: 25vh;
+    width: 30vw;
+    border-radius: 10px;
+    background-image: url('/deku.webp') no-repeat;
+    position: relative;
+}
+
+.block::before {
+    background-color: rgba(221, 13, 13, 0.74);
+    content: '';
+    display: block;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.block>img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    align-items: start;
+    border-radius: 10px;
+}
+
+.bottom-content {
+    
+}
+.profile-img{
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    border: 2px solid white;
+    position: absolute;
+    /* top: 50%; */
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

@@ -43,7 +43,7 @@ const Navbar = () => {
 	};
 
 	useEffect(() => {
-		if(document.cookie.length <= 10) return localStorage.clear() || setUsername('');
+		if(document.cookie.split('sessionId=').pop().split(';')[0] === '') return localStorage.clear() || setUsername('');
 		const username = localStorage.getItem('username');
 		if(!username) setUsername('');
 		else setUsername(localStorage.getItem('name') || 'User');

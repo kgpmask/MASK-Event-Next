@@ -3,11 +3,18 @@ import Styles from '@/styles/Profile.module.css'
 // import Image from @next/image
 import next from 'next'
 import { IoClose } from "react-icons/io5";
+import { useRouter } from 'next/router';
 
 function LogOutModal({ showModal }) {
+    const router = useRouter();
     const handleClose = () => {
         // console.log('close')
         showModal(false)
+    }
+    const handleBackHome = () => {
+        // console.log('close')
+        showModal(false)
+        router.push('/')
     }
     return (
         <div className={Styles['modal-container']}>
@@ -22,7 +29,7 @@ function LogOutModal({ showModal }) {
                         <p>Are you sure you want to logout?</p>
                     </div>
                     <div className={Styles["modal-btn"]}>
-                        <button className={Styles['modal-cancel-btn']} >No. Return to Home</button>
+                        <button className={Styles['modal-cancel-btn']} onClick={handleBackHome} >No. Return to Home</button>
                         <button className={Styles['modal-logout-btn']} >Log Out</button>
                     </div>
                 </div>

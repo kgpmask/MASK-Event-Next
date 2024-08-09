@@ -50,7 +50,7 @@ const assignRank1= (resultsJSON)=>{
 
     resultsJSON[0].rank=1;
     for (let i = 1; i < resultsJSON.length; ++i) {
-        if (resultsJSON[i-1]>resultsJSON[i]){
+        if (resultsJSON[i-1].points>resultsJSON[i].points){
             resultsJSON[i].rank=resultsJSON[i-1].rank+1;
         } else{
             resultsJSON[i].rank=resultsJSON[i-1].rank;
@@ -62,7 +62,7 @@ const assignRank2= (resultsJSON)=>{
     //Ranks will look like 1,1,3,4,5
     resultsJSON[0].rank=1;
     for (let i = 1; i < resultsJSON.length; ++i) {
-        if (resultsJSON[i-1]>resultsJSON[i]){
+        if (resultsJSON[i-1].points>resultsJSON[i].points){
             resultsJSON[i].rank=i+1;
         } else{
             resultsJSON[i].rank=resultsJSON[i-1].rank;
@@ -70,5 +70,5 @@ const assignRank2= (resultsJSON)=>{
     }
 }
 
-assignRank1(resultsJSON);
-console.log(resultsJSON);
+/* assignRank2(resultsJSON);
+console.log(resultsJSON); */

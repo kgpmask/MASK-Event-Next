@@ -11,16 +11,16 @@ import ProfilePicModal from '../components/profile/EditProfilePicModal';
 function Profile() {
     const [showLogOutModal, setShowLogOutModal] = React.useState(false)
     const [showProfilePicModal, setShowProfilePicModal] = React.useState(false)
-    const [profilePic, setProfilePic] = React.useState('/profile-pics/bankai.webp')
+    const [profilePic, setProfilePic] = React.useState('/logo.webp')
     const handleClose = () => {
         console.log('close')
     }
     const handleLogout = () => {
-        console.log('logout')
+        // console.log('logout')
         setShowLogOutModal(true)
     }
     const handleProfilePicModal = () => {
-        console.log('profile pic change')
+        // console.log('profile pic change')
         setShowProfilePicModal(true)
     }
     return (

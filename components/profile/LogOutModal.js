@@ -6,7 +6,7 @@ import { IoClose } from "react-icons/io5";
 
 function LogOutModal({ showModal }) {
     const handleClose = () => {
-        console.log('close')
+        // console.log('close')
         showModal(false)
     }
     return (

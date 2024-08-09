@@ -1,0 +1,72 @@
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.buttons button {
+  padding: 13px 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  background-color: #e43332;
+  color: #fff;
+  font-size: 14px;
+}
+
+.buttons button:hover {
+  color: #000;
+  background-color: #efefef;
+}
+
+.admin-content {
+  background-color: hsl(0, 0%, 0%, 0.75);
+  padding: 40px;
+  width: 30vw;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.admin-content h1 {
+  color: #fff;
+}
+
+.admin-content p {
+  font-size: 14px;
+  margin-top: -5px;
+}
+
+.forbidden-container {
+  background-color: hsl(0, 0%, 0%, 0.75);
+  padding: 40px;
+  width: 30vw;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.forbidden-container h1 {
+  color: #fff;
+}
+
+.forbidden-container p {
+  font-size: 14px;
+  margin-top: -10px;
+}
+
+.home-redirect {
+  padding: 12px 10px;
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  background-color: #efefef;
+  font-weight: 500;
+}
+
+.home-redirect:hover {
+  background-color: hsl(0, 0%, 81%);
+}
+
+.card {
+}

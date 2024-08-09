@@ -112,7 +112,7 @@ export default function Home() {
           </a>
         </div>
       </main> */}
-			<TextArea title="CHild">Hello</TextArea>
+			{/* <TextArea title="CHild">Hello</TextArea> */}
 		</>
 	);
 }

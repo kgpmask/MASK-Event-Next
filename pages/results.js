@@ -1,11 +1,6 @@
 import Head from "next/head";
-import { Inter } from "next/font/google";
 import styles from "@/styles/Results.module.css";
 import TextArea from "@/components/Base/TextArea";
-
-const inter = Inter({ subsets: ["latin"] });
-const MAINSTYLE = '';//Gotta add the styles name when it's done ig
-const RESULTSTYLE= '';
 
 const resultsJSON=[
     {

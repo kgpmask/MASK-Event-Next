@@ -3,20 +3,13 @@
 }
 
 .instructions h3{
-    font-size: 1.1em;
+    font-size: 1.2em;
     font-weight: 700;
-    font-style: italic;
     color: brown;
     border-bottom: 2px solid rgb(112, 110, 110);
 }
 
 .instructions li{
     padding: 0.15em;
-}
-
-.instructions >ol >li:nth-of-type(odd){
-    color: rgb(166, 162, 162);
-}
-.instructions >ol >li:nth-of-type(even){
-    color: rgb(222, 137, 137);
+    margin-left: 3em;
 }

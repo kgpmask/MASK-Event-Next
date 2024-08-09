@@ -7,7 +7,7 @@ export default function Instructions(){
     return (
         <>
             <Head>
-                <title>Website Instructions</title>
+                <title>OCAQ-Instructions</title>
             </Head>
             <TextArea title="Instructions">
                 <div className={styles["instructions"]}>

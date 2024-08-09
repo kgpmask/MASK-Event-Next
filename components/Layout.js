@@ -1,15 +1,15 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/Base/Navbar";
+import Footer from "@/components/Base/Footer";
 import Styles from "@/styles/Layout.module.css";
 
 export default function Home({ children }) {
-  return (
-    <>
-      {/* <Navbar /> */}
-      <div className={Styles["container"]}>
-        {children}
-      </div>
-      <Footer />
-    </>
-  );
+	return (
+		<>
+			<Navbar />
+			<main className={Styles["container"]}>
+				{children}
+			</main>
+			<Footer />
+		</>
+	);
 }

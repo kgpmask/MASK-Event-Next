@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Styles from '@/styles/Navbar.module.css'
 import Link from "next/link"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import LogOutModal from '@/components/profile/LogOutModal'
 
 const Navbar = () => {
@@ -31,6 +31,10 @@ const Navbar = () => {
 	// const handleClick = (index) => {
 	// 	setActive(index); // Set active state to the currently clicked item
 	// }
+
+	useEffect(() => {
+		document.querySelector('#content-wrap')?.classList.toggle('burger-open');
+	}, [burgerOpen]);
 
 	const handleLogout = () => {
 		setShowLogOutModal(true);

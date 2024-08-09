@@ -34,3 +34,7 @@ body {
 	font-family: Ubuntu, Roboto, Arial, Open Sans, sans-serif;
 	overflow-x: hidden;
 }
+
+.burger-open {
+	display: none;
+}

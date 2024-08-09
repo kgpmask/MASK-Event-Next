@@ -7,7 +7,9 @@ export default function Home({ children }) {
 		<>
 			<Navbar />
 			<main className={Styles["container"]}>
-				{children}
+				<div id="content-wrap">
+					{children}
+				</div>
 			</main>
 			<Footer />
 		</>

@@ -1,3 +1,12 @@
+import Head from "next/head";
+import { Inter } from "next/font/google";
+import styles from "@/styles/Results.module.css";
+import TextArea from "@/components/Base/TextArea";
+
+const inter = Inter({ subsets: ["latin"] });
+const MAINSTYLE = '';//Gotta add the styles name when it's done ig
+const RESULTSTYLE= '';
+
 const resultsJSON=[
     {
         name: "D. Manideep",
@@ -43,11 +52,9 @@ const resultsJSON=[
     }
 ];
 
-resultsJSON.sort((a,b)=> b.points-a.points);
-
 const assignRank1= (resultsJSON)=>{
     //Ranks will look like 1,1,2,3,4
-
+    resultsJSON.sort((a,b)=> b.points-a.points);
     resultsJSON[0].rank=1;
     for (let i = 1; i < resultsJSON.length; ++i) {
         if (resultsJSON[i-1].points>resultsJSON[i].points){
@@ -60,6 +67,7 @@ const assignRank1= (resultsJSON)=>{
 
 const assignRank2= (resultsJSON)=>{
     //Ranks will look like 1,1,3,4,5
+    resultsJSON.sort((a,b)=> b.points-a.points);
     resultsJSON[0].rank=1;
     for (let i = 1; i < resultsJSON.length; ++i) {
         if (resultsJSON[i-1].points>resultsJSON[i].points){
@@ -70,5 +78,21 @@ const assignRank2= (resultsJSON)=>{
     }
 }
 
-/* assignRank2(resultsJSON);
-console.log(resultsJSON); */
+
+export default function Results(){
+    {/* <Head>
+        <title>Results</title>
+        <meta name="description" content="Check your results here!" />        
+    </Head> */}
+
+    const results=resultsJSON;
+    assignRank1(results);
+    return (
+        <div id={styles[MAINSTYLE]}>
+            <p>Real results were the friends we made along the way. jk.</p>
+            <div id={styles[RESULTSTYLE]}>
+                           
+            </div>
+        </div>
+    )
+}

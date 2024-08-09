@@ -27,7 +27,11 @@ const evaluateAnswerHandler = async (req, res) => {
 		});
 		const { answer, type } = questions.find(q => q.questionNo === questionNo);
         const user = results.find(obj => obj.userId === userId);
-		user.points += evaluateAnswer(response, answer, type);
+		const score = evaluateAnswer(response, answer, type);
+		const question = questions.filter((question) => {
+			return question.questionNo = questionNo;
+		});
+		user.points += question.isHard ? (2 * score) : score;
 	});
 
 	cachedResults.results = results;

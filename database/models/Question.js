@@ -8,7 +8,8 @@ const questionSchema = new mongoose.Schema({
 	question: { type: String, required: false },
 	type: { type: String, required: true, enum: ['text', 'mcq'] },
 	options: [String],
-	answer: { type: [Number, [String]], required: true }
+	answer: { type: [Number, [String]], required: true },
+	isHard: { type: Boolean, required: false }
 }, { collection: 'questions' });
 
 export default mongoose.model('Question', questionSchema);

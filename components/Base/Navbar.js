@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Styles from '@/styles/Navbar.module.css'
 import Link from "next/link"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 
 const Navbar = () => {
 	// const [active, setActive] = useState(0); // Initialize active state to the first item
@@ -28,6 +28,9 @@ const Navbar = () => {
 	// 	setActive(index); // Set active state to the currently clicked item
 	// }
 	const [burgerOpen, setBurgerOpen] = useState(false);
+	useEffect(() => {
+		document.querySelector('#content-wrap')?.classList.toggle('burger-open');
+	}, [burgerOpen]);
 
 	return (
 		<div className={Styles["container"]}>

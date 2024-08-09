@@ -219,8 +219,4 @@
 		justify-content: flex-start;
 		align-items: center;
 	}
-
-	.burger-open > *:not(.hamburger-menu, ) {
-		display: none;
-	}
 }

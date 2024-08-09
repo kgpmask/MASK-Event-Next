@@ -102,6 +102,12 @@
     font-size: 3rem;
 }
 
+@media screen and (max-width: 1024px) {
+    
+}
+@media screen and (max-width: 768px) {
+    
+}
 .profile-info>span {
     color: var(--light-gray);
     font-size: 1.8rem;
@@ -158,6 +164,12 @@
         height: 15vw;
         width: 15vw;
     }
+    .profile-info>h1 {
+        font-size: 2.5rem;
+    }  
+    .profile-info>span {
+        font-size: 2rem;
+    }
 }
 
 /* For tablets */
@@ -169,6 +181,12 @@
     .profile-img {
         height: 20vw;
         width: 20vw;
+    }
+    .profile-info>h1 {
+        font-size: 2rem;
+    }  
+    .profile-info>span {
+        font-size: 1.5rem;
     }
 }
 
@@ -185,6 +203,12 @@
     .wrapper {
         padding: 1rem;
     }
+    .profile-info>h1 {
+        font-size: 1.5rem;
+    }
+    .profile-info>span {
+        font-size: 1.2rem;
+    }
 }
 
 /* For very small devices */
@@ -196,6 +220,15 @@
     .profile-img {
         height: 30vw;
         width: 30vw;
+    }
+    .wrapper {
+        padding: 1rem;
+    }
+    .profile-info>h1 {
+        font-size: 1.2rem;
+    }
+    .profile-info>span {
+        font-size: 1rem;
     }
 }
 

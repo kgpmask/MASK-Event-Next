@@ -17,7 +17,7 @@ function Profile() {
     const [profilePic, setProfilePic] = useState('/logo.webp');
     const router = useRouter();
 
-    // Fetch user information
+    // getting user data on page load
     useEffect(() => {
         async function fetchData() {
             const response = await fetch('/api/who-am-i');
@@ -31,14 +31,14 @@ function Profile() {
         fetchData();
     }, []);
 
-    // Update name when edit mode is enabled
+    // name change when asked to edit
     useEffect(() => {
         if (editName) {
             setBufferName(name);
         }
     }, [editName]);
 
-    // Submit updated profile data
+    // sending updated data to server
     async function submitFunction(ctx) {
         try {
             const response = await fetch('/api/update-profile', {

@@ -18,7 +18,7 @@ const profilePictures = [
 
 function LogOutModal({ showModal, profilePic, submitFunction }) {
     const handleClose = () => {
-        console.log('close')
+        // console.log('close')
         showModal(false)
     }
     const [selected, setSelected] = useState(profilePic);

@@ -2,8 +2,8 @@ import React, { useEffect, useState, useMemo } from 'react';
 import Styles from '@/styles/Profile.module.css';
 import { IoClose } from "react-icons/io5";
 import { FaCamera } from 'react-icons/fa';
-import LogOutModal from '../components/profile/LogOutModal';
-import ProfilePicModal from '../components/profile/EditProfilePicModal';
+import LogOutModal from '@/components/profile/LogOutModal';
+import ProfilePicModal from '@/components/profile/EditProfilePicModal';
 import { useRouter } from 'next/router';
 // import MessageCard from "@/components/live/utils/MessageCard";
 

@@ -32,4 +32,5 @@ body {
 	background-attachment: fixed;
 	color: var(--light-gray);
 	font-family: Ubuntu, Roboto, Arial, Open Sans, sans-serif;
+	overflow-x: hidden;
 }

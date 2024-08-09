@@ -1,4 +1,5 @@
 import React from 'react'
+import { useState } from 'react'
 import Styles from '@/styles/Profile.module.css'
 // import Image from @next/image
 import next from 'next'
@@ -15,16 +16,22 @@ const profilePictures = [
     'rimuru-slime'
 ]
 
-function LogOutModal({ showModal, profilePicChange }) {
+function LogOutModal({ showModal, profilePic, submitFunction }) {
     const handleClose = () => {
         console.log('close')
         showModal(false)
     }
-    function toggleSelect(value) {
+    const [selected, setSelected] = useState(profilePic);
 
-        profilePicChange(`/profile-pics/${value}.webp`)
-        showModal(false)
-    }
+	function toggleSelect (value) {
+        if (selected === value) setSelected(null);
+		else setSelected(value);
+	}
+
+	async function submit () {
+		await submitFunction({ profilePic: selected });
+		showModal(false);
+	}
     return (
         <div className={Styles['modal-container']}>
             <div className={Styles['modal-wrapper']}>
@@ -38,13 +45,14 @@ function LogOutModal({ showModal, profilePicChange }) {
                                 <img
                                     key={pic}
                                     src={pic != null ? `/profile-pics/${pic}.webp` : `/logo.webp`}
+                                    className={ selected == pic ? Styles['selected'] : '' }
                                     onClick={() => toggleSelect(pic)}
                                 />
                             ))
                         }
                     </div>
                 </div>
-                <div style={{ textAlign: 'center' }}><button className={Styles['edit-profilepic-btn']} > Update </button></div>
+                <div style={{ textAlign: 'center' }}><button className={Styles['edit-profilepic-btn']} onClick={submit}> Update </button></div>
             </div>
         </div>
     )

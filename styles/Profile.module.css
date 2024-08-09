@@ -316,9 +316,9 @@
     border: solid 2px var(--red);
 }
 
-#edit-pic-modal.hidden {
+/* #edit-pic-modal.hidden {
     display: none;
-}
+} */
 
 .edit-profilepic-btn {
     width: 70%;
@@ -332,4 +332,40 @@
     font-weight: bold;
     margin: 1rem 0;
     margin-right: 10px;
+}
+.save-name-btn{
+    /* width: 70%; */
+    background-color: var(--red);
+    color: var(--white);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin: 1rem 0;
+    margin-right: 5px;
+}
+.edit-name-btn,
+.back-name-btn{
+    /* width: 70%; */
+    background-color: var(--white);
+    color: var(--abyss);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin: 1rem 0;
+    margin-right: 5px;
+}
+.name-input-box{
+    background-color: var(--grey);
+    color: var(--black);
+    border: 1px solid var(--red);
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    margin: 10px;
 }

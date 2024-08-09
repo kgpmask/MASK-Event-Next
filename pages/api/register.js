@@ -1,6 +1,6 @@
-import dbInit from "@";
-import User from "@";
-import Session from "@";
+import dbInit from "@/database/dbInit";
+import User from "@/database/models/User";
+import Session from "@/database/models/Session";
 import bcrypt from "bcrypt";
 
 const registerHandler = async (req, res) => {

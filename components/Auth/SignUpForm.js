@@ -33,10 +33,9 @@ const SignUpForm = () => {
 				alert("Username already in use.");
 				return;
 			}
-			const res = await response.json();
-			localStorage.setItem("username", res.username);
-			localStorage.setItem("name", res.name);
-			alert(`Sucessfully Logged In as ${user.name}`);
+			localStorage.setItem("username", username);
+			localStorage.setItem("name", name);
+			alert(`Sucessfully Logged In as ${name}`);
 			router.push("/");
 		} catch (error) {
 			console.log(error);

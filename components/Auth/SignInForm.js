@@ -17,19 +17,21 @@ const SignInForm = () => {
 				username,
 				password,
 			});
-			if (response.status == 400) {
+			if (response.status === 400) {
 				setUsername("");
 				setPassword("");
 				alert("Incorrect Username or Password. Please try again");
 				return;
 			}
-			const res = response.json();
+			console.log(response)
+			const res = response.data;
+			console.log(res);
 			localStorage.setItem("username", res.username);
 			localStorage.setItem("name", res.name);
 			alert("Sucessfully Logged In");
 			router.push("/");
 		} catch (error) {
-			alert("Server error");
+			console.log(error);
 		}
 	};
 	return (
@@ -51,7 +53,7 @@ const SignInForm = () => {
 					onChange={(e) => setUsername(e.target.value)}
 				/>
 				<input
-					type="text"
+					type="password"
 					placeholder="Password..."
 					name="password"
 					value={password}

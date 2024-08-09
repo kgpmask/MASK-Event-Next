@@ -1,9 +1,8 @@
 import React from 'react'
 import Styles from '@/styles/Profile.module.css'
-// import Image from @next/image
-import next from 'next'
 import { IoClose } from "react-icons/io5";
 import { useRouter } from 'next/router';
+import axios from 'axios';
 
 function LogOutModal({ showModal }) {
     const router = useRouter();
@@ -16,6 +15,17 @@ function LogOutModal({ showModal }) {
         showModal(false)
         router.push('/')
     }
+
+	const handleLogout = async () => {
+		try{
+			const response = await axios.post('/api/logout');
+			showModal(false);
+			router.push('/');
+		} catch (e) {
+			console.log(e);
+			alert('Server Error');
+		}
+	}
     return (
         <div className={Styles['modal-container']}>
             <div className={Styles['modal-wrapper']}>
@@ -30,7 +40,7 @@ function LogOutModal({ showModal }) {
                     </div>
                     <div className={Styles["modal-btn"]}>
                         <button className={Styles['modal-cancel-btn']} onClick={handleBackHome} >No. Return to Home</button>
-                        <button className={Styles['modal-logout-btn']} >Log Out</button>
+                        <button className={Styles['modal-logout-btn']} onClick={handleLogout} >Log Out</button>
                     </div>
                 </div>
             </div>

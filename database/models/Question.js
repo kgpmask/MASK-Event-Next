@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import dbInit from '../dbInit';
 
 const questionSchema = new mongoose.Schema({
 	quizId: { type: String, required: true },
@@ -10,6 +9,6 @@ const questionSchema = new mongoose.Schema({
 	options: [String],
 	answer: { type: [Number, [String]], required: true },
 	isHard: { type: Boolean, required: false }
-}, { collection: 'questions' });
+}, { collection: 'ocaq-questions' });
 
-export default mongoose.model('Question', questionSchema);
+export default mongoose.models.Question || mongoose.model('Question', questionSchema);

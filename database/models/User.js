@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import dbInit from '../dbInit';
 
 const userSchema = new mongoose.Schema({
 	_id: { type: String, required: true },
@@ -8,6 +7,6 @@ const userSchema = new mongoose.Schema({
 	password: { type: String, required: true },
 	profilePic: { type: String, required: false },
 	isAdmin: { type: Boolean, required: false}
-}, { collection: 'users' });
+}, { collection: 'ocaq-users' });
 
-export default mongoose.model('User', userSchema);
+export default mongoose.models.User || mongoose.model('User', userSchema);

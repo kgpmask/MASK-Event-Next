@@ -4,3 +4,5 @@ const logoutHandler = (req, res) => {
   res.setHeader("Set-Cookie", `sessionId=; path=/;`);
   res.status("201").send("Sayonara");
 };
+
+export default logoutHandler;

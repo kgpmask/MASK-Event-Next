@@ -4,6 +4,6 @@ const resultSchema = new mongoose.Schema({
 	userId: { type: String, required: true },
 	quizId: { type: String, required: true, default: 'OCAQ-2024' },
 	score: { type: Number, required: false }
-}, { collection: 'results' });
+}, { collection: 'ocaq-results' });
 
-export default mongoose.model('Result', resultSchema);
+export default mongoose.models.Result || mongoose.model('Result', resultSchema);

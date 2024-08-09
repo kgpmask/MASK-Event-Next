@@ -20,13 +20,22 @@ function Profile() {
     // getting user data on page load
     useEffect(() => {
         async function fetchData() {
-            const response = await fetch('/api/who-am-i');
-            if (response.status === 204) return router.push('/login');
-            const user = await response.json();
-            if (!user.username) return router.push('/login');
-            setUsername(user.username);
-            setName(user.name);
-            setProfilePic(user.profilePic || '/logo.webp');
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                const user = JSON.parse(storedUser);
+                setUsername(user.username);
+                setName(user.name);
+                setProfilePic(user.profilePic || '/logo.webp');
+            } else {
+                const response = await fetch('/api/who-am-i');
+                if (response.status === 204) return router.push('/login');
+                const user = await response.json();
+                if (!user.username) return router.push('/login');
+                localStorage.setItem('user', JSON.stringify(user));
+                setUsername(user.username);
+                setName(user.name);
+                setProfilePic(user.profilePic || '/logo.webp');
+            }
         }
         fetchData();
     }, []);
@@ -87,24 +96,26 @@ function Profile() {
                 </div>
                 <div className={Styles["bottom-content"]}>
                     <div className={Styles["profile-info"]}>
-                        {editName ? 
-                            <input 
-                                value={bufferName} 
-                                onChange={e => setBufferName(e.target.value.trim())}
-                                style={{ color: 'var(--black-100)', fontSize: '16px' }}
-                                className={Styles["name-input-box"]} 
-                            /> : 
-                            <h1>{name}</h1>
-                        }
-                        <span>{username}</span>
-                        {editName ? 
-                            <><button className={Styles["save-name-btn"]} onClick={async () => {
-                                await submitFunction({ name: bufferName });
-                                setEditName(false);
-                            }}> Save </button> 
-                            <button className={Styles["back-name-btn"]} onClick={() => setEditName(false)}> Back </button></> :
-                            <button className={Styles['edit-name-btn']} onClick={() => setEditName(true)}>Edit</button>
-                        }
+                        <div style={{display:'flex', gap:'10px', alignItems:'center', justifyContent:'center', marginLeft:'20px'}}>
+                            {editName ?
+                                <input
+                                    value={bufferName}
+                                    onChange={e => setBufferName(e.target.value.trim())}
+                                    style={{ color: 'var(--black-100)', fontSize: '16px' }}
+                                    className={Styles["name-input-box"]}
+                                /> :
+                                <h1>Ankan</h1>
+                            }
+                            {editName ?
+                                <><button className={Styles["save-name-btn"]} onClick={async () => {
+                                    await submitFunction({ name: bufferName });
+                                    setEditName(false);
+                                }}> Save </button>
+                                    <button className={Styles["back-name-btn"]} onClick={() => setEditName(false)}> Back </button></> :
+                                <button className={Styles['edit-name-btn']} onClick={() => setEditName(true)}>Edit</button>
+                            }
+                        </div>
+                        <span>chin tapak dum dum</span>
                     </div>
                     <button onClick={handleLogout} className={Styles['logout-btn']} >LogOut</button>
                 </div>

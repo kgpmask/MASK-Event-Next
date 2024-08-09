@@ -9,7 +9,7 @@
 }
 
 .wrapper {
-    height: 70vh;
+    /* height: 70vh; */
     background-color: var(--abyss);
     border-radius: 10px;
 }
@@ -95,6 +95,7 @@
 
 .profile-info {
     color: var(--white);
+    align-items: center;
 }
 
 .profile-info>h1 {
@@ -150,12 +151,7 @@
 
 /* For medium screens */
 @media screen and (max-width: 1024px) {
-    .container {
-        height: auto;
-    }
-    .wrapper {
-        height: auto;
-    }
+
     .block {
         height: 30vh;
         width: 40vw;

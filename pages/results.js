@@ -100,7 +100,7 @@ export default function Results(){
                         {
                             resultsJSON.map((elem)=>{
                                 return (
-                                    <tr>
+                                    <tr key={elem.username}>
                                         <td>{elem.rank}</td>
                                         <td>{elem.name}</td>    
                                         <td>{elem.username}</td>

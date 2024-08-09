@@ -5,13 +5,13 @@
     justify-content: center;
     align-items: center;
     /* background-color: white; */
-    color: black;
+    color: var(--abyss);
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .wrapper {
     height: 70vh;
-    background-color: black;
+    background-color: var(--abyss);
     border-radius: 10px;
 }
 
@@ -48,7 +48,7 @@
     position: absolute;
     top: 14px;
     right: 14px;
-    color: white;
+    color: var(--white);        
     font-size: 1.5rem;
     cursor: pointer;
     z-index: 20;
@@ -71,6 +71,10 @@
     border-radius: 50%;
     border: 3px solid black;
 }
+.profile-img:hover {
+    backdrop-filter: blur(10px);
+    border: 3px solid red;
+}
 
 .camera-icon {
     position: absolute;
@@ -79,7 +83,7 @@
     transform: translate(-50%, -50%);
     opacity: 0;
     transition: opacity 0.3s ease;
-    color: white;
+    color: var(--white);
     font-size: 24px;
 }
 
@@ -99,16 +103,16 @@
 }
 
 .profile-info {
-    color: white;
+    color: var(--white);
 }
 
 .profile-info>h1 {
-    color: white;
+    color: var(--white);
     font-size: 3rem;
 }
 
 .profile-info>span {
-    color: gray;
+    color: var(--light-gray);
     font-size: 1.8rem;
     margin-bottom: 1rem;
 }
@@ -116,8 +120,8 @@
 .logout-btn {
     margin-top: 2rem;
     width: 70%;
-    background-color: white;
-    color: black;
+    background-color: var(--white);
+    color: var(--abyss);
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -143,26 +147,26 @@
 }
 
 .modal-wrapper {
-    background-color: black;
+    background-color: var(--abyss);
     padding: 40px;
     border-radius: 10px;
     width: 30%;
-    border: 2px solid white;
+    border: 2px solid var(--white);
     /* text-align: center; */
 }
 
 .modal-text {
-    color: white;
+    color: var(--white);
     margin-bottom: 20px;
 
 }
 
 .modal-text>p {
-    color: gray;
+    color: var(--light-gray);
 }
 
 .modal-cross {
-    color: white;
+    color: var(--white);
     font-size: 1.5rem;
     cursor: pointer;
     z-index: 20;
@@ -180,8 +184,8 @@
 .modal-cancel-btn,
 .modal-logout-btn {
     width: 70%;
-    background-color: white;
-    color: black;
+    background-color: var(--white);
+    color: var(--abyss);
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -192,8 +196,8 @@
 }
 
 .modal-logout-btn {
-    background-color: red;
-    color: white;
+    background-color: var(--red);
+    color: var(--white);
 }
 
 .profile-pics-array {
@@ -213,7 +217,7 @@
 
 .profile-pics-array .selected,
 .profile-pics-array img:hover {
-    border: solid 2px red;
+    border: solid 2px var(--red);
 
 }
 
@@ -222,8 +226,8 @@
 }
 .edit-profilepic-btn{
     width: 70%;
-    background-color: red;
-    color: white;
+    background-color: var(--red);
+    color: var(--white);
     border: none;
     padding: 10px 20px;
     border-radius: 5px;

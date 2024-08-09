@@ -46,8 +46,8 @@ const SignUpForm = () => {
 		<div className={styles.ContentWrapper}>
 			{" "}
 			<p>
-				Sign Up now to participate in our exciting event.Please fill in the
-				details below to create your account
+				Sign up now to participate in our exciting event. Please fill in the
+				details below to create your account:
 			</p>{" "}
 			<form
 				className={styles.inputWrapper}

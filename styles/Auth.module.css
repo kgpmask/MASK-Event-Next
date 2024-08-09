@@ -1,0 +1,103 @@
+.Wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(0, 0, 0, 0.5);
+  color: aliceblue;
+  width: 500px;
+  gap: 20px;
+  padding: 30px;
+  border-radius: 15px;
+}
+
+.btnWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+  gap: 20px;
+  padding-left: 10px;
+}
+.btnWrapper button {
+  font-size: 15px;
+  width: 40%;
+  height: 100%;
+  height: auto;
+  background-color: var(--white);
+  color: black;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 11px 10px;
+  font-weight: 700;
+}
+button.active {
+  background-color: var(--red);
+  color: var(--white);
+}
+.ContentWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-left: 10px;
+  width: 85%;
+  gap: 20px;
+  margin-top: 5px;
+}
+.ContentWrapper p{
+  font-size: 13px;
+  color:var(--gray);
+}
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 370px;
+  justify-content: center;
+  align-items: center;
+}
+.inputWrapper input {
+  background-color: var(--red);
+  color: var(--white);
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 100%;
+  padding: 10px;
+}
+.inputWrapper button {
+  font-size: 15px;
+  background-color: var(--red);
+  color: var(--white);
+  padding: 1rem;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  font-weight: 700;
+}
+.inputWrapper input {
+  padding: 1.1rem 20px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  font-size: 1.1rem;
+  background-color: var(--shadow-gray);
+  color: var(--off-white);
+  font-weight: 400;
+  width: 100%;
+  box-sizing: border-box;
+}
+@media (max-width: 680px) {
+  .Wrapper {
+    width: 330px;
+  }
+  .btnWrapper {
+    width: 100%;
+    padding: 5px 5px;
+  }
+  .inputWrapper {
+    width: 246px;
+  }
+}

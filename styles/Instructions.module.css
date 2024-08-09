@@ -1,0 +1,31 @@
+.instructions{
+    color: rgb(202, 211, 212);
+}
+
+.instructions h3{
+    font-size: 1.2em;
+    font-weight: 700;
+    color: brown;
+    border-bottom: 2px solid rgb(112, 110, 110);
+}
+
+.instructions li{
+    padding: 0.15em;
+    margin-left: 3em;
+}
+
+.submit-btn {
+	width: 100%;
+	font-size: 18px;
+	font-weight: bold;
+	margin-top: 25px;
+	padding: 14px 20px;
+	background-color: var(--red);
+	outline: none;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	text-align: center;
+	color: var(--off-white);
+	letter-spacing: 1px;
+}

@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import TextArea from "@/components/Base/TextArea";
+import styles from "@/styles/Instructions.module.css"
 
 export default function Instructions(){
     return (
@@ -8,7 +9,7 @@ export default function Instructions(){
             <Head>
                 <title>Website Instructions</title>
             </Head>
-            <TextArea title="Instructions">
+            <TextArea title="Instructions" className={styles["Instructions"]}>
                 <h3>Website Instructions</h3>
                 <ol>
                     <li><p>For a bug-less experience, please do not refresh or go back during the quiz. This might lead to a loss of progress and glitches in the quiz.</p></li>

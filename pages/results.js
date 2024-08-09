@@ -49,7 +49,7 @@ const resultsJSON=[
         username:"KonFaunaa",
         points: 7770,
         rank: null
-    }
+    },
 ];
 
 const assignRank1= (resultsJSON)=>{
@@ -88,11 +88,35 @@ export default function Results(){
     const results=resultsJSON;
     assignRank1(results);
     return (
-        <div id={styles[MAINSTYLE]}>
-            <p>Real results were the friends we made along the way. jk.</p>
-            <div id={styles[RESULTSTYLE]}>
-                           
-            </div>
+        <div>
+            <TextArea title="Results">
+            <h4>Real results were the friends we made along the way. jk.</h4>
+
+                <table className={styles['content-table']}>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            resultsJSON.map((elem)=>{
+                                return (
+                                    <tr>
+                                        <td>{elem.rank}</td>
+                                        <td>{elem.name}</td>    
+                                        <td>{elem.username}</td>
+                                        <td>{elem.points}</td>
+                                    </tr>
+                                );
+                            })
+                        }
+                    </tbody>
+                </table>
+            </TextArea>
         </div>
     )
 }

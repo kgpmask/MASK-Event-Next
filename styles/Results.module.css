@@ -1,0 +1,30 @@
+.content-table{
+    border-collapse: collapse;
+    margin: 2rem 0; 
+    font-size: 0.9em;
+    min-width: 100%;
+}
+
+.content-table thead tr{
+    background-color: #DEDEDE;
+    color: black;
+    font-weight: 400;
+    padding: 0.6em;
+    text-align: center;
+}
+.content-table th,
+.content-table td{
+    padding: 1em 1em;
+    text-align: center;
+}
+
+.content-table tbody tr:nth-of-type(even){
+    background-color: #181818;
+    color: whitesmoke;
+    font-weight: 200;
+}
+.content-table tbody tr:nth-of-type(odd){
+    background-color: #0D0D0D;
+    color: whitesmoke;
+    font-weight: 200;
+}

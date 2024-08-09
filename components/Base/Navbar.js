@@ -2,9 +2,13 @@ import Image from "next/image"
 import Styles from '@/styles/Navbar.module.css'
 import Link from "next/link"
 import { useState, useRef, useEffect } from "react"
+import LogOutModal from '@/components/profile/LogOutModal'
 
 const Navbar = () => {
 	// const [active, setActive] = useState(0); // Initialize active state to the first item
+	const [showLogOutModal, setShowLogOutModal] = useState(false);
+	const [burgerOpen, setBurgerOpen] = useState(false);
+
 	const navItems = [
 		{
 			name: 'Home',
@@ -27,10 +31,14 @@ const Navbar = () => {
 	// const handleClick = (index) => {
 	// 	setActive(index); // Set active state to the currently clicked item
 	// }
-	const [burgerOpen, setBurgerOpen] = useState(false);
+
 	useEffect(() => {
 		document.querySelector('#content-wrap')?.classList.toggle('burger-open');
 	}, [burgerOpen]);
+
+	const handleLogout = () => {
+		setShowLogOutModal(true);
+	};
 
 	return (
 		<div className={Styles["container"]}>
@@ -54,7 +62,7 @@ const Navbar = () => {
 							<Link href={item.href} className={Styles['navlink']} >{item.name}</Link>
 						</li>
 					)}
-					<button className={Styles["list-item"]} >Logout</button>
+					<button className={Styles["list-item"]} onClick={handleLogout} >Logout</button>
 				</ul>
 				<button onClick={() => setBurgerOpen(!burgerOpen)} className={burgerOpen ? Styles["burger"] + ' ' + Styles['open'] : Styles['burger']} >
 					<div className={Styles["patty"]} ></div>
@@ -68,6 +76,7 @@ const Navbar = () => {
 					)}
 				</div>
 			</div>
+			{showLogOutModal && <LogOutModal showModal={setShowLogOutModal} />}
 		</div>
 	)
 }

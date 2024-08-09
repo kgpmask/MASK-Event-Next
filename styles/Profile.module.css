@@ -1,5 +1,6 @@
 .container {
-    height: 80vh; /*change to fit */
+    height: 80vh;
+    /*change to fit */
     position: relative;
     display: flex;
     justify-content: center;
@@ -9,7 +10,7 @@
 }
 
 .wrapper {
-    /* height: 70vh; */
+
     background-color: var(--abyss);
     border-radius: 10px;
 }
@@ -44,7 +45,7 @@
     position: absolute;
     top: 14px;
     right: 14px;
-    color: var(--white);        
+    color: var(--white);
     font-size: 1.5rem;
     cursor: pointer;
     z-index: 20;
@@ -103,12 +104,7 @@
     font-size: 3rem;
 }
 
-@media screen and (max-width: 1024px) {
-    
-}
-@media screen and (max-width: 768px) {
-    
-}
+
 .profile-info>span {
     color: var(--light-gray);
     font-size: 1.8rem;
@@ -130,19 +126,28 @@
 }
 
 /* Add media queries for responsiveness */
+@media screen and (min-width: 1441px) {
+    .wrapper {
+        height: 65vh;
+    }
+
+}
 
 /* For larger screens */
-@media screen and (min-width: 1024px) {
+@media screen and (min-width: 1025px) and (max-width: 1440px) {
     .container {
         height: 80vh;
     }
+
     .wrapper {
-        height: 70vh;
+        height: 65vh;
     }
+
     .block {
         height: 25vh;
-        width: 30vw;
+        width: 40vw;
     }
+
     .profile-img {
         height: 12vw;
         width: 12vw;
@@ -153,34 +158,50 @@
 @media screen and (max-width: 1024px) {
 
     .block {
-        height: 30vh;
-        width: 40vw;
+        /* height: 30vh; */
+        width: 50vw;
     }
+
+    .bottom-content {
+        top: 30%;
+        margin: 5rem 0;
+    }
+
     .profile-img {
         height: 15vw;
         width: 15vw;
     }
+
     .profile-info>h1 {
-        font-size: 2.5rem;
-    }  
+        font-size: 2.2rem;
+    }
+
     .profile-info>span {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
 }
 
 /* For tablets */
 @media screen and (max-width: 768px) {
     .block {
-        height: 35vh;
+        /* height: 35vh; */
         width: 50vw;
     }
-    .profile-img {
-        height: 20vw;
-        width: 20vw;
+
+    .bottom-content {
+        top: 40%;
+        margin: 5rem 0;
     }
+
+    .profile-img {
+        height: 19vw;
+        width: 19vw;
+    }
+
     .profile-info>h1 {
         font-size: 2rem;
-    }  
+    }
+
     .profile-info>span {
         font-size: 1.5rem;
     }
@@ -189,19 +210,24 @@
 /* For mobile devices */
 @media screen and (max-width: 480px) {
     .block {
-        height: 40vh;
-        width: 60vw;
+        /* height: 40vh; */
+        width: 80vw;
     }
+
+    .bottom-content {
+        top: 30%;
+        margin: 4rem 0;
+    }
+
     .profile-img {
         height: 25vw;
         width: 25vw;
     }
-    .wrapper {
-        padding: 1rem;
-    }
+
     .profile-info>h1 {
         font-size: 1.5rem;
     }
+
     .profile-info>span {
         font-size: 1.2rem;
     }
@@ -209,20 +235,25 @@
 
 /* For very small devices */
 @media screen and (max-width: 320px) {
-    .block {
-        height: 45vh;
-        width: 70vw;
+    .bottom-content {
+        top: 30%;
+        margin: 4rem 0;
     }
+
+    .block {
+        /* height: 45vh; */
+        width: 80vw;
+    }
+
     .profile-img {
         height: 30vw;
         width: 30vw;
     }
-    .wrapper {
-        padding: 1rem;
-    }
+
     .profile-info>h1 {
         font-size: 1.2rem;
     }
+
     .profile-info>span {
         font-size: 1rem;
     }
@@ -362,7 +393,8 @@
     margin: 1rem 0;
     margin-right: 10px;
 }
-.save-name-btn{
+
+.save-name-btn {
     /* width: 70%; */
     background-color: var(--red);
     color: var(--white);
@@ -375,8 +407,9 @@
     margin: 1rem 0;
     margin-right: 5px;
 }
+
 .edit-name-btn,
-.back-name-btn{
+.back-name-btn {
     /* width: 70%; */
     background-color: var(--white);
     color: var(--abyss);
@@ -389,7 +422,8 @@
     margin: 1rem 0;
     margin-right: 5px;
 }
-.name-input-box{
+
+.name-input-box {
     background-color: var(--grey);
     color: var(--black);
     border: 1px solid var(--red);

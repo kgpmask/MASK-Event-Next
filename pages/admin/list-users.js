@@ -39,6 +39,14 @@ export default function ListUsersPage() {
   return (
     <>
       <div className={styles["users-list"]}>
+        {/*map the users here*/}
+        <UserCard />
+        <UserCard />
+        <UserCard />
+        <UserCard />
+        <UserCard />
+        <UserCard />
+        <UserCard />
         <UserCard />
       </div>
     </>

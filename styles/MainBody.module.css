@@ -1,0 +1,269 @@
+.container {
+    position: relative;
+    margin: 0 5rem;
+    height: 75vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    border-radius: 30px;
+    background: black;
+    padding: 6rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.round {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    line-height: 29.16px;
+}
+
+.round>h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: aliceblue;
+}
+
+.timer>h1 {
+    color: var(--red);
+}
+
+
+.questions {
+    margin: 40px 0;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 19.44px;
+    text-align: center;
+    color: var(--white);
+}
+
+.options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 1.3rem;
+}
+
+.option-button {
+    padding: 10px 20px;
+    background-color: var(--off-white);
+    outline: none;
+    border: none;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.option-button:hover {
+    box-shadow: 0 0 14px 0 var(--off-white);
+}
+
+.option-numbering {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    margin: 0 20px;
+    color: var(--white);
+    background-color: black;
+}
+
+.submit {
+    display: flex;
+    justify-content: center;
+}
+
+.submit-btn {
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 25px;
+    padding: 14px 20px;
+    background-color: var(--red);
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    color: var(--off-white);
+    letter-spacing: 1px;
+}
+
+.submit-btn:hover {
+    box-shadow: 0 0 14px 0 var(--red);
+}
+
+.start-quiz {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.start-quiz-button {
+    padding: 14px 20px;
+    width: 100%;
+    background-color: var(--off-white);
+    outline: none;
+    border: none;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.start-quiz-button:hover {
+    box-shadow: 0 0 14px 0 var(--off-white);
+}
+
+.start-quiz-button>span {
+    margin-left: 10px;
+}
+
+.start-quiz-nav {
+    width: 50%;
+    padding: 14px 20px;
+    background-color: grey;
+    outline: none;
+    border: none;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.text-area {
+    padding: 10px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    font-size: 16px;
+    background-color: var(--shadow-gray);
+    color: var(--off-white);
+    width: 100%;
+    resize: none;
+}
+.answered-option{
+    width: 100%;
+    text-align: center;
+}
+@media screen and (max-width: 500px) {
+    .start-quiz {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .start-quiz-nav {
+        width: 100%;
+    }
+}
+
+/* Media query for screens smaller than 600px */
+@media screen and (max-width: 768px) {
+    .container {
+        height: 100vh;
+        margin: 0 1rem;
+    }
+
+    .card {
+        padding: 3.8rem;
+    }
+
+    .options {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .submit-btn {
+        width: 100%;
+    }
+}
+
+/* Media query for screens smaller than 900px */
+@media screen and (max-width: 900px) {
+    .container {
+        margin: 0 2rem;
+    }
+
+    .submit-btn {
+        width: 80%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .option-button {
+        padding: 10px 10px;
+    }
+
+    .option-numbering {
+        height: 30px;
+        width: 30px;
+    }
+
+    .round>h2 {
+        font-size: 20px;
+    }
+
+    .questions {
+        font-size: 18px;
+    }
+
+    .options {
+        gap: 1rem;
+    }
+
+    .submit-btn {
+        font-size: 16px;
+    }
+
+}
+
+@media screen and (max-width: 400px) {
+    .header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .option-button {
+        padding: 10px 5px;
+    }
+
+    .option-numbering {
+        height: 25px;
+        width: 25px;
+    }
+
+    .round>h2 {
+        font-size: 18px;
+    }
+
+    .questions {
+        font-size: 16px;
+    }
+
+    .options {
+        gap: 0.5rem;
+    }
+
+    .submit-btn {
+        font-size: 14px;
+    }
+
+    .option-numbering {
+        margin: 0 10px;
+    }
+
+}

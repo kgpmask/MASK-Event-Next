@@ -35,3 +35,7 @@ body {
   color: var(--light-gray);
   font-family: Ubuntu, Roboto, Arial, Open Sans, sans-serif;
 }
+
+.burger-open {
+  display: none;
+}

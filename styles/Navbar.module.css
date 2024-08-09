@@ -23,7 +23,6 @@
   font-size: 1rem;
   font-weight: bold;
   color: var(--white);
-  letter-spacing: 1px;
   cursor: pointer;
   gap: 10px;
 }
@@ -37,16 +36,16 @@
   border-radius: 5px;
   padding: 7px 40px;
   margin-left: 15px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 400;
   color: var(--white);
   border: none;
-  letter-spacing: 1px;
   cursor: pointer;
 }
 
 .logo {
   border-radius: 50%;
+  margin-left: -20px;
 }
 
 .navlink {
@@ -216,9 +215,5 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-  }
-
-  .burger-open > *:not(.hamburger-menu, ) {
-    display: none;
   }
 }

@@ -19,23 +19,27 @@ export default function UserCard({ user }) {
 
   return (
     <div className={styles["card"]}>
-      <div className={styles["userInfo"]}>
-        <h3>Ankan Saha</h3>
-        <p>ankantest</p>
-      </div>
-      <div className={styles["buttonContainer"]}>
-        <button
-          onClick={handleEdit}
-          className={`${styles["button"]} ${styles["edit-btn"]}`}
-        >
-          Edit
-        </button>
-        <button
-          onClick={handleDelete}
-          className={`${styles["button"]} ${styles["delete-btn"]}`}
-        >
-          Delete
-        </button>
+      <div className={styles["user-img"]}></div>
+      <div className={styles["user"]}>
+        <div className={styles["user-info"]}>
+          <h3>Ankan Saha</h3>
+          <p>ankantest</p>
+        </div>
+
+        <div className={styles["buttonContainer"]}>
+          <button
+            onClick={handleEdit}
+            className={`${styles["button"]} ${styles["edit-btn"]}`}
+          >
+            Edit
+          </button>
+          <button
+            onClick={handleDelete}
+            className={`${styles["button"]} ${styles["delete-btn"]}`}
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );

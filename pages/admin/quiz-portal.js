@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import ForbiddenCard from "@/components/admin/ForbiddenCard";
 import AdminContent from "@/components/admin/AdminContent";
 import QuestionNavigator from "@/components/admin/QuestionNavigator";
+import styles from "@/styles/Admin.module.css";
 
 import socket from "@/socket";
 
@@ -12,12 +13,15 @@ export default function QuizPortalPage() {
   const [hasChecked, setHasChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [disabled, setDisabled] = useState(false);
-
-  // Socket Connection state
-  const [socketConnected, setSocketConnected] = useState(false);
-  const [socketTransport, setSocketTransport] = useState("N/A");
+  const [questionState, setQuestionState] = useState("Start Question");
 
   const [questions, setQuestions] = useState(null);
+
+  //socket stuff tum log karlena tysm
+
+  const toggleQuestionState = () => {
+    setQuestionState("Timer Started");
+  };
 
   useEffect(() => {
     setHasChecked(localStorage.getItem("is-admin"));
@@ -25,31 +29,10 @@ export default function QuizPortalPage() {
   }, []);
 
   useEffect(() => {
-    // Needs to be logged in
-    if (!localStorage.getItem("username")) {
-      router.push("/login");
-      return;
-    }
-
-    const onSocketConnect = () => {
-      setSocketConnected(true);
-      setSocketTransport(socket.io.engine.transport.name);
-    };
-
-    const onSocketDisconnect = () => {
-      setSocketConnected(false);
-      setSocketTransport("N/A");
-    };
-
-    if (socket.connected) onSocketConnect();
-
-    socket.on("connect", onSocketConnect);
-    socket.on("disconnect", onSocketDisconnect);
-
-    return () => {
-      socket.off("connect", onSocketConnect);
-      socket.off("disconnect", onSocketDisconnect);
-    };
+    //if (!localStorage.getItem("username")) {
+    //  router.push("/login");
+    //  return;
+    //}
   }, [router]);
 
   useMemo(() => {
@@ -91,14 +74,12 @@ export default function QuizPortalPage() {
         setQuestions(JSON.parse(localStorage.getItem("questions")));
       } catch (err) {
         console.error("Error fetching questions:", err);
-        alert("Something went wrong while fetching questions.");
+        //alert("Something went wrong while fetching questions.");
       }
     };
 
     fetchQuestions();
   }, [questions]);
-
-  if (!isAdmin) return <ForbiddenCard />;
 
   const startQuestion = async (question) => {
     try {
@@ -115,33 +96,52 @@ export default function QuizPortalPage() {
       console.log(result);
 
       if (response.status < 400) {
-        socket.emit("question", question);
+        //socket.emit("question", question);
         setDisabled(true);
         setTimeout(
           () => setDisabled(false),
           question.type === "mcq" ? 15000 : 25000
         );
       }
-    } catch (err) {
-      console.error("Error starting question:", err);
+    } catch (error) {
+      console.error("Error starting question:", error);
     }
   };
 
+  //if (!isAdmin) return <ForbiddenCard />;
+
   return (
     <>
-      <h1>Quiz Portal</h1>
-
-      <p>Quiz in progress:</p>
-
-      {questions ? (
-        <QuestionNavigator
-          questions={questions}
-          startQuestion={startQuestion}
-          disabled={disabled}
-        />
-      ) : (
-        <p>Fetching Questions...</p>
-      )}
+      <div className={styles["questions-navigator"]}>
+        <div className={styles["question-info"]}>
+          <div className={styles["round-info"]}>
+            <p>Round 2</p>
+            <h2>Shiri Masu Ka?</h2>
+            <p>Question #5</p>
+          </div>
+          <div className={styles["time-left"]}>
+            <p>Time Left:</p>
+            <h2 className={styles["timer"]}>00:00</h2>
+          </div>
+        </div>
+        <div className={styles["question"]}>
+          <p>
+            In the anime "Naruto," what is the name of Naruto's signature jutsu
+            that creates multiple copies of himself?
+          </p>
+          <div className={styles["quiz-nav-buttons"]}>
+            <button className={styles["disabled"]}>Previous</button>
+            <button
+              className={styles["start-question"]}
+              onClick={toggleQuestionState}
+            >
+              {questionState}
+            </button>
+            <button>Next</button>
+          </div>
+          <button className={styles["end-quiz"]}>End Quiz</button>
+        </div>
+      </div>
     </>
   );
 }

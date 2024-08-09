@@ -1,7 +1,22 @@
 .instructions{
-    color: whitesmoke;
+    color: rgb(202, 211, 212);
 }
 
 .instructions h3{
-    font-weight: 200;
+    font-size: 1.1em;
+    font-weight: 700;
+    font-style: italic;
+    color: brown;
+    border-bottom: 2px solid rgb(112, 110, 110);
+}
+
+.instructions li{
+    padding: 0.15em;
+}
+
+.instructions >ol >li:nth-of-type(odd){
+    color: rgb(166, 162, 162);
+}
+.instructions >ol >li:nth-of-type(even){
+    color: rgb(222, 137, 137);
 }

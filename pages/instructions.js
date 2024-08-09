@@ -9,7 +9,8 @@ export default function Instructions(){
             <Head>
                 <title>Website Instructions</title>
             </Head>
-            <TextArea title="Instructions" className={styles["Instructions"]}>
+            <TextArea title="Instructions">
+                <div className={styles["instructions"]}>
                 <h3>Website Instructions</h3>
                 <ol>
                     <li><p>For a bug-less experience, please do not refresh or go back during the quiz. This might lead to a loss of progress and glitches in the quiz.</p></li>
@@ -38,6 +39,7 @@ export default function Instructions(){
                     <li><p>Both Japanese and English names of shows will be valid. Eg. My Hero Academia and Boku no Hero Academia are both valid answers.</p></li>
                     <li><p>Popular short names of shows will also be valid. Eg. MHA or BNHA is accepted as the answer</p></li>
                 </ol>
+                </div>
             </TextArea>
 
             {/* Add go back button outside instructions.*/}

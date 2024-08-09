@@ -13,3 +13,19 @@
     padding: 0.15em;
     margin-left: 3em;
 }
+
+.submit-btn {
+	width: 100%;
+	font-size: 18px;
+	font-weight: bold;
+	margin-top: 25px;
+	padding: 14px 20px;
+	background-color: var(--red);
+	outline: none;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	text-align: center;
+	color: var(--off-white);
+	letter-spacing: 1px;
+}

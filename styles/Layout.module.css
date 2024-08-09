@@ -2,7 +2,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	min-height: calc(100vh - 236px);
+	min-height: calc(100vh - 196px);
 }
 
 @media screen and (max-width: 1100px) {

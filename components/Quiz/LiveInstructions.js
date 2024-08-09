@@ -1,14 +1,20 @@
+import Head from "next/head";
 import Link from "next/link";
-import TextArea from "../Base/TextArea";
+import TextArea from "@/components/Base/TextArea";
+import styles from "@/styles/Instructions.module.css"
 
-export default function LiveInstructions ({ buttonCallback }) {
-	return (
-		<>
-			<TextArea title="Instructions">
+export default function Instructions({ buttonCallback }){
+    return (
+        <>
+            <Head>
+                <title>OCAQ-Instructions</title>
+            </Head>
+            <TextArea title="Instructions">
+                <div className={styles["instructions"]}>
                 <h3>Website Instructions</h3>
                 <ol>
                     <li><p>For a bug-less experience, please do not refresh or go back during the quiz. This might lead to a loss of progress and glitches in the quiz.</p></li>
-                    <li><p>Please ensure that you have a stable internet connection during the quiz. If the internet connection is lost, you&apos;ll be forced to reload, which is undesirable.</p></li>
+                    <li><p>Please ensure that you have a stable internet connection during the quiz. If the internet connection is lost, you'll be forced to reload, which is undesirable.</p></li>
                     <li><p>There are two types of questions: MCQs and text-based. Only the answer part will be displayed on the website.</p></li>
                     <li><p>Each question is scored out of 100 points, except for the last round.</p></li>
                 </ol>
@@ -33,8 +39,10 @@ export default function LiveInstructions ({ buttonCallback }) {
                     <li><p>Both Japanese and English names of shows will be valid. Eg. My Hero Academia and Boku no Hero Academia are both valid answers.</p></li>
                     <li><p>Popular short names of shows will also be valid. Eg. MHA or BNHA is accepted as the answer</p></li>
                 </ol>
-				<button className='light' onClick={buttonCallback}> Start Quiz </button>
+                </div>
+                <button className={styles['submit-btn']} onClick={buttonCallback}>Start Quiz</button>
             </TextArea>
-		</>
-	)
+
+        </>
+    )
 }

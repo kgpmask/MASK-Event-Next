@@ -14,16 +14,16 @@ const submitAnswerHandler = async (req, res) => {
 		(await Session.findById(req.cookies.sessionId))?.userId
 	);
 	const { questionNo, response } = req.body;
-	// console.log("REQ BODY:", req.body, handlerContext);
+	console.log("REQ BODY:", req.body, handlerContext);
+	if (response === '') return res.status(400).send("Empty Response");
 
-	if (handlerContext.currentQuestion !== questionNo)
+	if (Number(process.env.QUES_NO) !== questionNo)
 		return (
 			console.log({
-				serverQuestionNo: handlerContext.currentQuestion,
+				serverQuestionNo: Number(process.env.QUES_NO),
 				clientQuestionNo: questionNo,
 			}) || res.status(400).send("Questions not in sync")
 		);
-
 	handlerContext.cachedRecords.push({
 		quizId: handlerContext.quizId,
 		userId: user._id,

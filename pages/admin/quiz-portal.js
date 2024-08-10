@@ -109,7 +109,7 @@ export default function QuizPortalPage() {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					questionNo: currentQ.toString(),
+					questionNo: question.questionNo,
 					type: question.type,
 				}),
 			});
@@ -127,7 +127,7 @@ export default function QuizPortalPage() {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
-						questionNo: currentQ.toString(),
+						questionNo: question.questionNo,
 						type: question.type,
 					}),
 				});

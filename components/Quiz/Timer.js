@@ -1,8 +1,14 @@
 import Styles from '@/styles/Quiz.module.css'
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 export default function Timer({ time, onTimeEnd }) {
 	const [timeLeft, setTimeLeft] = useState(time);
+
+	useEffect(() => {
+		if (!timeLeft && onTimeEnd) {
+			onTimeEnd();
+		}
+	}, [timeLeft])
 
 	useMemo(() => setTimeout(() => setTimeLeft((timeLeft || 1) - 1), 1_000), [timeLeft]);
 

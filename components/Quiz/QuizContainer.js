@@ -8,9 +8,9 @@ import WaitingMessage from './WaitingMessage';
 export default function QuizContainer({ question, round, time, submitAnswer, updateAnswer }) {
 	const [answer, setAnswer] = useState('');
 
-	const submitHandler = () => {
+	const submitHandler = (timeout) => {
 		console.log("ANSWER:", answer)
-		return submitAnswer();
+		return submitAnswer({ timeout });
 	};
 
 	useEffect(() => {
@@ -27,13 +27,13 @@ export default function QuizContainer({ question, round, time, submitAnswer, upd
 						<p className={Styles['round-name']}>Shiri Masu Ka?</p>
 						<p className={Styles['question-no']}>Question {question.questionNo}</p>
 					</div>
-					<Timer time={time} onTimeEnd={submitHandler} />
+					<Timer time={time} onTimeEnd={() => submitHandler(true)} />
 				</div>
 				<div className={Styles['content']}>
 					<p className={Styles['question-text']}>{question.question}</p>
 					{question.type === 'mcq' ? <OptionContainer selected={answer} setSelected={setAnswer} options={question.options} /> : <TextInput text={answer} setText={setAnswer} />}
 				</div>
-				<button className={Styles['submit-btn']} onClick={submitHandler}>Submit</button>
+				<button className={Styles['submit-btn']} onClick={() => submitHandler(false)}>Submit</button>
 			</div>
 		</div>
 	);

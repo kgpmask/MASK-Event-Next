@@ -17,21 +17,20 @@ const SignInForm = () => {
 				username,
 				password,
 			});
-			if (response.status === 400) {
-				setUsername("");
-				setPassword("");
-				alert("Incorrect Username or Password. Please try again");
-				return;
-			}
-			console.log(response)
 			const res = response.data;
-			console.log(res);
 			localStorage.setItem("username", res.username);
 			localStorage.setItem("name", res.name);
 			alert("Sucessfully Logged In");
 			router.push("/");
 		} catch (error) {
-			console.log(error);
+			if(error.request.status === 404) {
+				setUsername("");
+				setPassword("");
+				alert("Incorrect Username or Password. Please try again");
+				return;
+			} else {
+				alert("Internal Server Error");
+			}
 		}
 	};
 	return (

@@ -29,16 +29,17 @@ const SignUpForm = () => {
 				confirmPass,
 			});
 
-			if (response.status === 400) {
-				alert("Username already in use.");
-				return;
-			}
 			localStorage.setItem("username", username);
 			localStorage.setItem("name", name);
 			alert(`Sucessfully Logged In as ${name}`);
 			router.push("/");
 		} catch (error) {
-			console.log(error);
+			if(error.request.status === 400) {
+				alert("Username already in use!");
+				return;
+			} else {
+				alert("Internal Server Error");
+			}
 		}
 	};
 	return (

@@ -80,7 +80,7 @@ const Navbar = () => {
 					{navItems.map((item, index) =>
 						<li key={index}
 						>
-							<Link href={item.href} className={Styles['burger-link']} >{item.name}</Link>
+							<Link href={item.href} className={Styles['burger-link']} onClick={() => setBurgerOpen(false)} >{item.name}</Link>
 						</li>
 					)}
 				</div>

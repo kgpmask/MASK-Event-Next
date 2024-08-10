@@ -1,51 +1,54 @@
 import Head from "next/head";
 import styles from "@/styles/Results.module.css";
 import TextArea from "@/components/Base/TextArea";
+import MessageCard from "@/components/Quiz/MessageCard";
+import { useState } from "react";
+import { useMemo } from "react";
 
-const resultsJSON=[
-    {
-        name: "D. Manideep",
-        username: "DMan",
-        points: 2000,
-        rank: null
-    },
-    {
-        name:"Sora",
-        username:"AkaChan",
-        points: 5000,
-        rank: null
-    },
-    {
-        name:"Sakura Miko",
-        username:"Mikochi",
-        points: 3535,
-        rank: null
-    },
-    {
-        name:"Suisei Hoshimachi",
-        username:"Sui-chan",
-        points: 5000,
-        rank: null
-    },
-    {
-        name:"Hakos Baelz",
-        username:"PPTaro",
-        points: 7770,
-        rank: null
-    },
-    {
-        name:"Oozora Subaru",
-        username:"ThaSun",
-        points: 4000,
-        rank: null
-    },
-    {
-        name:"Ceres Fauna",
-        username:"KonFaunaa",
-        points: 7770,
-        rank: null
-    },
-];
+// const resultsJSON=[
+//     {
+//         name: "D. Manideep",
+//         username: "DMan",
+//         points: 2000,
+//         rank: null
+//     },
+//     {
+//         name:"Sora",
+//         username:"AkaChan",
+//         points: 5000,
+//         rank: null
+//     },
+//     {
+//         name:"Sakura Miko",
+//         username:"Mikochi",
+//         points: 3535,
+//         rank: null
+//     },
+//     {
+//         name:"Suisei Hoshimachi",
+//         username:"Sui-chan",
+//         points: 5000,
+//         rank: null
+//     },
+//     {
+//         name:"Hakos Baelz",
+//         username:"PPTaro",
+//         points: 7770,
+//         rank: null
+//     },
+//     {
+//         name:"Oozora Subaru",
+//         username:"ThaSun",
+//         points: 4000,
+//         rank: null
+//     },
+//     {
+//         name:"Ceres Fauna",
+//         username:"KonFaunaa",
+//         points: 7770,
+//         rank: null
+//     },
+// ];
 
 const assignRank1= (resultsJSON)=>{
     //Ranks will look like 1,1,2,3,4
@@ -75,12 +78,28 @@ const assignRank2= (resultsJSON)=>{
 
 
 export default function Results(){
-    {/* <Head>
-        <title>Results</title>
-        <meta name="description" content="Check your results here!" />        
-    </Head> */}
+    const [results, setResults] = useState(null);
 
-    const results=resultsJSON;
+    const fetchResults = async () => {
+        try {
+            const adminResponse = await fetch('/api/check-admin');
+            const isAdmin = adminResponse.json();
+            if(isAdmin) await fetch('/api/live/evaluate-answer');
+            const response = await fetch('/api/live/get-results');
+            const data = await response.json();
+            console.log(data)
+            setResults(data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    useMemo(() => {
+        if(!results) fetchResults();
+    }, [results]);
+
+    if (!results || !results.length) return <MessageCard message={'Results are yet to be evaluated. Try again later.'} />;
+
     assignRank1(results);
     return (
         <div>
@@ -98,7 +117,7 @@ export default function Results(){
                     </thead>
                     <tbody>
                         {
-                            resultsJSON.map((elem)=>{
+                            results.map((elem)=>{
                                 return (
                                     <tr key={elem.username}>
                                         <td>{elem.rank}</td>

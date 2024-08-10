@@ -17,7 +17,7 @@ const editDistance = (a, b) => {
 
 const evaluatedPoints = (response, solutions) => {
 	const normalisedDistances = solutions.map(answer => {
-		const minDistance = levenshteinCompare(response.toLowerCase(), answer.toLowerCase());
+		const minDistance = editDistance(response.toLowerCase(), answer.toLowerCase());
 		return minDistance / answer.length;
 	}).sort((a, b) => -(a < b))[0];
 	if (normalisedDistances === 0) return 200;
@@ -36,3 +36,5 @@ const evaluateAnswer = (response, answer, type) => {
 			return 0;
 	}
 }
+
+export default evaluateAnswer;

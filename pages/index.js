@@ -1,9 +1,5 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
-import Styles from "@/styles/Home.module.css";
-import MainBody from "../components/MainBody";
-import TextArea from "@/components/Base/TextArea";
-import Profile from "@/pages/profile";
 
 const inter = Inter({ subsets: ["latin"] });
 

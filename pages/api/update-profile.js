@@ -1,9 +1,10 @@
 import User from "@/database/models/User";
+import checkAdmin from "@/utils/checkAdmin";
 
 const updateProfileHandler = async (req, res) => {
   const { username } = req.body;
 
-  if (!req.cookies.isAdmin) {
+  if (!checkAdmin(req.cookies.sessionId)) {
     const user = await User.findById(
       (
         await Session.findById(req.cookies.sessionId)

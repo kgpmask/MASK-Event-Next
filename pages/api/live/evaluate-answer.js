@@ -6,9 +6,10 @@ import Question from "@/database/models/Question";
 import Record from "@/database/models/Record";
 import Result from "@/database/models/Result";
 import User from "@/database/models/User";
+import checkAdmin from "@/utils/checkAdmin";
 
 const evaluateAnswerHandler = async (req, res) => {
-  if (!req.cookies.isAdmin)
+  if (!checkAdmin(req.cookies.sessionId))
     return res.status(401).send("You are NOT an admin. Go away immediately.");
 
   const quizId = handlerContext.quizId;

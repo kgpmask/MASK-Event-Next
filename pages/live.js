@@ -40,40 +40,34 @@ const LivePage = () => {
   const router = useRouter();
 
   const questionHandler = (question) => {
+	console.log(question);
     if (state !== "waiting") return;
 
     const type = question.type;
     setQuestion(question);
     answer.current = null;
 
-    setTimeRemaining(type === "mcq" ? 10 : 20);
+    setTimeRemaining(type === "mcq" ? 15 : 25);
     setState("attempting");
   };
 
   const submissionHandler = useCallback((args) => {
-    // const questionNo = question.questionNo;
-    // const response = answer.current;
+    const questionNo = question.questionNo.toString();
+    const response = answer.current;
 
-    // // console.log({questionNo, response});
+    // console.log({questionNo, response});
 
-    // fetch('/api/live/save-response', {
-    // 	method: 'POST',
-    // 	headers: { 'Content-Type': 'application/json' },
-    // 	body: JSON.stringify({ questionNo, response })
-    // }).then(res => res.text()).then(res => {
-    // 	// console.log(res);
-    // 	setTimeRemaining(0);
-    // 	setQuestion(null);
-    // 	setState(args?.timeover ? 'timeover' : 'submitted');
-    // });
-
-    console.log("Wah bete");
+    fetch('/api/live/submit-answer', {
+    	method: 'POST',
+    	headers: { 'Content-Type': 'application/json' },
+    	body: JSON.stringify({ questionNo, response })
+    }).then(res => res.text()).then(res => {
+    	// console.log(res);
+    	setTimeRemaining(0);
+    	setQuestion(null);
+    	setState(args?.timeover ? 'timeover' : 'submitted');
+    });
   });
-
-  const sampleQuestion = {
-    question: "Who tf made this question",
-    questionNo: 1,
-  };
 
   const timeoutSubmit = useCallback(() => {
     if (state !== "attempting") return;
@@ -81,7 +75,7 @@ const LivePage = () => {
   });
 
   useEffect(() => {
-    // if (!localStorage.getItem('username')) router.push('/login');
+    if (!localStorage.getItem('username')) router.push('/login');
 
     const onSocketConnect = () => {
       setSocketConnected(true);
@@ -143,10 +137,10 @@ const LivePage = () => {
       case "attempting":
         setRenderComponent(
           <QuizContainer
-            question={sampleQuestion}
-            round={1}
+            question={question}
             time={timeRemaining}
             submitAnswer={submissionHandler}
+			updateAnswer={(val) => answer.current = val}
           />
         );
         break;

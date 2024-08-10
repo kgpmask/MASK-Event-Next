@@ -1,5 +1,5 @@
-import Navbar from "@/components/Base/Navbar";
-import Footer from "@/components/Base/Footer";
+import Navbar from "@/components/Base/Navbar.js";
+import Footer from "@/components/Base/Footer.js";
 import Styles from "@/styles/Layout.module.css";
 
 export default function Home({ children }) {

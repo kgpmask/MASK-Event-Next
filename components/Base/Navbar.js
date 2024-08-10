@@ -3,7 +3,7 @@ import Styles from '@/styles/Navbar.module.css'
 import Link from "next/link"
 import { useState, useRef, useEffect } from "react"
 import {useRouter} from "next/router"
-import LogOutModal from '@/components/profile/LogOutModal'
+import LogOutModal from '@/components/profile/LogOutModal.js'
 
 const Navbar = () => {
 	// const [active, setActive] = useState(0); // Initialize active state to the first item

@@ -1,7 +1,7 @@
 const handlerContext = {
 	quizStatus: 'started',
 	quizId: process.env.QUIZ_ID,
-	currentQuestion: null,
+	currentQuestion: process.env.QUES_NO,
 	cachedRecords: []
 };
 

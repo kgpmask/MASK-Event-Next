@@ -3,7 +3,7 @@ import Styles from '@/styles/Navbar.module.css'
 import Link from "next/link"
 import { useState, useRef, useEffect } from "react"
 import {useRouter} from "next/router"
-import LogOutModal from '@/components/profile/LogOutModal'
+import LogOutModal from '@/components/profile/LogOutModal.js'
 
 const Navbar = () => {
 	// const [active, setActive] = useState(0); // Initialize active state to the first item
@@ -43,7 +43,7 @@ const Navbar = () => {
 	};
 
 	useEffect(() => {
-		if(document.cookie.split('sessionId=').pop().split(';')[0] === '') return localStorage.clear() || setUsername('');
+		if(!document.cookie.includes('sessionId=') || document.cookie.split('sessionId=').pop().split(';')[0] === '') return localStorage.clear() || setUsername('');
 		const username = localStorage.getItem('username');
 		if(!username) setUsername('');
 		else setUsername(localStorage.getItem('name') || 'User');
@@ -80,7 +80,7 @@ const Navbar = () => {
 					{navItems.map((item, index) =>
 						<li key={index}
 						>
-							<Link href={item.href} className={Styles['burger-link']} >{item.name}</Link>
+							<Link href={item.href} className={Styles['burger-link']} onClick={() => setBurgerOpen(false)} >{item.name}</Link>
 						</li>
 					)}
 				</div>

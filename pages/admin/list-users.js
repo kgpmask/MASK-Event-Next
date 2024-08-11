@@ -7,6 +7,7 @@ import styles from "@/styles/Admin.module.css";
 
 export default function ListUsersPage() {
   const [isAdmin, setIsAdmin] = useState(false);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const checkAdminStatus = async () => {
@@ -33,21 +34,29 @@ export default function ListUsersPage() {
 
     checkAdminStatus();
   }, []);
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch("/api/users");
+      const usersData = await response.json();
+      setUsers(usersData);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+  useEffect(() => {
+    if (isAdmin) {
+      fetchUsers();
+    }
+  }, [isAdmin]);
 
   //if (!isAdmin) return <ForbiddenCard />;
 
   return (
     <>
       <div className={styles["users-list"]}>
-        {/*map the users here*/}
-        <UserCard />
-        <UserCard />
-        <UserCard />
-        <UserCard />
-        <UserCard />
-        <UserCard />
-        <UserCard />
-        <UserCard />
+        {users.map((user) => (
+          <UserCard key={user.id} user={user} fetchUsers={fetchUsers} />
+        ))}
       </div>
     </>
   );

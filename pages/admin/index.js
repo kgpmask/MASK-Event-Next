@@ -33,7 +33,7 @@ export default function AdminPage() {
     checkAdminStatus();
   }, []);
 
-  //if (!isAdmin) return <ForbiddenCard />;
+  if (!isAdmin) return <ForbiddenCard />;
 
   return (
     <>

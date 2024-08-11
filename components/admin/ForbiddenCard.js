@@ -10,7 +10,7 @@ export default function ForbiddenCard() {
 
   return (
     <div className={styles["forbidden-container"]}>
-      <h1>Forbidden Resource (×_×;）</h1>
+      <h1>Forbidden Resource (×_×;)</h1>
       <p>You do not have permission to access this page.</p>
       <button onClick={handleGoHome} className={styles["home-redirect"]}>
         Go to Main Website

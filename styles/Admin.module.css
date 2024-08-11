@@ -111,9 +111,13 @@
 }
 
 .edit-btn {
-  background-color: #efefef;
-  color: #000;
+  background-color: hsl(0, 0%, 85%, 0.25);
+  color: #fff;
   cursor: pointer;
+}
+
+.edit-btn:hover {
+  background-color: hsl(0, 0%, 85%, 0.35);
 }
 
 .card h3 {

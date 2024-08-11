@@ -92,8 +92,8 @@
 }
 
 .button {
-  padding: 8px 10px;
-  border-radius: 2px;
+  padding: 7px 10px;
+  border-radius: 5px;
   width: 150px;
   border: none;
   outline: none;
@@ -105,7 +105,7 @@
 
 .buttonContainer {
   display: flex;
-  gap: 6px;
+  gap: 7px;
   flex-direction: column;
   margin-top: 2px;
 }

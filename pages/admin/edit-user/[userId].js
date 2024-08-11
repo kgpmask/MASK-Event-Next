@@ -79,13 +79,14 @@ export default function EditUserPage() {
         </div>
       </div>
       <div className={styles["form-group"]}>
-        <label htmlFor="name">Update username:</label>
+        <label htmlFor="name">Username:</label>
         <div className={styles["input-container"]}>
           <input
             type="text"
             id="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            readOnly
           />
         </div>
       </div>

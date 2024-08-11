@@ -12,13 +12,17 @@ const getResultsHandler = async (req, res) => {
   if (cachedResults.results.length == 0) {
     await dbInit();
     const users = await User.find().lean();
+    // console.log("USERS: ", users);
     const results = await Result.find({ quizId: handlerContext.quizId });
+    // console.log(results);
     cachedResults.results = results.map((obj) => {
-      const result = { points: obj.points };
-      result.username = users.find((u) => u._id === obj.userId).username;
-      result.name = users.find((u) => u._id === obj.userId).name;
+      const result = { points: obj.score };
+      const user = users.find((u) => u._id === obj.userId);
+      if(!user) return;
+      result.username = user.username;
+      result.name = user.name;
       return result;
-    });
+    }).filter((e) => e);
   }
 
   return res.status(201).json(cachedResults.results);

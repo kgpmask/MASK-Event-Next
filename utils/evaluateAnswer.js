@@ -20,9 +20,9 @@ const evaluatedPoints = (response, solutions) => {
 		const minDistance = editDistance(response.toLowerCase(), answer.toLowerCase());
 		return minDistance / answer.length;
 	}).sort((a, b) => -(a < b))[0];
-	if (normalisedDistances === 0) return 200;
+	if (normalisedDistances <= 0.1) return 200;
 	if (normalisedDistances <= 0.2) return 150;
-	if (normalisedDistances <= 0.4) return 100;
+	if (normalisedDistances <= 0.3) return 100;
 	return 0;
 }
 

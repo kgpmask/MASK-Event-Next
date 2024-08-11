@@ -7,15 +7,20 @@ import WaitingMessage from './WaitingMessage';
 
 export default function QuizContainer({ question, round, time, submitAnswer, updateAnswer }) {
 	const [answer, setAnswer] = useState('');
+	const [disabled, setDisabled] = useState(false);
 
 	const submitHandler = (timeout) => {
-		console.log("ANSWER:", answer)
+		setDisabled(true);
 		return submitAnswer({ timeout });
 	};
 
 	useEffect(() => {
-		updateAnswer(answer);
+		updateAnswer(answer.trim());
 	}, [answer])
+
+	useEffect(() => {
+		console.log(disabled);
+	}, [disabled]);
 
 	return (
 		<div className={Styles['container']}>
@@ -33,7 +38,7 @@ export default function QuizContainer({ question, round, time, submitAnswer, upd
 					<p className={Styles['question-text']}>{question.question}</p>
 					{question.type === 'mcq' ? <OptionContainer selected={answer} setSelected={setAnswer} options={question.options} /> : <TextInput text={answer} setText={setAnswer} />}
 				</div>
-				<button className={Styles['submit-btn']} onClick={() => submitHandler(false)}>Submit</button>
+				<button className={!disabled ? Styles['submit-btn'] : Styles['submit-btn'] + ' ' + Styles['disabled']} onClick={() => submitHandler(false)} disabled={disabled}>Submit</button>
 			</div>
 		</div>
 	);

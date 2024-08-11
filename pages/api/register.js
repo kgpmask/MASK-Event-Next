@@ -8,6 +8,9 @@ const registerHandler = async (req, res) => {
     await dbInit();
     const { username, name, password } = req.body;
     // console.log(req.body);
+    if(!username.matches(/^[A-Za-z0-9_]+$/)) return res.status(600).send('Username not valid');
+    if(password.length < 5 || password.length > 12) return res.status(601).send('Password not valid');
+    
     const existUser = await User.findOne({ username });
     // console.log(70);
     if (existUser) {

@@ -1,15 +1,18 @@
 import User from "@/database/models/User";
+import Session from "@/database/models/Session";
 
 const updateProfileHandler = async (req, res) => {
-    const { username } = req.body;
+    // const { username } = req.body;
+	let user;
 
-    if(!req.cookies.isAdmin) {
-        const user = await User.findById((await Session.findById(req.cookies.sessionId))?.userId).username;
-        if (user !== username) return res.status(401).send('You are NOT an admin or a registered user. Go away immediately.');
-    }
+	if (req.cookies.isAdmin) {
+		user = await User.findOne({ username });
+	}
+	else {
+		user = await User.findById((await Session.findById(req.cookies.sessionId))?.userId)
+	}
 
-    const user = await User.findOne({ username });
-    if (!user) return res.status(404).send('No user found.');
+	if (!user) return res.status(401).send('You are NOT an admin or a registered user. Go away immediately.');
 
     if (req.body.name !== undefined) user.name = req.body.name;
     if (req.body.profilePic !== undefined) user.profilePic = req.body.profilePic;

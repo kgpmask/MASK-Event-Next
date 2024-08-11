@@ -20,6 +20,9 @@ const SignInForm = () => {
 			const res = response.data;
 			localStorage.setItem("username", res.username);
 			localStorage.setItem("name", res.name);
+			if (res.profilePic) {
+				localStorage.setItem("profilePic", res.profilePic);
+			}
 			alert("Sucessfully Logged In");
 			router.push("/");
 		} catch (error) {

@@ -19,6 +19,7 @@ function LogOutModal({ showModal }) {
 	const handleLogout = async () => {
 		try{
 			const response = await axios.post('/api/logout');
+			localStorage.clear();
 			showModal(false);
 			router.push('/');
 		} catch (e) {

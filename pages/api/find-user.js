@@ -1,4 +1,5 @@
 import User from "@/database/models/User";
+import Session from "@/database/models/Session";
 
 const findUserHandler = async (req, res) => {
   if (!req.cookies.sessionId) return res.status(204).send("No sessionId");

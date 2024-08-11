@@ -12,9 +12,9 @@ const loginHandler = async (req, res) => {
 	try {
 		await dbInit();
 		const user = await User.findOne({ username });
-		if (!user) return res.status(400).send("User does not exist");
+		if (!user) return res.status(404).send("User does not exist");
 		if (!(await bcrypt.compare(password, user.password)))
-			return res.status(400).send("Invalid credentials");
+			return res.status(404).send("Invalid credentials");
 
 		console.log(user, user._id)
 		const newSession = new Session({

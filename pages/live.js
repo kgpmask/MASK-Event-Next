@@ -39,6 +39,10 @@ const LivePage = () => {
 
 	const router = useRouter();
 
+	if(document.cookie.split('sessionId=').pop().split(';')[0] === '') {
+		router.push('/login');
+	}
+
 	const questionHandler = (question) => {
 		// console.log(question);
 		if (state !== "waiting") return;

@@ -4,26 +4,17 @@ import checkAdmin from "@/utils/checkAdmin";
 import bcrypt from "bcrypt";
 
 const updateProfileHandler = async (req, res) => {
-  try {
-    const { userId, username, name, profilePic, password } = req.body;
+    // const { username } = req.body;
+	let user;
 
-    if (!checkAdmin(req.cookies.sessionId)) {
-      const session = await Session.findById(req.cookies.sessionId);
-      const loggedInUser = await User.findById(session?.userId);
+	if (req.cookies.isAdmin) {
+		user = await User.findOne({ username });
+	}
+	else {
+		user = await User.findById((await Session.findById(req.cookies.sessionId))?.userId)
+	}
 
-      if (!loggedInUser || loggedInUser.username !== username) {
-        return res
-          .status(401)
-          .send(
-            "You are NOT an admin or a registered user. Go away immediately."
-          );
-      }
-    }
-
-    const user = await User.findOne({ _id: userId });
-    if (!user) {
-      return res.status(404).send("User not found.");
-    }
+	if (!user) return res.status(401).send('You are NOT an admin or a registered user. Go away immediately.');
 
     if (name !== undefined) user.name = name;
     if (username !== undefined) user.username = username;

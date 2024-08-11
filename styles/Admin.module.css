@@ -129,6 +129,7 @@
 .users-list {
   width: 80vw;
   display: flex;
+  justify-content: center;
   gap: 10px;
   flex-wrap: wrap;
 }

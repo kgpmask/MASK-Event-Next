@@ -39,10 +39,6 @@ const LivePage = () => {
 
 	const router = useRouter();
 
-	if(document.cookie.split('sessionId=').pop().split(';')[0] === '') {
-		router.push('/login');
-	}
-
 	const questionHandler = (question) => {
 		// console.log(question);
 		if (state !== "waiting") return;
@@ -57,7 +53,7 @@ const LivePage = () => {
 
 	const submissionHandler = (args) => {
 		const questionNo = question.questionNo;
-		const response = answer.current;
+		const response = question.type === 'mcq' ? answer.current : answer.current.trim();
 		console.log(args);
 		// if(response == '') return;
 
@@ -92,7 +88,9 @@ const LivePage = () => {
 	});
 
 	useEffect(() => {
-		if (!localStorage.getItem('username')) router.push('/login');
+		if (!document.cookie.includes('sessionId=') || document.cookie.split('sessionId=').pop().split(';')[0] === '') {
+			router.push('/login');
+		}
 
 		const onSocketConnect = () => {
 			setSocketConnected(true);

@@ -15,7 +15,7 @@ export default function QuizContainer({ question, round, time, submitAnswer, upd
 	};
 
 	useEffect(() => {
-		updateAnswer(answer.trim());
+		updateAnswer(answer);
 	}, [answer])
 
 	useEffect(() => {

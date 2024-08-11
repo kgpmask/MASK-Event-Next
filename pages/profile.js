@@ -51,7 +51,10 @@ function Profile() {
 			});
 			if (response.status >= 400) throw (await response.text());
 			console.log(await response.text());
-			if (ctx.profilePic !== undefined) setProfilePic(ctx.profilePic);
+			if (ctx.profilePic !== undefined) {
+				setProfilePic(ctx.profilePic);
+				localStorage.setItem('profilePic', ctx.profilePic);
+			}
 			// if (ctx.name !== undefined) setName(ctx.name);
 		} catch (err) {
 			console.error(err);

@@ -3,7 +3,7 @@ import Record from "@/database/models/Record";
 import checkAdmin from "@/utils/checkAdmin";
 
 const startQuestionHandler = async (req, res) => {
-	if (!checkAdmin(req.cookies.sessionId))
+	if (!(await checkAdmin(req.cookies.sessionId)))
 		return res.status(403).send("You are NOT an admin. Go away immediately.");
 	if (process.env.QUES_NO !== 'null'){
 		return res

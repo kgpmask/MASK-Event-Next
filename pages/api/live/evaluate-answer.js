@@ -9,7 +9,7 @@ import User from '@/database/models/User';
 import checkAdmin from '@/utils/checkAdmin';
 
 const evaluateAnswerHandler = async (req, res) => {
-	if (!checkAdmin(req.cookies.sessionId)) return res.status(401).send('You are NOT an admin. Go away immediately.');
+	if (!(await checkAdmin(req.cookies.sessionId))) return res.status(401).send('You are NOT an admin. Go away immediately.');
 
 	const quizId = handlerContext.quizId;
 	const results = [];
@@ -20,6 +20,7 @@ const evaluateAnswerHandler = async (req, res) => {
 	const records = await Record.find({ quizId }).lean();
 
 	records.forEach(({ userId, questionNo, response }) => {
+		if (~~questionNo <= 0 ) return;
 		if (!results.find((obj) => obj.userId === userId))
 			results.push({
 				userId,

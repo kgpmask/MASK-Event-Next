@@ -128,7 +128,7 @@ function Profile() {
             <span>{username}</span>
           </div>
           <button onClick={handleLogout} className={Styles["logout-btn"]}>
-            LogOut
+            Log Out
           </button>
         </div>
       </div>

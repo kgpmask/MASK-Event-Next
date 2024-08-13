@@ -83,7 +83,7 @@ export default function Results(){
     const fetchResults = async () => {
         try {
             const adminResponse = await fetch('/api/check-admin');
-            const isAdmin = adminResponse.json();
+            const isAdmin = (await adminResponse.json()).isAdmin;
             if(isAdmin) await fetch('/api/live/evaluate-answer');
             const response = await fetch('/api/live/get-results');
             const data = await response.json();

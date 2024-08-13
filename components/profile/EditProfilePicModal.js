@@ -44,7 +44,7 @@ function LogOutModal({ showModal, profilePic, submitFunction }) {
                             profilePictures.map(pic => (
                                 <img
                                     key={pic}
-                                    src={pic != null ? `/profile-pics/${pic}.webp` : `/logo.webp`}
+                                    src={pic != null ? `/profile-pics/${pic}.webp` : `/profile-pics/default.webp`}
                                     className={ selected == pic ? Styles['selected'] : '' }
                                     onClick={() => toggleSelect(pic)}
                                 />

@@ -4,7 +4,7 @@ import Option from './Option'
 export default function OptionContainer({ options, selected, setSelected }) {
 	return (
 		<div className={Styles["options"]} >
-			{options.map((i, e) => <Option key={e} text={i} selected={selected === i} onClick={() => setSelected(i)}/>)}
+			{options.map((e, i) => <Option key={i} text={e} selected={selected === i} onClick={() => setSelected(i)}/>)}
 		</div >
 	)
 }

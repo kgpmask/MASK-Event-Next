@@ -2,7 +2,7 @@ import Image from "next/image"
 import Styles from '@/styles/Navbar.module.css'
 import Link from "next/link"
 import { useState, useRef, useEffect } from "react"
-import {useRouter} from "next/router"
+import { useRouter } from "next/router"
 import LogOutModal from '@/components/profile/LogOutModal.js'
 
 const Navbar = () => {
@@ -35,7 +35,7 @@ const Navbar = () => {
 	// }
 	const router = useRouter();
 	useEffect(() => {
-		document.querySelector('#content-wrap')?.classList.toggle('burger-open');
+		document.querySelector('#content-wrap').className = burgerOpen ? 'burger-open' : '';
 	}, [burgerOpen]);
 
 	const handleLogout = () => {
@@ -43,9 +43,9 @@ const Navbar = () => {
 	};
 
 	useEffect(() => {
-		if(document.cookie.split('sessionId=').pop().split(';')[0] === '') return localStorage.clear() || setUsername('');
+		if (!document.cookie.includes('sessionId=') || document.cookie.split('sessionId=').pop().split(';')[0] === '') return localStorage.clear() || setUsername('');
 		const username = localStorage.getItem('username');
-		if(!username) setUsername('');
+		if (!username) setUsername('');
 		else setUsername(localStorage.getItem('name') || 'User');
 	});
 
@@ -71,7 +71,7 @@ const Navbar = () => {
 							<Link href={item.href} className={Styles['navlink']} >{item.name}</Link>
 						</li>
 					)}
-					{username ? <button className={Styles["list-item"]} onClick={handleLogout} >Logout</button> : <button className={Styles["list-item"]} onClick={() => {router.push('/login')}} >Login</button>}
+					{username ? <button className={Styles["list-item"]} onClick={handleLogout} >Logout</button> : <button className={Styles["list-item"]} onClick={() => { router.push('/login') }} >Login</button>}
 				</ul>
 				<button onClick={() => setBurgerOpen(!burgerOpen)} className={burgerOpen ? Styles["burger"] + ' ' + Styles['open'] : Styles['burger']} >
 					<div className={Styles["patty"]} ></div>

@@ -146,6 +146,12 @@
 	text-align: center;
 	color: var(--off-white);
 	letter-spacing: 1px;
+	transition: all 0.5s ease;
+}
+
+.disabled {
+	background-color: #d65858;
+	cursor: not-allowed;
 }
 
 .submit-btn:hover {

@@ -13,6 +13,11 @@ const submitAnswerHandler = async (req, res) => {
 	const user = await User.findById(
 		(await Session.findById(req.cookies.sessionId))?.userId
 	);
+	// console.log(user);
+	const obj = handlerContext.cachedRecords.filter(e => e.userId === user._id && e.questionNo === '0');
+	console.log(obj);
+	if(obj.length) return res.status(400).send();
+
 	const { questionNo, response } = req.body;
 	console.log("REQ BODY:", req.body, handlerContext);
 	if (response === '') return res.status(400).send("Empty Response");
@@ -24,12 +29,13 @@ const submitAnswerHandler = async (req, res) => {
 				clientQuestionNo: questionNo,
 			}) || res.status(400).send("Questions not in sync")
 		);
-	handlerContext.cachedRecords.push({
+	const record = {
 		quizId: handlerContext.quizId,
 		userId: user._id,
 		questionNo,
 		response,
-	});
+	}
+	handlerContext.cachedRecords.push(record);
 
 	console.log(handlerContext.cachedRecords);
 

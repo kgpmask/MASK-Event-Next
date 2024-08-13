@@ -14,27 +14,19 @@ function Profile() {
   const [name, setName] = useState("");
   const [bufferName, setBufferName] = useState("");
   const [editName, setEditName] = useState(false);
-  const [profilePic, setProfilePic] = useState("/logo.webp");
+  const [profilePic, setProfilePic] = useState("/default");
   const router = useRouter();
 
   // getting user data on page load
   useEffect(() => {
     async function fetchData() {
-      const storedUser = localStorage.getItem("user");
+      const storedUser = localStorage.getItem("username");
       if (storedUser) {
-        const user = JSON.parse(storedUser);
-        setUsername(user.username);
-        setName(user.name);
-        setProfilePic(user.profilePic || "/logo.webp");
+        setUsername(localStorage.getItem("username"));
+        setName(localStorage.getItem("name"));
+        setProfilePic(localStorage.getItem("profilePic") || "/default");
       } else {
-        const response = await fetch("/api/who-am-i");
-        if (response.status === 204) return router.push("/login");
-        const user = await response.json();
-        if (!user.username) return router.push("/login");
-        localStorage.setItem("user", JSON.stringify(user));
-        setUsername(user.username);
-        setName(user.name);
-        setProfilePic(user.profilePic || "/logo.webp");
+        return router.push("/login");
       }
     }
     fetchData();
@@ -54,16 +46,16 @@ function Profile() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username,
-          name,
           profilePic,
-          ...ctx,
         }),
       });
       if (response.status >= 400) throw await response.text();
       console.log(await response.text());
-      if (ctx.profilePic !== undefined) setProfilePic(ctx.profilePic);
-      if (ctx.name !== undefined) setName(ctx.name);
+      if (ctx.profilePic !== undefined) {
+        setProfilePic(ctx.profilePic);
+        localStorage.setItem("profilePic", ctx.profilePic);
+      }
+      // if (ctx.name !== undefined) setName(ctx.name);
     } catch (err) {
       console.error(err);
       alert("Something went wrong");
@@ -89,19 +81,15 @@ function Profile() {
       <div className={Styles["wrapper"]}>
         <div style={{ borderRadius: "10px" }}>
           <div className={Styles["block"]}>
-            <IoClose
-              className={Styles["cross"]}
-              color="white"
-              onClick={handleClose}
-            />
-            <img src={profilePic} alt="MASK" />
+            {/* <IoClose className={Styles["cross"]} color='white' onClick={handleClose} /> */}
+            <img src={`/profile-pics/${profilePic}.webp`} alt="MASK" />
           </div>
           <div
             className={Styles["profile-img-wrapper"]}
             onClick={handleProfilePicModal}
           >
             <img
-              src={profilePic}
+              src={`/profile-pics/${profilePic}.webp`}
               alt="MASK"
               className={Styles["profile-img"]}
             />
@@ -116,52 +104,31 @@ function Profile() {
                 gap: "10px",
                 alignItems: "center",
                 justifyContent: "center",
-                marginLeft: "20px",
               }}
             >
-              {editName ? (
-                <input
-                  value={bufferName}
-                  onChange={(e) => setBufferName(e.target.value.trim())}
-                  style={{ color: "var(--black-100)", fontSize: "16px" }}
-                  className={Styles["name-input-box"]}
-                />
-              ) : (
-                <h1>Ankan</h1>
-              )}
-              {editName ? (
-                <>
-                  <button
-                    className={Styles["save-name-btn"]}
-                    onClick={async () => {
-                      await submitFunction({ name: bufferName });
-                      setEditName(false);
-                    }}
-                  >
-                    {" "}
-                    Save{" "}
-                  </button>
-                  <button
-                    className={Styles["back-name-btn"]}
-                    onClick={() => setEditName(false)}
-                  >
-                    {" "}
-                    Back{" "}
-                  </button>
-                </>
-              ) : (
-                <button
-                  className={Styles["edit-name-btn"]}
-                  onClick={() => setEditName(true)}
-                >
-                  Edit
-                </button>
-              )}
+              <h1>{name}</h1>
+              {/* {editName ?
+                                <input
+                                    value={bufferName}
+                                    onChange={e => setBufferName(e.target.value.trim())}
+                                    style={{ color: 'var(--black-100)', fontSize: '16px' }}
+                                    className={Styles["name-input-box"]}
+                                /> :
+                                <h1>{name}</h1>
+                            }
+                            {editName ?
+                                <><button className={Styles["save-name-btn"]} onClick={async () => {
+                                    await submitFunction({ name: bufferName });
+                                    setEditName(false);
+                                }}> Save </button>
+                                    <button className={Styles["back-name-btn"]} onClick={() => setEditName(false)}> Back </button></> :
+                                <button className={Styles['edit-name-btn']} onClick={() => setEditName(true)}>Edit</button>
+                            } */}
             </div>
-            <span>chin tapak dum dum</span>
+            <span>{username}</span>
           </div>
           <button onClick={handleLogout} className={Styles["logout-btn"]}>
-            Log Out
+            LogOut
           </button>
         </div>
       </div>

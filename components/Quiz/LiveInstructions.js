@@ -14,7 +14,7 @@ export default function Instructions({ buttonCallback }){
                 <h3>Website Instructions</h3>
                 <ol>
                     <li><p>For a bug-less experience, please do not refresh or go back during the quiz. This might lead to a loss of progress and glitches in the quiz.</p></li>
-                    <li><p>Please ensure that you have a stable internet connection during the quiz. If the internet connection is lost, you'll be forced to reload, which is undesirable.</p></li>
+                    <li><p>Please ensure that you have a stable internet connection during the quiz. If the internet connection is lost, you&apos;ll be forced to reload, which is undesirable.</p></li>
                     <li><p>There are two types of questions: MCQs and text-based. Only the answer part will be displayed on the website.</p></li>
                     <li><p>Each question is scored out of 100 points, except for the last round.</p></li>
                 </ol>

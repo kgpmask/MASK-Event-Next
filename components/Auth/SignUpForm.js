@@ -29,16 +29,24 @@ const SignUpForm = () => {
 				confirmPass,
 			});
 
-			if (response.status === 400) {
-				alert("Username already in use.");
-				return;
-			}
 			localStorage.setItem("username", username);
 			localStorage.setItem("name", name);
 			alert(`Sucessfully Logged In as ${name}`);
 			router.push("/");
 		} catch (error) {
-			console.log(error);
+			if (error.request.status === 400) {
+				alert("Username already in use!");
+				return;
+			}
+			else if (error.request.status === 600) {
+				alert('Username can only contain alphabets, numbers or underscore(_)')
+			}
+			else if (error.request.status === 601) {
+				alert('Password should be of length 5 to 12 characters')
+			}
+			else {
+				alert("Internal Server Error");
+			}
 		}
 	};
 	return (

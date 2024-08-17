@@ -31,12 +31,12 @@ export default function Instructions({ buttonCallback }) {
             <li>
               <p>
                 There are two types of questions: MCQs and text-based. Only the
-                answer part will be displayed on the website.
+                answer part will be displayed on the website for main quiz.
               </p>
             </li>
             <li>
               <p>
-                It’s advised not to rely on the auto-submit feature of MCQs and to use the submit button.
+                It&apos;s advised not to rely on the auto-submit feature of MCQs and to use the submit button.
               </p>
             </li>
           </ul>
@@ -46,21 +46,13 @@ export default function Instructions({ buttonCallback }) {
           <div className={styles["hr"]} />
           <ul>
             <li>
-              <p>The quiz consists of five rounds.</p>
-            </li>
-            <li>
               <p>
-                Each round has a specific theme, which will be revealed at the start of each round.
+                The sample quiz consists of 5 questions.
               </p>
             </li>
             <li>
               <p>
-                Each round, except the last, has 10 questions, and each question is worth 200 points.
-              </p>
-            </li>
-            <li>
-              <p>
-                The fifth round will consist of only 5 questions, but each is worth twice as many points due to increased difficulty.
+                Each question is worth 200 points.
               </p>
             </li>
             <li>
@@ -70,17 +62,12 @@ export default function Instructions({ buttonCallback }) {
             </li>
             <li>
               <p>
-                Questions will be displayed on the PPT, and you must answer them on your laptop/phone.
+                For the main quiz, the questions will be on PPT. For this quiz however the questions are given with question.
               </p>
             </li>
             <li>
               <p>
-                Only the options (if any) or text box will be displayed on your laptop/phone. The question will not be shown in the quiz interface; it can only be seen in this PPT.
-              </p>
-            </li>
-            <li>
-              <p>
-                After the anchors have read the questions and the answer options (if any), you will be given a <b>fixed time</b> to answer the questions.
+                The time limits for the questions are as follows
               </p>
               <ol type="a">
                 <li>

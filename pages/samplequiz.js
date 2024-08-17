@@ -1,10 +1,10 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import DummyQuizContainer from "@/components/Quiz/DummyQuizContainer";
 import WaitingMessage from "@/components/Quiz/WaitingMessage";
 import TimeoverMessage from "@/components/Quiz/TimeoverMessage";
 import MessageCard from "@/components/Quiz/MessageCard";
 import SubmitMessage from "@/components/Quiz/SubmitMessage";
-
+import SampleInstructions from "@/components/Quiz/SampleInstructions";
 
 const dummyApiResponse = {
 	questions: [
@@ -62,20 +62,13 @@ const dummyApiResponse = {
 	],
 };
 
-function BeforeStart({ onClick }) {
-	return (
-		<MessageCard>
-			<p>Press the button to start dummy quiz</p>
-			<button onClick={onClick}>Start</button>
-		</MessageCard>
-	)
-}
-
 function Complete({ score }) {
 	return (
 		<MessageCard>
-			<p>Dummy Quiz Complete, please head on over to Quiz Portal for the real quiz</p>
-			<hr/>
+			<p>Dummy Quiz complete, please head on over to Quiz Portal for the real quiz</p>
+			<br/>
+			<br/>
+			<br/>
 			<p>Score: {score}/50</p>
 		</MessageCard>
 	)
@@ -84,38 +77,29 @@ function Complete({ score }) {
 export default function SampleQuiz() {
 	const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [score, setScore] = useState(0);
-	const [userAnswer, setUserAnswer] = useState(null);
+	const userAnswer = useRef('');
 	const [time, setTime] = useState(0);
 	const [state, setState] = useState('before-start');
 
-	const [renderComponent, setRenderComponent] = useState(<BeforeStart />);
+	const [renderComponent, setRenderComponent] = useState(<SampleInstructions />);
 
 	const submitAnswer = ({ timeout }) => {
 		const correctAnswer = dummyApiResponse.questions[currentQuestion].answer;
-		if (userAnswer === correctAnswer) {
+		if (~~userAnswer.current === ~~correctAnswer) {
 			setScore((prevScore) => prevScore + 10);
 		}
 		setState(timeout ? 'timeout' : 'submitted');
 	};
 
-	const moveToNextQuestion = () => {
-		setCurrentQuestion((prevIndex) => prevIndex + 1);
-		setUserAnswer(null);
-	};
-
 	const updateAnswer = (answer) => {
-		setUserAnswer(answer);
+		userAnswer.current = answer;
 	};
 
 	const startQuiz = () => {
 		let idx = 0;
 		function question() {
-			if (idx >= dummyApiResponse.questions.length) {
-				setState('complete');
-				return;
-			}
+			userAnswer.current = '';
 			setCurrentQuestion(idx);
-			setUserAnswer(null);
 			setState('attempting');
 			setTime(dummyApiResponse.questions[idx].type === "mcq" ? 15 : 25)
 
@@ -124,9 +108,13 @@ export default function SampleQuiz() {
 					setState('waiting');
 					setTimeout(() => {
 						idx++;
+						if (idx >= dummyApiResponse.questions.length) {
+							setState('complete');
+							return;
+						}
 						question();
-					}, 7000);
-				}, 3000);
+					}, 4000);
+				}, 2000);
 			}, dummyApiResponse.questions[idx].type === "mcq" ? 15000 : 25000)
 		}
 		question();
@@ -134,11 +122,10 @@ export default function SampleQuiz() {
 
 
 	useMemo(() => {
-		console.log(state, currentQuestion, time)
 		switch (state) {
 			case "before-start":
 				setRenderComponent(
-					<BeforeStart onClick={startQuiz} />
+					<SampleInstructions onClick={startQuiz} />
 				);
 				break;
 			case "waiting":

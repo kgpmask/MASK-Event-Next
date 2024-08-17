@@ -3,7 +3,7 @@ import Link from "next/link";
 import TextArea from "@/components/Base/TextArea";
 import styles from "@/styles/Instructions.module.css";
 
-export default function Instructions({ buttonCallback }) {
+export default function SampleInstructions({ onClick }) {
   return (
     <>
       <Head>
@@ -52,12 +52,7 @@ export default function Instructions({ buttonCallback }) {
             </li>
             <li>
               <p>
-                Each question is worth 200 points.
-              </p>
-            </li>
-            <li>
-              <p>
-                In the text-based questions, one-letter mistakes are tolerable. If you have 2 letters wrong, you will get 150 marks. And for 3 errors, there will be 100 marks. Any more errors will not be tolerated.
+                Each question is worth 10 points.
               </p>
             </li>
             <li>
@@ -71,10 +66,10 @@ export default function Instructions({ buttonCallback }) {
               </p>
               <ol type="a">
                 <li>
-                  <p>MCQ-based questions: 25 seconds.</p>
+                  <p>MCQ-based questions: 15 seconds.</p>
                 </li>
                 <li>
-                  <p>Text-based questions: 45 seconds.</p>
+                  <p>Text-based questions: 30 seconds.</p>
                 </li>
               </ol>
             </li>
@@ -90,7 +85,7 @@ export default function Instructions({ buttonCallback }) {
             </li>
           </ul>
         </div>
-        <button className={styles["submit-btn"]} onClick={buttonCallback}>
+        <button className={styles["submit-btn"]} onClick={onClick}>
           Start Quiz
         </button>
       </TextArea>

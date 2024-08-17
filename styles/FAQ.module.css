@@ -27,7 +27,7 @@
 
 .Top_header button {
   height: 40px;
-  width: 230px;
+  width: min(230px, 100%);
   background-color: var(--red);
   color: white;
   border: none;
@@ -114,5 +114,12 @@
 @media screen and (max-width: 768px) {
   .contact-info {
     justify-content: center;
+  }
+  .Top_header {
+	align-items: center;
+	flex-direction: column;
+  }
+  .Top_header div {
+	text-align: center;
   }
 }

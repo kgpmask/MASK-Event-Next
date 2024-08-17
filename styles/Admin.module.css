@@ -135,6 +135,7 @@
   display: flex;
   justify-content: center;
   gap: 10px;
+  padding: 20px 0;
   flex-wrap: wrap;
 }
 
@@ -168,6 +169,7 @@
   width: 100%;
   justify-content: center;
   align-items: center;
+  color: #fff;
 }
 
 .quiz-nav-buttons {

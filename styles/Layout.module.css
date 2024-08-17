@@ -1,18 +1,19 @@
 .container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	min-height: calc(100vh - 196px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 196px);
+  overflow-x: clip;
 }
 
 @media screen and (max-width: 1100px) {
-	.container {
-		min-height: calc(100vh - 196px);
-	}
+  .container {
+    min-height: calc(100vh - 196px);
+  }
 }
 
 @media screen and (max-width: 800px) {
-	.container {
-		min-height: calc(100vh - 210px);
-	}
+  .container {
+    min-height: calc(100vh - 210px);
+  }
 }

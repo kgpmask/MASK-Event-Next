@@ -11,8 +11,8 @@ export default function EventInfo() {
       <div className={Styles["Top_header"]}>
         <div>
           <h1>Event Information</h1>
-          <p className={Styles["para"]}>Date/Time: September 3, 2023, 2:00 PM</p>
-          <p>Venue: Raman Auditorium (Main Building)</p>
+          <p className={Styles["para"]}>Date/Time: 18th August, 2024, 2:30 PM</p>
+          <p>Venue: V3, Vikramshila</p>
         </div>
         <button onClick={() => router.push('/live')}>Quiz Portal</button>
       </div>
@@ -25,8 +25,8 @@ export default function EventInfo() {
 
       <div className={Styles["contact-info"]}>
         <p>More Questions? Contact us:</p>
-        <div>Aman: 63773 08533</div>
-        <div>Soumil: 86975 63554</div>
+        <div>Manideep: 96037 15582</div>
+        <div>Nayandeep: 81309 70929</div>
       </div>
     </div>
     </div>

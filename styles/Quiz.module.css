@@ -129,13 +129,12 @@
   border-radius: 5px;
   outline: none;
   border: none;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   background-color: var(--shadow-gray);
   color: var(--off-white);
   font-weight: 400;
   width: 100%;
   box-sizing: border-box;
-  margin-bottom: 5px;
 }
 
 .submit {

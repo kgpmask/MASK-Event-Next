@@ -47,7 +47,7 @@ const LivePage = () => {
 		setQuestion(question);
 		answer.current = null;
 
-		setTimeRemaining(type === "mcq" ? 15 : 25);
+		setTimeRemaining(type === "mcq" ? 25 : 45);
 		setState("attempting");
 	};
 
@@ -106,7 +106,7 @@ const LivePage = () => {
 
 		socket.on("connect", onSocketConnect);
 		socket.on("disconnect", onSocketDisconnect);
-		socket.on("timeout", timeoutSubmit);
+		socket.on("timeout", () => {console.log('Got Timeout');});
 		socket.on("start-quiz", () => setState("instructions"));
 		socket.on("end-quiz", () => router.push("/results"));
 
@@ -179,19 +179,10 @@ const LivePage = () => {
 		}
 	}, [state]);
 
-	// const cycleState = () => {
-	// 	const states = ['waiting', 'attempting', 'early', 'late', 'timeover', 'submitted', 'instructions']
-	// 	idx = (idx + 1) % 7;
-	// 	setState(states[idx]);
-	// 	console.log('state: ', state)
-	// 	console.log('arr state: ', states[idx]);
-	// }
-
 	return (
 		<>
 			<LivePageHead />
 			{renderComponent}
-			{/* <button onClick={cycleState}>cycleNigga</button> */}
 		</>
 	);
 };

@@ -2,7 +2,6 @@ import React from 'react'
 import { useState } from 'react'
 import Styles from '@/styles/Profile.module.css'
 // import Image from @next/image
-import next from 'next'
 import { IoClose } from "react-icons/io5";
 
 const profilePictures = [

@@ -25,7 +25,7 @@ app.prepare().then(async () => {
 
 		socket.on('question', question => {
 			io.to(process.env.QUIZ_ID).emit('question', question);
-			setTimeout(() => io.to(process.env.QUIZ_ID).emit('timeout', ''), question.type === 'mcq' ? 11_000 : 21_000);
+			setTimeout(() => io.to(process.env.QUIZ_ID).emit('timeout', ''), question.type === 'mcq' ? 30_000 : 50_000);
 		});
 	});
 

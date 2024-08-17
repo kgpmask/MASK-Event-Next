@@ -138,7 +138,7 @@ export default function QuizPortalPage() {
             setDisabled(false);
             setQuestionState("Start Question");
           },
-          question.type === "mcq" ? 15000 : 25000
+          question.type === "mcq" ? 25000 : 45000
         );
       }
     } catch (error) {
@@ -163,7 +163,7 @@ export default function QuizPortalPage() {
               <p>{`Question #${currentQ}`}</p>
             </div>
             {questionState === "Timer Started" && (
-              <Timer time={questions[currentQ]?.type === "mcq" ? 15 : 25} />
+              <Timer time={questions[currentQ]?.type === "mcq" ? 25 : 45} />
             )}
           </div>
         )}

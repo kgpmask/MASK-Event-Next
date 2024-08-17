@@ -65,7 +65,7 @@ export default function Instructions({ buttonCallback }) {
             </li>
             <li>
               <p>
-                In the text-based questions, one-letter mistakes are tolerable. If you have 2 letters wrong, you will get 150 marks. And for 3 errors, there will be 100 marks. Any more errors will not be tolerated.
+                In the text-based questions, 10% errors are tolerable. If your answer has an error of 20% or less, you will get 150 marks, for errors of 30% or less, there will be 100 marks. Any more errors will not be tolerated.
               </p>
             </li>
             <li>

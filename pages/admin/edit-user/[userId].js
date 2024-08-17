@@ -11,6 +11,8 @@ export default function EditUserPage() {
   const [profilePic, setProfilePic] = useState("");
   const [password, setPassword] = useState("");
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
   useEffect(() => {
     const fetchUser = async () => {
       if (!userId) return;
@@ -57,6 +59,8 @@ export default function EditUserPage() {
       alert("An error occurred while updating the user.");
     }
   };
+
+  //if (!isAdmin) return <ForbiddenCard />;
 
   if (!user) return <div>Loading...</div>;
 

@@ -146,7 +146,7 @@ export default function QuizPortalPage() {
     }
   };
 
-  if (!isAdmin) return <ForbiddenCard />;
+  //if (!isAdmin) return <ForbiddenCard />;
 
   return (
     <>

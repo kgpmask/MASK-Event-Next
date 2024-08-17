@@ -1,4 +1,4 @@
-import Styles from '@/styles/Quiz.module.css'
+import Styles from "@/styles/Quiz.module.css";
 
 export default function Option({ text, selected, letter, onClick }) {
 	return (

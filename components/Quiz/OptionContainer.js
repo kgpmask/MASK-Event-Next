@@ -1,5 +1,5 @@
-import Styles from '@/styles/Quiz.module.css'
-import Option from './Option'
+import Styles from "@/styles/Quiz.module.css";
+import Option from "./Option";
 
 export default function OptionContainer({ options, selected, setSelected }) {
 	const letters = ['A', 'B', 'C', 'D'];

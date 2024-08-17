@@ -35,7 +35,8 @@ const evaluateAnswerHandler = async (req, res) => {
 		const { answer, type, isHard } = questions.find((q) => q.questionNo === questionNo);
 		const user = results.find((obj) => obj.userId === userId);
 		const score = evaluateAnswer(response, answer, type);
-		user.points += isHard ? 2 * score : score;
+		if(type === "mcq") user.points += isHard ? 4 * score : score;
+		else user.points += isHard ? 2 * score : score;
 	});
 
 

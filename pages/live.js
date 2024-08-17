@@ -106,7 +106,7 @@ const LivePage = () => {
 
 		socket.on("connect", onSocketConnect);
 		socket.on("disconnect", onSocketDisconnect);
-		socket.on("timeout", () => {console.log('Got Timeout');});
+		socket.on("timeout", () => setTimeout(() => {setState('waiting')}, 3000));
 		socket.on("start-quiz", () => setState("instructions"));
 		socket.on("end-quiz", () => router.push("/results"));
 
@@ -165,7 +165,7 @@ const LivePage = () => {
 					.splice(0, socket.listeners("question").length);
 				clearTimeout(timeoutId);
 				setRenderComponent(<SubmitMessage />);
-				setTimeoutId(setTimeout(() => setState("waiting"), 3000));
+				// setTimeoutId(setTimeout(() => setState("waiting"), 3000));
 				break;
 			case "timeover":
 				socket

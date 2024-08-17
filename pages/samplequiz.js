@@ -110,6 +110,7 @@ export default function SampleQuiz() {
         <DummyQuizContainer
           question={dummyApiResponse.questions[currentQuestion]}
           time={time}
+          setTime={(t) => setTime(t)}
           submitAnswer={submitAnswer}
           updateAnswer={updateAnswer}
         />

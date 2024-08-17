@@ -6,14 +6,15 @@ import { useState, useEffect } from "react";
 
 export default function QuizContainer({
   question,
-  round,
   time,
+  setTime,
   submitAnswer,
   updateAnswer,
 }) {
   const [answer, setAnswer] = useState("");
 
   const submitHandler = (timeout) => {
+    setTime(15);
     return submitAnswer({ timeout });
   };
 

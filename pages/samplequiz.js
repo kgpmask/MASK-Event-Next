@@ -70,8 +70,6 @@ function Complete({ score }) {
         quiz
       </p>
       <br />
-      <br />
-      <br />
       <p>Score: {score}/50</p>
     </MessageCard>
   );

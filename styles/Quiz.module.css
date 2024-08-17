@@ -331,6 +331,10 @@
   }
 }
 
+.message-card p {
+  font-size: 18px;
+}
+
 .waiting-card {
   display: flex;
   flex-direction: row;
@@ -339,7 +343,7 @@
 }
 
 .waiting-card p {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .imgdiv {

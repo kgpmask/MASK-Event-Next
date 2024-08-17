@@ -1,4 +1,4 @@
-import FAQ from "./FAQ";
+import FAQContainer from "./FAQContainer";
 import FAQs from "./FAQs.json";
 import Styles from '@/styles/FAQ.module.css'
 import { useRouter } from "next/router";
@@ -17,11 +17,7 @@ export default function EventInfo() {
         <button onClick={() => router.push('/live')}>Quiz Portal</button>
       </div>
 
-      <div className={Styles["FAQ"]}>
-        {FAQs.map((value, i) => (
-          <FAQ key={i} heading={value.heading} description={value.description} />
-        ))}
-      </div>
+				<FAQContainer FAQs={FAQs} />
 
       <div className={Styles["contact-info"]}>
         <p>More Questions? Contact us:</p>

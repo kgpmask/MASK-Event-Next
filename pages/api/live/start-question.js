@@ -22,7 +22,7 @@ const startQuestionHandler = async (req, res) => {
 			Record.insertMany(handlerContext.cachedRecords)
 			.then(() => handlerContext.cachedRecords = []);
 		},
-		req.body.type === "mcq" ? 20000 : 30000
+		req.body.type === "mcq" ? 30000 : 50000
 	);
 
 	return res.status(200).send("Question updated");

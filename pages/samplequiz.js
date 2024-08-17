@@ -85,7 +85,7 @@ export default function SampleQuiz() {
 
 	const submitAnswer = ({ timeout }) => {
 		const correctAnswer = dummyApiResponse.questions[currentQuestion].answer;
-		if (~~userAnswer.current === ~~correctAnswer) {
+		if (~~userAnswer.current === ~~correctAnswer && userAnswer.current !== '') {
 			setScore((prevScore) => prevScore + 10);
 		}
 		setState(timeout ? 'timeout' : 'submitted');

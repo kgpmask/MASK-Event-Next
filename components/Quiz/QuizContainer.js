@@ -37,10 +37,7 @@ export default function QuizContainer({
             <p className={Styles["round-no"]}>
               {question.title.split(":")[0].trim()}
             </p>
-            <p className={Styles["round-name"]}>Shiri Masu Ka?</p>
-            <p className={Styles["question-no"]}>
-              Question #{question.questionNo}
-            </p>
+            <p className={Styles["round-name"]}>Question #{question.questionNo}</p>
           </div>
           <Timer time={time} onTimeEnd={() => submitHandler(true)} />
         </div>

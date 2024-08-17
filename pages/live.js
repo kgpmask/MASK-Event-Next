@@ -47,9 +47,9 @@ const LivePage = () => {
     setQuestion(question);
     answer.current = null;
 
-    setTimeRemaining(type === "mcq" ? 15 : 25);
-    setState("attempting");
-  };
+		setTimeRemaining(type === "mcq" ? 25 : 45);
+		setState("attempting");
+	};
 
   const submissionHandler = (args) => {
     const questionNo = question.questionNo;
@@ -110,11 +110,11 @@ const LivePage = () => {
 
     if (socket.connected) onSocketConnect();
 
-    socket.on("connect", onSocketConnect);
-    socket.on("disconnect", onSocketDisconnect);
-    socket.on("timeout", timeoutSubmit);
-    socket.on("start-quiz", () => setState("instructions"));
-    socket.on("end-quiz", () => router.push("/results"));
+		socket.on("connect", onSocketConnect);
+		socket.on("disconnect", onSocketDisconnect);
+		socket.on("timeout", () => setTimeout(() => {setState('waiting')}, 3000));
+		socket.on("start-quiz", () => setState("instructions"));
+		socket.on("end-quiz", () => router.push("/results"));
 
     return () => {
       socket.off("connect", onSocketConnect);
@@ -138,68 +138,59 @@ const LivePage = () => {
   // 	submissionHandler({ timeout: true });
   // }, [timeRemaining]);
 
-  useMemo(() => {
-    switch (state) {
-      case "early":
-        setRenderComponent(<EndedNotStartedMessage isEarly={true} />);
-        break;
-      case "late":
-        setRenderComponent(<EndedNotStartedMessage />);
-        break;
-      case "instructions":
-        setRenderComponent(
-          <LiveInstructions buttonCallback={() => setState("waiting")} />
-        );
-        break;
-      case "waiting":
-        socket.on("question", (question) => questionHandler(question));
-        setRenderComponent(<WaitingMessage />);
-        break;
-      case "attempting":
-        setRenderComponent(
-          <QuizContainer
-            question={question}
-            time={timeRemaining}
-            submitAnswer={submissionHandler}
-            updateAnswer={(val) => (answer.current = val)}
-          />
-        );
-        break;
-      case "submitted":
-        socket
-          .listeners("question")
-          .splice(0, socket.listeners("question").length);
-        clearTimeout(timeoutId);
-        setRenderComponent(<SubmitMessage />);
-        setTimeoutId(setTimeout(() => setState("waiting"), 3000));
-        break;
-      case "timeover":
-        socket
-          .listeners("question")
-          .splice(0, socket.listeners("question").length);
-        setRenderComponent(<TimeoverMessage />);
-        setTimeoutId(setTimeout(() => setState("waiting"), 3_000));
-        break;
-      default:
-        setRenderComponent(<MessageCard message={"Polayadi Mone"} />);
-    }
-  }, [state]);
+	useMemo(() => {
+		switch (state) {
+			case "early":
+				setRenderComponent(<EndedNotStartedMessage isEarly={true} />);
+				break;
+			case "late":
+				setRenderComponent(<EndedNotStartedMessage />);
+				break;
+			case "instructions":
+				setRenderComponent(
+					<LiveInstructions buttonCallback={() => setState("waiting")} />
+				);
+				break;
+			case "waiting":
+				socket.on("question", (question) => questionHandler(question));
+				setRenderComponent(<WaitingMessage />);
+				break;
+			case "attempting":
+				setRenderComponent(
+					<QuizContainer
+						question={question}
+						time={timeRemaining}
+						submitAnswer={submissionHandler}
+						updateAnswer={(val) => answer.current = val}
+					/>
+				);
+				break;
+			case "submitted":
+				socket
+					.listeners("question")
+					.splice(0, socket.listeners("question").length);
+				clearTimeout(timeoutId);
+				setRenderComponent(<SubmitMessage />);
+				// setTimeoutId(setTimeout(() => setState("waiting"), 3000));
+				break;
+			case "timeover":
+				socket
+					.listeners("question")
+					.splice(0, socket.listeners("question").length);
+				setRenderComponent(<TimeoverMessage />);
+				setTimeoutId(setTimeout(() => setState("waiting"), 3_000));
+				break;
+			default:
+				setRenderComponent(<MessageCard message={"Polayadi Mone"} />);
+		}
+	}, [state]);
 
-  // const cycleState = () => {
-  // 	const states = ['waiting', 'attempting', 'early', 'late', 'timeover', 'submitted', 'instructions']
-  // 	idx = (idx + 1) % 7;
-  // 	setState(states[idx]);
-  // 	console.log('state: ', state)
-  // 	console.log('arr state: ', states[idx]);
-  // }
-
-  return (
-    <>
-      <LivePageHead />
-      {renderComponent}
-      {/* <button onClick={cycleState}>cycleNigga</button> */}
-    </>
-  );
+	return (
+		<>
+			<LivePageHead />
+			{renderComponent}
+		</>
+	);
 };
 
 export default LivePage;

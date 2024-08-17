@@ -9,7 +9,8 @@ export default function AdminPage() {
 
   useEffect(() => {
     const checkAdminStatus = async () => {
-      const isAdmin = JSON.parse(localStorage.getItem("is-admin") || "false");
+      const isAdmin = JSON.parse(localStorage.getItem("is-admin") || "{}").isAdmin;
+	  console.log(isAdmin);
       if (!localStorage.getItem("username")) {
         setIsAdmin(false);
         return;
@@ -20,7 +21,7 @@ export default function AdminPage() {
           const response = await fetch("/api/check-admin");
           const isAdminResponse = await response.json();
           localStorage.setItem("is-admin", JSON.stringify(isAdminResponse));
-          setIsAdmin(isAdminResponse);
+          setIsAdmin(isAdminResponse.isAdmin);
         } catch (error) {
           console.error("Error checking admin status:", error);
           setIsAdmin(false);

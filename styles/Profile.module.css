@@ -17,7 +17,7 @@
 
 .block {
   height: 120px;
-  width: 320px;
+  width: min(350px, 90vw);
   border-radius: 10px;
   position: relative;
 }
@@ -141,9 +141,9 @@
 
 .modal-wrapper {
   background-color: var(--abyss);
-  padding: 60px;
+  padding: min(60px, 7%);
   border-radius: 10px;
-  width: 30%;
+  width: min(500px, 90%);
 }
 
 .modal-wrapper h1 {

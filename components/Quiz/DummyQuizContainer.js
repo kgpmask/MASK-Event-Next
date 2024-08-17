@@ -6,15 +6,15 @@ import { useState, useEffect } from "react";
 
 export default function QuizContainer({
   question,
+  round,
   time,
-  setTime,
   submitAnswer,
   updateAnswer,
 }) {
   const [answer, setAnswer] = useState("");
+  const [state, setState] = useState("before-start");
 
   const submitHandler = (timeout) => {
-    setTime(15);
     return submitAnswer({ timeout });
   };
 
@@ -27,11 +27,8 @@ export default function QuizContainer({
       <div className={Styles["card"]}>
         <div className={Styles["header"]}>
           <div className={Styles["info"]}>
-            <p className={Styles["round-no"]}>
-              {question.title.split(":")[0].trim()}
-            </p>
-            <p className={Styles["round-name"]}>Sample Quiz</p>
-            <p className={Styles["question-no"]}>
+            <p className={Styles["round-no"]}>Sample Quiz</p>
+            <p className={Styles["round-name"]}>
               Question #{question.questionNo}
             </p>
           </div>

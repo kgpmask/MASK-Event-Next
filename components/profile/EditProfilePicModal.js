@@ -6,13 +6,7 @@ import { IoClose } from "react-icons/io5";
 
 const profilePictures = [
     null,
-    'bankai',
-    'eggy-sensei',
-    'poke-ball',
-    'straw-hat',
-    'dragon-ball',
-    'itachi-mangekyou',
-    'rimuru-slime'
+    ...Array.from({ length: 13 }, (e, i) => String(i + 1))
 ]
 
 function LogOutModal({ showModal, profilePic, submitFunction }) {

@@ -32,7 +32,7 @@ const SignInForm = () => {
         alert("Incorrect Username or Password. Please try again");
         return;
       } else {
-        alert("Internal Server Error");
+        alert("Internal Server Error. Please contact an admin / MASK member");
       }
     }
   };

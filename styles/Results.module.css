@@ -28,3 +28,12 @@
     color: whitesmoke;
     font-weight: 200;
 }
+
+@media screen and (max-width: 768px) {
+    .content-table th:nth-child(3) {
+        display: none;
+    }
+    .content-table td:nth-child(3) {
+        display: none;
+    }
+}

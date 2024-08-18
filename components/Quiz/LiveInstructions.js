@@ -84,10 +84,10 @@ export default function Instructions({ buttonCallback }) {
               </p>
               <ol type="a">
                 <li>
-                  <p>MCQ-based questions: 25 seconds.</p>
+                  <p>MCQ-based questions: 20 seconds.</p>
                 </li>
                 <li>
-                  <p>Text-based questions: 45 seconds.</p>
+                  <p>Text-based questions: 30 seconds.</p>
                 </li>
               </ol>
             </li>

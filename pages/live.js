@@ -47,7 +47,7 @@ const LivePage = () => {
     setQuestion(question);
     answer.current = null;
 
-		setTimeRemaining(type === "mcq" ? 25 : 45);
+		setTimeRemaining(type === "mcq" ? 20 : 30);
 		setState("attempting");
 	};
 

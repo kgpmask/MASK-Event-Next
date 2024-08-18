@@ -29,7 +29,7 @@ const evaluatedPoints = (response, solutions) => {
 const evaluateAnswer = (response, answer, type) => {
 	switch (type) {
 		case 'mcq':
-			return 100 * (~~response === ~~answer);
+			return 200 * (~~response === ~~answer);
 		case 'text':
 			return evaluatedPoints(response, answer);
 		default:

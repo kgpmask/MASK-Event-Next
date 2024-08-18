@@ -14,6 +14,7 @@ const startQuestionHandler = async (req, res) => {
 	}
 	// console.log(req.body);
 	process.env.QUES_NO = ~~req.body.questionNo;
+	handlerContext.lastQuestion = req.body.questionNo;
 	// console.log("START:", handlerContext);
 	setTimeout(
 		() => {

@@ -50,87 +50,97 @@ import { useMemo } from "react";
 //     },
 // ];
 
-const assignRank1= (resultsJSON)=>{
-    //Ranks will look like 1,1,2,3,4
-    resultsJSON.sort((a,b)=> b.points-a.points);
-    resultsJSON[0].rank=1;
-    for (let i = 1; i < resultsJSON.length; ++i) {
-        if (resultsJSON[i-1].points>resultsJSON[i].points){
-            resultsJSON[i].rank=resultsJSON[i-1].rank+1;
-        } else{
-            resultsJSON[i].rank=resultsJSON[i-1].rank;
-        }
-    }
+const assignRank1 = (resultsJSON) => {
+	//Ranks will look like 1,1,2,3,4
+	resultsJSON.sort((a, b) => b.points - a.points);
+	resultsJSON[0].rank = 1;
+	for (let i = 1; i < resultsJSON.length; ++i) {
+		if (resultsJSON[i - 1].points > resultsJSON[i].points) {
+			resultsJSON[i].rank = resultsJSON[i - 1].rank + 1;
+		} else {
+			resultsJSON[i].rank = resultsJSON[i - 1].rank;
+		}
+	}
 }
 
-const assignRank2= (resultsJSON)=>{
-    //Ranks will look like 1,1,3,4,5
-    resultsJSON.sort((a,b)=> b.points-a.points);
-    resultsJSON[0].rank=1;
-    for (let i = 1; i < resultsJSON.length; ++i) {
-        if (resultsJSON[i-1].points>resultsJSON[i].points){
-            resultsJSON[i].rank=i+1;
-        } else{
-            resultsJSON[i].rank=resultsJSON[i-1].rank;
-        }
-    }
+const assignRank2 = (resultsJSON) => {
+	//Ranks will look like 1,1,3,4,5
+	resultsJSON.sort((a, b) => b.points - a.points);
+	resultsJSON[0].rank = 1;
+	for (let i = 1; i < resultsJSON.length; ++i) {
+		if (resultsJSON[i - 1].points > resultsJSON[i].points) {
+			resultsJSON[i].rank = i + 1;
+		} else {
+			resultsJSON[i].rank = resultsJSON[i - 1].rank;
+		}
+	}
 }
 
 
-export default function Results(){
-    const [results, setResults] = useState(null);
+export default function Results() {
+	const [results, setResults] = useState(null);
+	const [lastQuestion, setLastQuestion] = useState(0);
 
-    const fetchResults = async () => {
-        try {
-            const adminResponse = await fetch('/api/check-admin');
-            const isAdmin = (await adminResponse.json()).isAdmin;
-            if(isAdmin) await fetch('/api/live/evaluate-answer');
-            const response = await fetch('/api/live/get-results');
-            const data = await response.json();
-            // console.log(data)
-            setResults(data);
-        } catch (e) {
-            console.log(e);
-        }
-    }
+	const fetchResults = async () => {
+		try {
+			const adminResponse = await fetch('/api/check-admin');
+			const isAdmin = (await adminResponse.json()).isAdmin;
+			if (isAdmin) await fetch('/api/live/evaluate-answer');
+			const response = await fetch('/api/live/get-results');
+			const data = await response.json();
+			// console.log(data)
+			setResults(data);
+			setLastQuestion((await (await fetch('/api/live/get-last-question')).json()).lastQuestion);
+		} catch (e) {
+			console.log(e);
+		}
+	}
 
-    useMemo(() => {
-        if(!results) fetchResults();
-    }, [results]);
+	useMemo(() => {
+		if (!results) fetchResults();
+	}, [results]);
 
-    if (!results || !results.length) return <MessageCard message={'Results are yet to be evaluated. Try again later.'} />;
+	if (!results || !results.length) return <MessageCard message={'Results are yet to be evaluated. Try again later.'} />;
 
-    assignRank1(results);
-    return (
-        <div>
-            <TextArea title="Results">
-            <h4>Real results were the friends we made along the way. jk.</h4>
+	assignRank2(results);
+	return (
+		<div>
+			<TextArea title="Results">
+				<h4>Real results were the friends we made along the way. jk.</h4>
 
-                <table className={styles['content-table']}>
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Name</th>
-                            <th>Username</th>
-                            <th>Points</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            results.map((elem)=>{
-                                return (
-                                    <tr key={elem.username}>
-                                        <td>{elem.rank}</td>
-                                        <td>{elem.name}</td>    
-                                        <td>{elem.username}</td>
-                                        <td>{elem.points}</td>
-                                    </tr>
-                                );
-                            })
-                        }
-                    </tbody>
-                </table>
-            </TextArea>
-        </div>
-    )
+				<table className={styles['content-table']}>
+					<thead>
+						<tr>
+							<th>Rank</th>
+							<th>Name</th>
+							<th>Username</th>
+							<th>Points</th>
+						</tr>
+					</thead>
+					<tbody>
+						{results.length !== 0} {
+							<tr onClick={() => window.open('/api/get-message', '_blank')}>
+								<td>{lastQuestion >= 45 ? 0 : 1}</td>
+								<td>{lastQuestion >= 45 ? '??????' : 'Cid'}</td>
+								<td>{lastQuestion >= 45 ? '??????' : 'kagenou_cid'}</td>
+								<td>{lastQuestion >= 45 ? 10001 : (lastQuestion > 40 ? 40 * 200 + (lastQuestion - 40) * 400 : lastQuestion * 200)}</td>
+							</tr>
+						}
+						{
+							results.map((elem) => {
+								return (
+									<tr key={elem.username}>
+										<td>{elem.rank}</td>
+										<td>{elem.name}</td>
+										<td>{elem.username}</td>
+										<td>{elem.points}</td>
+									</tr>
+								);
+							})
+						}
+					</tbody>
+				</table>
+			</TextArea>
+		</div>
+	)
 }

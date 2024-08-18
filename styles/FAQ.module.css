@@ -1,0 +1,125 @@
+.para {
+  padding: 0px;
+  border: 0px;
+  color: #9a9a9a;
+}
+
+.Top_header h1 {
+  color: #fff;
+}
+
+.Top_header p {
+  font-size: 15px;
+}
+
+.Event_info {
+  display: flex;
+  flex-direction: column;
+}
+
+.Top_header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.Top_header button {
+  height: 40px;
+  width: min(230px, 100%);
+  background-color: var(--red);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.FAQs {
+  display: flex;
+  background: #101010;
+  flex-direction: column;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.Qna {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  font-size: 16px;
+  font-weight: 400 !important;
+  gap: 5px;
+  transition: all 0.5s ease;
+  padding: 20px 20px;
+  /* border-bottom: 1px solid #444444; */
+  color: #fff;
+  cursor: pointer;
+}
+
+.Qna p {
+  width: 90%;
+}
+
+.Qna:hover {
+  background-color: var(--shadow-gray);
+  border-radius: 5px;
+}
+
+.Qna svg {
+  font-size: 20px;
+  color: white;
+}
+
+.Ans {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.5s ease;
+  padding: 0px 25px;
+  box-sizing: border-box;
+  font-size: 15px;
+}
+
+.open {
+  max-height: 500px;
+  padding-bottom: 10px;
+}
+
+.Ans p {
+  margin: 10px 30px;
+}
+
+.contact-info {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.contact-info div {
+  background-color: #101010;
+  padding: 15px 35px;
+  border-radius: 5px;
+}
+
+.contact-info p {
+  margin: 15px 0px;
+  font-size: 15px;
+  color: white;
+}
+
+@media screen and (max-width: 768px) {
+  .contact-info {
+    justify-content: center;
+  }
+  .Top_header {
+	align-items: center;
+	flex-direction: column;
+  }
+  .Top_header div {
+	text-align: center;
+  }
+}

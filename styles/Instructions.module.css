@@ -1,0 +1,37 @@
+.instructions {
+  color: rgb(202, 211, 212);
+}
+
+.instructions h3 {
+  margin-bottom: 6px;
+  font-size: 1.2em;
+  font-weight: 500;
+  color: var(--white);
+}
+
+.hr {
+  border-bottom: 1px solid hsl(0, 0%, 60%, 0.5);
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.instructions li {
+  padding: 0.15em;
+  margin-left: 3em;
+  color: #9a9a9a;
+}
+
+.submit-btn {
+  width: 100%;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 25px;
+  padding: 14px 20px;
+  background-color: var(--red);
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  color: var(--white);
+}

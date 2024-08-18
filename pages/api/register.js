@@ -1,13 +1,15 @@
-import dbInit from "@";
-import User from "@";
-import Session from "@";
+import dbInit from "@/database/dbInit";
+import User from "@/database/models/User";
+import Session from "@/database/models/Session";
 import bcrypt from "bcrypt";
 
 const registerHandler = async (req, res) => {
   try {
     await dbInit();
     const { username, name, password } = req.body;
-    // console.log(req.body);
+    if(!username.match(/^[A-Za-z0-9_]+$/)) return res.status(600).send('Username not valid');
+    if(password.length < 5 || password.length > 12) return res.status(601).send('Password not valid');
+    
     const existUser = await User.findOne({ username });
     // console.log(70);
     if (existUser) {
@@ -36,7 +38,7 @@ const registerHandler = async (req, res) => {
     return res.status(201).send();
   } catch (error) {
     console.error("Error during sign-up:", error);
-    return res.status(500).send("Internal Server Error", err);
+    return res.status(500).send("Internal Server Error", error);
   }
 };
 

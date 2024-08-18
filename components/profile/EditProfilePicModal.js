@@ -2,18 +2,11 @@ import React from 'react'
 import { useState } from 'react'
 import Styles from '@/styles/Profile.module.css'
 // import Image from @next/image
-import next from 'next'
 import { IoClose } from "react-icons/io5";
 
 const profilePictures = [
     null,
-    'bankai',
-    'eggy-sensei',
-    'poke-ball',
-    'straw-hat',
-    'dragon-ball',
-    'itachi-mangekyou',
-    'rimuru-slime'
+    ...Array.from({ length: 13 }, (e, i) => String(i + 1))
 ]
 
 function LogOutModal({ showModal, profilePic, submitFunction }) {
@@ -44,7 +37,7 @@ function LogOutModal({ showModal, profilePic, submitFunction }) {
                             profilePictures.map(pic => (
                                 <img
                                     key={pic}
-                                    src={pic != null ? `/profile-pics/${pic}.webp` : `/logo.webp`}
+                                    src={pic != null ? `/profile-pics/${pic}.webp` : `/profile-pics/default.webp`}
                                     className={ selected == pic ? Styles['selected'] : '' }
                                     onClick={() => toggleSelect(pic)}
                                 />

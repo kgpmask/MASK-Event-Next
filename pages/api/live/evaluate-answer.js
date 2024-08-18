@@ -39,7 +39,7 @@ const evaluateAnswerHandler = async (req, res) => {
 	});
 
 
-	console.log("RESULTS: ", results);
+	// console.log("RESULTS: ", results);
 
 	cachedResults.results = results;
 	await Promise.all(

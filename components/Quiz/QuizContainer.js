@@ -24,9 +24,9 @@ export default function QuizContainer({
     updateAnswer(answer);
   }, [answer]);
 
-  useEffect(() => {
-    console.log(disabled);
-  }, [disabled]);
+  // useEffect(() => {
+  //   console.log(disabled);
+  // }, [disabled]);
 
   return (
     <div className={Styles["container"]}>

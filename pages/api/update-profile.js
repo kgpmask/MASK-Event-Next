@@ -8,7 +8,7 @@ const updateProfileHandler = async (req, res) => {
 		let user;
 
 		const { name, username, password, profilePic } = req.body;
-		console.log(req.body);
+		// console.log(req.body);
 
 		if (req.cookies.isAdmin) {
 			user = await User.findOne({ username });

@@ -87,7 +87,7 @@ export default function Results(){
             if(isAdmin) await fetch('/api/live/evaluate-answer');
             const response = await fetch('/api/live/get-results');
             const data = await response.json();
-            console.log(data)
+            // console.log(data)
             setResults(data);
         } catch (e) {
             console.log(e);

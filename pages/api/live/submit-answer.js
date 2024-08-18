@@ -15,11 +15,11 @@ const submitAnswerHandler = async (req, res) => {
 	);
 	// console.log(user);
 	const obj = handlerContext.cachedRecords.filter(e => e.userId === user._id && e.questionNo === '0');
-	console.log(obj);
+	// console.log(obj);
 	if(obj.length) return res.status(400).send();
 
 	const { questionNo, response } = req.body;
-	console.log("REQ BODY:", req.body, handlerContext);
+	// console.log("REQ BODY:", req.body, handlerContext);
 	if (response === '') return res.status(400).send("Empty Response");
 
 	if (Number(process.env.QUES_NO) !== questionNo)
@@ -37,7 +37,7 @@ const submitAnswerHandler = async (req, res) => {
 	}
 	handlerContext.cachedRecords.push(record);
 
-	console.log(handlerContext.cachedRecords);
+	// console.log(handlerContext.cachedRecords);
 
 	return res.status(201).send("Response recorded");
 };

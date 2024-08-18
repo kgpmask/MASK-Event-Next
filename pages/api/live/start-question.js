@@ -12,9 +12,9 @@ const startQuestionHandler = async (req, res) => {
 				`Question ${handlerContext.currentQuestion} is running. Wait for it to be done.`
 			);
 	}
-	console.log(req.body);
+	// console.log(req.body);
 	process.env.QUES_NO = ~~req.body.questionNo;
-	console.log("START:", handlerContext);
+	// console.log("START:", handlerContext);
 	setTimeout(
 		() => {
 			console.log("BEFORE CLEAR:", handlerContext)

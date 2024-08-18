@@ -50,7 +50,7 @@ function Profile() {
         }),
       });
       if (response.status >= 400) throw await response.text();
-      console.log(await response.text());
+      // console.log(await response.text());
       if (ctx.profilePic !== undefined) {
         setProfilePic(ctx.profilePic);
         localStorage.setItem("profilePic", ctx.profilePic);
@@ -61,10 +61,6 @@ function Profile() {
       alert("Something went wrong");
     }
   }
-
-  const handleClose = () => {
-    console.log("close");
-  };
 
   const handleLogout = () => {
     setShowLogOutModal(true);

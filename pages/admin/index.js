@@ -10,7 +10,7 @@ export default function AdminPage() {
   useEffect(() => {
     const checkAdminStatus = async () => {
       const isAdmin = JSON.parse(localStorage.getItem("is-admin") || "{}").isAdmin;
-	  console.log(isAdmin);
+	  // console.log(isAdmin);
       if (!localStorage.getItem("username")) {
         setIsAdmin(false);
         return;

@@ -13,14 +13,14 @@ const SignUpForm = () => {
   const router = useRouter();
 
   const handleSubmit = async (e) => {
-    console.log(username, name, password);
+    // console.log(username, name, password);
     e.preventDefault();
 
     if (password !== confirmPass) {
       return alert("Password and Confirm Password donot match");
     }
     try {
-      console.log(username, name, password);
+      // console.log(username, name, password);
 
       const response = await axios.post("/api/register", {
         username,

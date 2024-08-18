@@ -99,9 +99,9 @@ export default function QuizPortalPage() {
     fetchQuestions();
   };
 
-  useEffect(() => {
-    console.log(currentQ);
-  }, [currentQ]);
+  // useEffect(() => {
+  //   console.log(currentQ);
+  // }, [currentQ]);
 
   const startQuestion = async () => {
     try {
@@ -116,7 +116,7 @@ export default function QuizPortalPage() {
       });
 
       const result1 = await response1.text();
-      console.log(result1);
+      // console.log(result1);
 
       // const response = { status: 0 };
       if (response1.status < 400) {
@@ -132,7 +132,7 @@ export default function QuizPortalPage() {
           }),
         });
         const result2 = await response2.text();
-        console.log(result2);
+        // console.log(result2);
         setTimeout(
           () => {
             setDisabled(false);

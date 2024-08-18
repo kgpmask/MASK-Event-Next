@@ -12,12 +12,12 @@ const loginHandler = async (req, res) => {
 	try {
 		await dbInit();
 		const user = await User.findOne({ username });
-		console.log(user);
+		// console.log(user);
 		if (!user) return res.status(404).send("User does not exist");
 		if (!(await bcrypt.compare(password, user.password)))
 			return res.status(404).send("Invalid credentials");
 
-		console.log(user, user._id)
+		console.log(user._id)
 		const newSession = new Session({
 			_id: [11, 6]
 				.map((i) => (Math.random() + 1).toString(36).substring(2, 2 + i))

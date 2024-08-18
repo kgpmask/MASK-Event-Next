@@ -129,13 +129,12 @@
   border-radius: 5px;
   outline: none;
   border: none;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   background-color: var(--shadow-gray);
   color: var(--off-white);
   font-weight: 400;
   width: 100%;
   box-sizing: border-box;
-  margin-bottom: 5px;
 }
 
 .submit {
@@ -225,7 +224,7 @@
   width: min(85vw, 500px);
 
   text-align: center;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 @media screen and (max-width: 500px) {
@@ -329,4 +328,35 @@
   .option-numbering {
     margin: 0 10px;
   }
+}
+
+.message-card p {
+  font-size: 18px;
+}
+
+.waiting-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.waiting-card p {
+  font-size: 18px;
+}
+
+.imgdiv {
+  height: 50px;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  filter: grayscale(100%) contrast(150%) brightness(80%);
+  margin-bottom: 26px;
+}
+
+.imgdiv img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

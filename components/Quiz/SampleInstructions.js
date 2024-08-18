@@ -36,7 +36,8 @@ export default function SampleInstructions({ onClick }) {
             </li>
             <li>
               <p>
-                It&apos;s advised not to rely on the auto-submit feature of MCQs and to use the submit button.
+                It&apos;s advised not to rely on the auto-submit feature of MCQs
+                and to use the submit button.
               </p>
             </li>
           </ul>
@@ -46,24 +47,19 @@ export default function SampleInstructions({ onClick }) {
           <div className={styles["hr"]} />
           <ul>
             <li>
-              <p>
-                The sample quiz consists of 5 questions.
-              </p>
+              <p>The sample quiz consists of 5 questions.</p>
+            </li>
+            <li>
+              <p>Each question is worth 10 points.</p>
             </li>
             <li>
               <p>
-                Each question is worth 10 points.
+                For the main quiz, the questions will be on PPT. For this quiz
+                however the questions are given with question.
               </p>
             </li>
             <li>
-              <p>
-                For the main quiz, the questions will be on PPT. For this quiz however the questions are given with question.
-              </p>
-            </li>
-            <li>
-              <p>
-                The time limits for the questions are as follows
-              </p>
+              <p>The time limits for the questions are as follows</p>
               <ol type="a">
                 <li>
                   <p>MCQ-based questions: 15 seconds.</p>
@@ -75,18 +71,20 @@ export default function SampleInstructions({ onClick }) {
             </li>
             <li>
               <p>
-                Both Japanese and English names of shows will be valid. Eg. My Hero Academia and Boku no Hero Academia are both valid answers.
+                Both Japanese and English names of shows will be valid. Eg. My
+                Hero Academia and Boku no Hero Academia are both valid answers.
               </p>
             </li>
             <li>
               <p>
-                Popular short names of shows will also be valid. Eg. MHA or BNHA is accepted as the answer.
+                Popular short names of shows will also be valid. Eg. MHA or BNHA
+                is accepted as the answer.
               </p>
             </li>
           </ul>
         </div>
         <button className={styles["submit-btn"]} onClick={onClick}>
-          Start Quiz
+          Sample Quiz
         </button>
       </TextArea>
     </>

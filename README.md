@@ -94,5 +94,5 @@ Note: When merging dev into main, ensure that all necessary database migrations 
 ### Associates
 - [Arnab Jena](https://github.com/arnabara4)
 - [Dalli Manideep](https://github.com/DalliMani)
+- [Parth Mane](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 - [Tridibesh Sarkar](https://github.com/tridibesh9)
-

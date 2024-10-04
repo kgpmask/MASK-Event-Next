@@ -92,7 +92,7 @@ Note: When merging dev into main, ensure that all necessary database migrations 
 ### Team Sub Head
 - [Animesh Raj](https://github.com/wildcraft958)
 ### Associates
-- Arnab Jena
+- [Arnab Jena](https://github.com/arnabara4)
 - [Dalli Manideep](https://github.com/DalliMani)
 - [Tridibesh Sarkar](https://github.com/tridibesh9)
 

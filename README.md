@@ -91,8 +91,8 @@ Note: When merging dev into main, ensure that all necessary database migrations 
 - [Sharanya Chakraborty](https://github.com/destryptor)
 ### Team Sub Head
 - [Animesh Raj](https://github.com/wildcraft958)
-### Associates
 - [Arnab Jena](https://github.com/arnabara4)
+### Associates
 - [Dalli Manideep](https://github.com/DalliMani)
 - [Parth Mane](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 - [Tridibesh Sarkar](https://github.com/tridibesh9)

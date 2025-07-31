@@ -5,6 +5,7 @@ import Styles from "@/styles/Layout.module.css";
 export default function Home({ children }) {
 	return (
 		<>
+			<div className={Styles["background"]}></div>
 			<Navbar />
 			<main className={Styles["container"]}>
 				<div id="content-wrap">

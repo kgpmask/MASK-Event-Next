@@ -1,10 +1,11 @@
 .background {
- 	background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url("/background.jpg");
+  background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url("/background.jpg");
   background-repeat: no-repeat;
   background-position: center;
   height: 100vh;
   width: 100vw;
   position: fixed;
+  z-index: -69;
 }
 
 .container {

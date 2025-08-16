@@ -4,7 +4,7 @@ import SignInForm from "@/components/Auth/SignInForm";
 import SignUpForm from "@/components/Auth/SignUpForm";
 import { useState } from "react";
 const App = () => {
-  const [authState, setAuthState] = useState("signup");
+  const [authState, setAuthState] = useState("signin");
 
   return (
     <div className={styles.container}>

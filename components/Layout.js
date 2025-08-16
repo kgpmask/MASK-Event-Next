@@ -6,13 +6,15 @@ export default function Home({ children }) {
 	return (
 		<>
 			<div className={Styles["background"]}></div>
-			<Navbar />
-			<main className={Styles["container"]}>
-				<div id="content-wrap">
-					{children}
-				</div>
-			</main>
-			<Footer />
+			<div className={Styles["flex-container"]}>
+				<Navbar />
+				<main className={Styles["container"]}>
+					<div id="content-wrap">
+						{children}
+					</div>
+				</main>
+				<Footer />
+			</div>
 		</>
 	);
 }

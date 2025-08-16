@@ -1,7 +1,8 @@
 .container {
   position: relative;
   margin: 1rem 0;
-  height: 80vh;
+  /*height: 80vh;*/
+  padding: 2rem 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -246,7 +247,7 @@
 /* Media query for screens smaller than 600px */
 @media screen and (max-width: 768px) {
   .container {
-    height: 100vh;
+    /*height: 100vh;*/
     width: 400px;
     margin: 0 1rem;
   }

@@ -21,7 +21,7 @@ export default function EventInfo() {
 
       <div className={Styles["contact-info"]}>
         <p>More Questions? Contact us:</p>
-        <div>Manideep: 96037 15582</div>
+        <div>Binaya: 72059 26337</div>
         <div>Nayandeep: 81309 70929</div>
       </div>
     </div>

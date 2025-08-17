@@ -57,6 +57,7 @@
   /* border-bottom: 1px solid #444444; */
   color: #fff;
   cursor: pointer;
+	background: var(--shadow-gray);
 }
 
 .Qna p {
@@ -115,6 +116,10 @@
   .contact-info {
     justify-content: center;
   }
+	.contact-info div {
+		width: 250px;
+  }
+
   .Top_header {
 	align-items: center;
 	flex-direction: column;
@@ -122,4 +127,7 @@
   .Top_header div {
 	text-align: center;
   }
+	.Ans {
+  padding: 5px 0;
+	}
 }

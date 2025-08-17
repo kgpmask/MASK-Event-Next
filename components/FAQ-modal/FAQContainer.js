@@ -13,7 +13,7 @@ export default function FAQContainer({ FAQs }) {
 	return (
 		<div className={Styles["FAQ"]}>
 			{FAQs.map((value, i) => (
-				<FAQ key={i} heading={value.heading} description={value.description} onClick={() => clickHandler(i)} expanded={expanded === i}/>
+				<FAQ key={i} heading={value.heading} description={value.description} onClick={() => clickHandler(i)} expanded={true}/>
 			))}
 		</div>
 	)

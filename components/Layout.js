@@ -1,8 +1,11 @@
 import Navbar from "@/components/Base/Navbar.js";
 import Footer from "@/components/Base/Footer.js";
 import Styles from "@/styles/Layout.module.css";
+import { useRouter } from "next/router";
 
 export default function Home({ children }) {
+	const router = useRouter();
+	const hideFooter = router.pathname.startsWith("/live");
 	return (
 		<>
 			<div className={Styles["background"]}></div>
@@ -13,7 +16,7 @@ export default function Home({ children }) {
 						{children}
 					</div>
 				</main>
-				<Footer />
+				{!hideFooter && <Footer />}
 			</div>
 		</>
 	);

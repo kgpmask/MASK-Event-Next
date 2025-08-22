@@ -11,8 +11,8 @@ export default function EventInfo() {
       <div className={Styles["Top_header"]}>
         <div>
           <h1>Event Information</h1>
-          <p className={Styles["para"]}>Date/Time: 18th August, 2024, 2:30 PM</p>
-          <p>Venue: V3, Vikramshila</p>
+          <p className={Styles["para"]}>Date/Time: 24th August, 2025, 12:30 PM</p>
+          <p>Venue: Kalidas Auditorium</p>
         </div>
         <button onClick={() => router.push('/live')}>Quiz Portal</button>
       </div>

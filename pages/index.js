@@ -13,6 +13,7 @@ export default function Home() {
 				<meta name="description" content="This site is made by the WebD Team of MASK with love" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 				<link rel="icon" href="/favicon.ico" />
+				<meta name="darkreader-lock" />
 			</Head>
       		<TextArea>
 				<EventInfo />

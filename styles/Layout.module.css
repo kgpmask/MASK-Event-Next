@@ -16,6 +16,15 @@
 	align-items: center;
 
 }
+.flex-container-live {
+  min-height: 100vh;
+  display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+
+}
+
 .container {
   display: flex;
   justify-content: center;

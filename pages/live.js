@@ -47,7 +47,7 @@ const LivePage = () => {
     setQuestion(question);
     answer.current = null;
 
-		setTimeRemaining(type === "mcq" ? 20 : 30);
+	  	setTimeRemaining(question.isHard ? (type === "mcq" ? 30 : 40): (type === "mcq" ? 20 : 30));
 		setState("attempting");
 	};
 
@@ -56,10 +56,6 @@ const LivePage = () => {
     const response =
       question.type === "mcq" ? answer.current : answer.current.trim();
     console.log(args);
-    // if(response == '') return;
-
-    // console.log({questionNo, response});
-
     fetch("/api/live/submit-answer", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -72,17 +68,6 @@ const LivePage = () => {
         setQuestion(null);
         setState(args?.timeout && response === "" ? "timeover" : "submitted");
       });
-
-    // fetch('/api/live/submit-answer', {
-    // 	method: 'POST',
-    // 	headers: { 'Content-Type': 'application/json' },
-    // 	body: JSON.stringify({ questionNo, response })
-    // }).then(res => res.text()).then(res => {
-    // 	// console.log(res);
-    // 	setTimeRemaining(0);
-    // 	setQuestion(null);
-    // 	setState(args?.timeout && (response === '') ? 'timeover' : 'submitted');
-    // });
   };
 
   const timeoutSubmit = useCallback(() => {
@@ -112,7 +97,7 @@ const LivePage = () => {
 
 		socket.on("connect", onSocketConnect);
 		socket.on("disconnect", onSocketDisconnect);
-		socket.on("timeout", () => setTimeout(() => {setState('waiting')}, 3000));
+		socket.on("timeout", () => setTimeout(() => {setState('waiting')}, 4500));
 		socket.on("start-quiz", () => setState("instructions"));
 		socket.on("end-quiz", () => router.push("/results"));
 
@@ -178,7 +163,7 @@ const LivePage = () => {
 					.listeners("question")
 					.splice(0, socket.listeners("question").length);
 				setRenderComponent(<TimeoverMessage />);
-				setTimeoutId(setTimeout(() => setState("waiting"), 3_000));
+				setTimeoutId(setTimeout(() => setState("waiting"), 4_500));
 				break;
 			default:
 				setRenderComponent(<MessageCard message={"Polayadi Mone"} />);

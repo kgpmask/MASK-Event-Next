@@ -16,15 +16,16 @@ const startQuestionHandler = async (req, res) => {
 	process.env.QUES_NO = ~~req.body.questionNo;
 	handlerContext.lastQuestion = req.body.questionNo;
 	// console.log("START:", handlerContext);
+	const delay = req.body.isHard
+		? (req.body.type === "mcq" ? 35000 : 45000)
+		: (req.body.type === "mcq" ? 25000 : 35000);
 	setTimeout(
 		() => {
 			console.log("BEFORE CLEAR:", handlerContext)
 			process.env.QUES_NO = 'null';
 			Record.insertMany(handlerContext.cachedRecords)
-			.then(() => handlerContext.cachedRecords = []);
-		},
-		req.body.type === "mcq" ? 25000 : 35000
-	);
+				.then(() => handlerContext.cachedRecords = []);
+		}, delay);
 
 	return res.status(200).send("Question updated");
 };

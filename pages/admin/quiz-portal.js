@@ -112,6 +112,7 @@ export default function QuizPortalPage() {
         body: JSON.stringify({
           questionNo: question.questionNo,
           type: question.type,
+		  isHard: question.isHard,
         }),
       });
 
@@ -133,12 +134,15 @@ export default function QuizPortalPage() {
         });
         const result2 = await response2.text();
         // console.log(result2);
+		const delay2 = question.isHard
+			  ? (question.type === "mcq" ? 30000 : 40000 )
+			  : (question.type === "mcq" ? 20000 : 30000 )
         setTimeout(
           () => {
             setDisabled(false);
             setQuestionState("Start Question");
           },
-          question.type === "mcq" ? 20000 : 30000
+          delay2
         );
       }
     } catch (error) {
@@ -163,7 +167,10 @@ export default function QuizPortalPage() {
               <p>{`Question #${currentQ}`}</p>
             </div>
             {questionState === "Timer Started" && (
-              <Timer time={questions[currentQ]?.type === "mcq" ? 20 : 30} />
+              <Timer time={questions[currentQ]?.isHard
+				  ? (questions[currentQ]?.type === "mcq" ? 30 : 40)
+				  : (questions[currentQ]?.type === "mcq" ? 20 : 30)
+			  } />
             )}
           </div>
         )}

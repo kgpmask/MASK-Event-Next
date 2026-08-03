@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 
-import ForbiddenCard from "@/components/admin/ForbiddenCard";
 import AdminContent from "@/components/admin/AdminContent";
-import styles from "@/styles/Admin.module.css";
+import ErrorPage from "@/pages/_error";
 
 export default function AdminPage() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -34,7 +33,7 @@ export default function AdminPage() {
     checkAdminStatus();
   }, []);
 
-  if (!isAdmin) return <ForbiddenCard />;
+  if (!isAdmin) return <ErrorPage statusCode={404} />;
 
   return (
     <>

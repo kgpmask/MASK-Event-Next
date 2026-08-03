@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
-import ForbiddenCard from "@/components/admin/ForbiddenCard";
-import AdminContent from "@/components/admin/AdminContent";
+import ErrorPage from "@/pages/_error";
 import Timer from "@/components/Quiz/Timer";
 import styles from "@/styles/Admin.module.css";
 
@@ -10,7 +9,6 @@ import socket from "@/socket";
 
 export default function QuizPortalPage() {
   const router = useRouter();
-  const [hasChecked, setHasChecked] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [questionState, setQuestionState] = useState("Start Question");
@@ -77,18 +75,20 @@ export default function QuizPortalPage() {
     const fetchQuestions = async () => {
       try {
         if (questions.length) return;
+        let storedQuestions = JSON.parse(localStorage.getItem("questions") ?? "");
         if (
-          !localStorage.getItem("questions") ||
-          !localStorage.getItem("questions").length
+          !storedQuestions ||
+          !storedQuestions.length
         ) {
           const response = await fetch("/api/live/get-questions");
           if (response.status !== 201) throw new Error(await response.text());
 
           const fetchedQuestions = await response.text();
           localStorage.setItem("questions", fetchedQuestions);
+          storedQuestions = fetchedQuestions;
         }
 
-        setQuestions(JSON.parse(localStorage.getItem("questions")));
+        setQuestions(storedQuestions);
         setStart(true);
       } catch (err) {
         console.error("Error fetching questions:", err);
@@ -146,7 +146,7 @@ export default function QuizPortalPage() {
     }
   };
 
-  //if (!isAdmin) return <ForbiddenCard />;
+  if (!isAdmin) return <ErrorPage statusCode={404} />;
 
   return (
     <>

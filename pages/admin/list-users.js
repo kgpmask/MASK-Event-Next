@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import ForbiddenCard from "@/components/admin/ForbiddenCard";
 import UserCard from "@/components/admin/UserCard";
+import ErrorPage from "@/pages/_error";
 import styles from "@/styles/Admin.module.css";
 //import MessageCard from "@/components/live/utils/MessageCard";
 
@@ -63,7 +63,7 @@ export default function ListUsersPage() {
 		}
 	}, [isAdmin]);
 
-	if (!isAdmin) return <ForbiddenCard />;
+	if (!isAdmin) return <ErrorPage statusCode={404} />;
 
 	return (
 		<>

@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import ErrorPage from "@/pages/_error";
 import styles from "@/styles/Admin.module.css";
 
 export default function EditUserPage() {
@@ -12,6 +13,20 @@ export default function EditUserPage() {
   const [password, setPassword] = useState("");
 
   const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const response = (await (await fetch("/api/check-admin")).json())
+          .isAdmin;
+        setIsAdmin(response);
+      } catch (err) {
+        console.error("Error checking admin status:", err);
+      }
+    };
+
+    checkAdmin();
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -60,7 +75,7 @@ export default function EditUserPage() {
     }
   };
 
-  //if (!isAdmin) return <ForbiddenCard />;
+  if (!isAdmin) return <ErrorPage statusCode={404} />;
 
   if (!user) return <div>Loading...</div>;
 

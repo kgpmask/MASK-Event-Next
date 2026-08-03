@@ -7,7 +7,7 @@ const getQuestionsHandler = async (req, res) => {
 		return res.status(403).send("You are NOT an admin. Go away immediately.");
 	await dbInit();
 	const questions = await Question.find({ quizId: process.env.QUIZ_ID })
-		.lean()
+		.lean({ defaults: true })
 		.sort({ questionNo: "asc" });
 	return res.status(201).json(questions);
 };

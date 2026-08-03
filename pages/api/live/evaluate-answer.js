@@ -16,7 +16,9 @@ const evaluateAnswerHandler = async (req, res) => {
 
 	await dbInit();
 	const users = await User.find().lean();
-	const questions = await Question.find({ quizId }).lean().sort({ questionNo: 'asc' });
+	const questions = await Question.find({ quizId })
+		.lean({ defaults: true })
+		.sort({ questionNo: 'asc' });
 	const records = await Record.find({ quizId }).lean();
 
 	records.forEach(({ userId, questionNo, response }) => {
@@ -32,10 +34,9 @@ const evaluateAnswerHandler = async (req, res) => {
 		const ques = questions.find((q) => q.questionNo === questionNo);
 		// console.log("LIST OF QUESTIONS", questions);
 		// console.log(ques);
-		const { answer, type, isHard } = questions.find((q) => q.questionNo === questionNo);
+		const { answer, type, score } = questions.find((q) => q.questionNo === questionNo);
 		const user = results.find((obj) => obj.userId === userId);
-		const score = evaluateAnswer(response, answer, type);
-		user.points += isHard ? 2 * score : score;
+		user.points += evaluateAnswer(response, answer, type, score);
 	});
 
 

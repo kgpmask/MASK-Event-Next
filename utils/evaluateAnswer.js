@@ -15,23 +15,23 @@ const editDistance = (a, b) => {
     return dp[lenA][lenB];
 }
 
-const evaluatedPoints = (response, solutions) => {
+const evaluatedPoints = (response, solutions, score) => {
 	const normalisedDistances = solutions.map(answer => {
 		const minDistance = editDistance(response.toLowerCase(), answer.toLowerCase());
 		return minDistance / answer.length;
 	}).sort((a, b) => -(a < b))[0];
-	if (normalisedDistances <= 0.1) return 200;
-	if (normalisedDistances <= 0.2) return 150;
-	if (normalisedDistances <= 0.3) return 100;
+	if (normalisedDistances <= 0.1) return score;
+	if (normalisedDistances <= 0.2) return Math.round(0.75 * score);
+	if (normalisedDistances <= 0.3) return Math.round(0.5 * score);
 	return 0;
 }
 
-const evaluateAnswer = (response, answer, type) => {
+const evaluateAnswer = (response, answer, type, score = 200) => {
 	switch (type) {
 		case 'mcq':
-			return 200 * (~~response === ~~answer);
+			return score * (~~response === ~~answer);
 		case 'text':
-			return evaluatedPoints(response, answer);
+			return evaluatedPoints(response, answer, score);
 		default:
 			return 0;
 	}

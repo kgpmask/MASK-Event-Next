@@ -1,6 +1,7 @@
 import handlerContext from "@/utils/handlerContext";
 import Record from "@/database/models/Record";
 import checkAdmin from "@/utils/checkAdmin";
+import { serverQuestionTime } from "@/utils/questionTiming";
 
 const startQuestionHandler = async (req, res) => {
 	if (!(await checkAdmin(req.cookies.sessionId)))
@@ -27,7 +28,7 @@ const startQuestionHandler = async (req, res) => {
 				handlerContext.cachedRecords = [];
 			}
 		},
-		req.body.type === "mcq" ? 25000 : 35000
+		serverQuestionTime(req.body.type) * 1000
 	);
 
 	return res.status(200).send("Question updated");

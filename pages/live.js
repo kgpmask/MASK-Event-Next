@@ -11,6 +11,7 @@ import SubmitMessage from "@/components/Quiz/SubmitMessage";
 import WaitingMessage from "@/components/Quiz/WaitingMessage";
 import TimeoverMessage from "@/components/Quiz/TimeoverMessage";
 import LiveInstructions from "@/components/Quiz/LiveInstructions";
+import questionTime from "@/utils/questionTiming";
 
 import socket from "@/socket";
 
@@ -47,14 +48,16 @@ const LivePage = () => {
     setQuestion(question);
     answer.current = null;
 
-		setTimeRemaining(type === "mcq" ? 20 : 30);
+		setTimeRemaining(questionTime(type));
 		setState("attempting");
 	};
 
   const submissionHandler = (args) => {
     const questionNo = question.questionNo;
     const response =
-      question.type === "mcq" ? answer.current : answer.current.trim();
+      question.type === "text"
+        ? answer.current.trim()
+        : answer.current;
     console.log(args);
     // if(response == '') return;
 

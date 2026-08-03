@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import ErrorPage from "@/pages/_error";
 import Timer from "@/components/Quiz/Timer";
 import DifficultyBadge from "@/components/Quiz/DifficultyBadge";
+import questionTime from "@/utils/questionTiming";
 import styles from "@/styles/Admin.module.css";
 
 import socket from "@/socket";
@@ -139,7 +140,7 @@ export default function QuizPortalPage() {
             setDisabled(false);
             setQuestionState("Start Question");
           },
-          question.type === "mcq" ? 20000 : 30000
+          questionTime(question.type) * 1000
         );
       }
     } catch (error) {
@@ -176,7 +177,7 @@ export default function QuizPortalPage() {
               <DifficultyBadge difficulty={questions[currentQ]?.difficulty} />
             </div>
             {questionState === "Timer Started" && (
-              <Timer time={questions[currentQ]?.type === "mcq" ? 20 : 30} />
+              <Timer time={questionTime(questions[currentQ]?.type)} />
             )}
           </div>
         )}

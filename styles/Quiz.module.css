@@ -137,6 +137,46 @@
   box-sizing: border-box;
 }
 
+.mtf {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.mtf-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.mtf-left {
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  flex: 1;
+  text-align: left;
+}
+
+.mtf-select {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  font-size: 0.9rem;
+  background-color: var(--shadow-gray);
+  color: var(--off-white);
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.mtf-select option {
+  background-color: var(--shadow-gray);
+  color: var(--off-white);
+}
+
 .submit {
   display: flex;
   justify-content: center;

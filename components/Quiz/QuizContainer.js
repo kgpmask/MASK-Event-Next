@@ -1,6 +1,8 @@
 import Styles from "@/styles/Quiz.module.css";
 import OptionContainer from "./OptionContainer";
 import TextInput from "./TextInput";
+import MatchTheFollowing from "./MatchTheFollowing";
+import { mcqOptions } from "@/utils/questionOptions";
 import { useState, useEffect } from "react";
 import Timer from "./Timer";
 import WaitingMessage from "./WaitingMessage";
@@ -49,8 +51,10 @@ export default function QuizContainer({
             <OptionContainer
               selected={answer}
               setSelected={setAnswer}
-              options={question.options}
+              options={mcqOptions(question.options)}
             />
+          ) : question.type === "mtf" ? (
+            <MatchTheFollowing options={question.options} onChange={setAnswer} />
           ) : (
             <TextInput text={answer} setText={setAnswer} />
           )}

@@ -26,12 +26,25 @@ const evaluatedPoints = (response, solutions, score) => {
 	return 0;
 }
 
+const arraysMatch = (response, answer) =>
+	Array.isArray(response) &&
+	Array.isArray(answer) &&
+	response.length === answer.length &&
+	response.every((val, i) => +val === +answer[i]);
+
+const parseList = (value) =>
+	Array.isArray(value) ? value : String(value).split(',').map(Number);
+
 const evaluateAnswer = (response, answer, type, score = 200) => {
 	switch (type) {
 		case 'mcq':
 			return score * (~~response === ~~answer);
-		case 'text':
-			return evaluatedPoints(response, answer, score);
+		case 'mtf':
+			return arraysMatch(parseList(response), parseList(answer)) ? score : 0;
+		case 'text': {
+			const solutions = Array.isArray(answer) ? answer : [answer];
+			return evaluatedPoints(response, solutions, score);
+		}
 		default:
 			return 0;
 	}

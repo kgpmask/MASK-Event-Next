@@ -5,21 +5,28 @@ import TimeoverMessage from "@/components/Quiz/TimeoverMessage";
 import MessageCard from "@/components/Quiz/MessageCard";
 import SubmitMessage from "@/components/Quiz/SubmitMessage";
 import SampleInstructions from "@/components/Quiz/SampleInstructions";
+import questionTime from "@/utils/questionTiming";
 
 const dummyApiResponse = {
   questions: [
     {
+      questionNo: 6,
+      title: "Sample Round",
+      question: "Match each character to their series.",
+      options:
+        "Light Yagami,Monkey D. Luffy,Itachi Uchiha|Death Note,One Piece,Naruto,Bleach,Dragon Ball Z",
+      type: "mtf",
+      answer: "0,1,2",
+      difficulty: "hard",
+      score: 300,
+    },
+    {
       questionNo: 1,
       title: "Sample Round",
       question: "Who is the protagonist of 'Naruto'?",
-      options: [
-        "Sasuke Uchiha",
-        "Naruto Uzumaki",
-        "Sakura Haruno",
-        "Kakashi Hatake",
-      ],
+      options: "Sasuke Uchiha,Naruto Uzumaki,Sakura Haruno,Kakashi Hatake",
       type: "mcq",
-      answer: 1,
+      answer: "1",
       difficulty: "easy",
       score: 100,
     },
@@ -28,14 +35,9 @@ const dummyApiResponse = {
       title: "Sample Round",
       question:
         "In 'Attack on Titan', what is Eren Yeager's Titan form called?",
-      options: [
-        "Colossal Titan",
-        "Armored Titan",
-        "Attack Titan",
-        "Beast Titan",
-      ],
+      options: "Colossal Titan,Armored Titan,Attack Titan,Beast Titan",
       type: "mcq",
-      answer: 2,
+      answer: "2",
       difficulty: "medium",
       score: 200,
     },
@@ -43,9 +45,9 @@ const dummyApiResponse = {
       questionNo: 3,
       title: "Sample Round",
       question: "Which anime features the character 'Light Yagami'?",
-      options: ["Death Note", "Bleach", "One Piece", "Tokyo Ghoul"],
+      options: "Death Note,Bleach,One Piece,Tokyo Ghoul",
       type: "mcq",
-      answer: 0,
+      answer: "0",
       difficulty: "medium",
       score: 200,
     },
@@ -53,9 +55,9 @@ const dummyApiResponse = {
       questionNo: 4,
       title: "Sample Round",
       question: "In 'Dragon Ball Z', what is Goku's Saiyan name?",
-      options: ["Vegeta", "Raditz", "Kakarot", "Nappa"],
+      options: "Vegeta,Raditz,Kakarot,Nappa",
       type: "mcq",
-      answer: 2,
+      answer: "2",
       difficulty: "hard",
       score: 300,
     },
@@ -63,9 +65,9 @@ const dummyApiResponse = {
       questionNo: 5,
       title: "Sample Round",
       question: "Which anime involves 'Alchemy' as a central theme?",
-      options: ["Naruto", "Fullmetal Alchemist", "One Punch Man", "Fairy Tail"],
+      options: "Naruto,Fullmetal Alchemist,One Punch Man,Fairy Tail",
       type: "mcq",
-      answer: 1,
+      answer: "1",
       difficulty: "insane",
       score: 400,
     },
@@ -102,11 +104,20 @@ export default function SampleQuiz() {
   );
 
   const submitAnswer = ({ timeout }) => {
-    const correctAnswer = dummyApiResponse.questions[currentQuestion].answer;
-    if (~~userAnswer.current === ~~correctAnswer && userAnswer.current !== "") {
-      setScore(
-        (prevScore) => prevScore + dummyApiResponse.questions[currentQuestion].score
-      );
+    const question = dummyApiResponse.questions[currentQuestion];
+    let isCorrect;
+    if (question.type === "mtf") {
+      const answerList = String(question.answer).split(",").map(Number);
+      isCorrect =
+        Array.isArray(userAnswer.current) &&
+        userAnswer.current.length === answerList.length &&
+        userAnswer.current.every((val, i) => +val === +answerList[i]);
+    } else {
+      isCorrect =
+        ~~userAnswer.current === ~~question.answer && userAnswer.current !== "";
+    }
+    if (isCorrect) {
+      setScore((prevScore) => prevScore + question.score);
     }
     setState(timeout ? "timeout" : "submitted");
   };
@@ -121,7 +132,7 @@ export default function SampleQuiz() {
       userAnswer.current = "";
       setCurrentQuestion(idx);
       setState("attempting");
-      setTime(dummyApiResponse.questions[idx].type === "mcq" ? 15 : 25);
+      setTime(questionTime(dummyApiResponse.questions[idx].type));
 
       setTimeout(
         () => {
@@ -137,7 +148,7 @@ export default function SampleQuiz() {
             }, 4000);
           }, 2000);
         },
-        dummyApiResponse.questions[idx].type === "mcq" ? 15000 : 25000
+        questionTime(dummyApiResponse.questions[idx].type) * 1000
       );
     }
     question();

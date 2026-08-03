@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 
 import ErrorPage from "@/pages/_error";
 import Timer from "@/components/Quiz/Timer";
+import DifficultyBadge from "@/components/Quiz/DifficultyBadge";
 import styles from "@/styles/Admin.module.css";
 
 import socket from "@/socket";
@@ -161,6 +162,7 @@ export default function QuizPortalPage() {
               </p>
               <h2>Shiri Masu Ka?</h2>
               <p>{`Question #${currentQ}`}</p>
+              <DifficultyBadge difficulty={questions[currentQ]?.difficulty} />
             </div>
             {questionState === "Timer Started" && (
               <Timer time={questions[currentQ]?.type === "mcq" ? 20 : 30} />

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useMemo, useRef } from "react";
 import DummyQuizContainer from "@/components/Quiz/DummyQuizContainer";
 import WaitingMessage from "@/components/Quiz/WaitingMessage";
 import TimeoverMessage from "@/components/Quiz/TimeoverMessage";
@@ -20,6 +20,8 @@ const dummyApiResponse = {
       ],
       type: "mcq",
       answer: 1,
+      difficulty: "easy",
+      score: 100,
     },
     {
       questionNo: 2,
@@ -34,6 +36,8 @@ const dummyApiResponse = {
       ],
       type: "mcq",
       answer: 2,
+      difficulty: "medium",
+      score: 200,
     },
     {
       questionNo: 3,
@@ -42,6 +46,8 @@ const dummyApiResponse = {
       options: ["Death Note", "Bleach", "One Piece", "Tokyo Ghoul"],
       type: "mcq",
       answer: 0,
+      difficulty: "medium",
+      score: 200,
     },
     {
       questionNo: 4,
@@ -50,6 +56,8 @@ const dummyApiResponse = {
       options: ["Vegeta", "Raditz", "Kakarot", "Nappa"],
       type: "mcq",
       answer: 2,
+      difficulty: "hard",
+      score: 300,
     },
     {
       questionNo: 5,
@@ -58,6 +66,8 @@ const dummyApiResponse = {
       options: ["Naruto", "Fullmetal Alchemist", "One Punch Man", "Fairy Tail"],
       type: "mcq",
       answer: 1,
+      difficulty: "insane",
+      score: 400,
     },
   ],
 };
@@ -70,10 +80,15 @@ function Complete({ score }) {
         quiz
       </p>
       <br />
-      <p>Score: {score}/50</p>
+      <p>Score: {score}/{maxScore}</p>
     </MessageCard>
   );
 }
+
+const maxScore = dummyApiResponse.questions.reduce(
+  (total, q) => total + q.score,
+  0
+);
 
 export default function SampleQuiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -89,7 +104,9 @@ export default function SampleQuiz() {
   const submitAnswer = ({ timeout }) => {
     const correctAnswer = dummyApiResponse.questions[currentQuestion].answer;
     if (~~userAnswer.current === ~~correctAnswer && userAnswer.current !== "") {
-      setScore((prevScore) => prevScore + 10);
+      setScore(
+        (prevScore) => prevScore + dummyApiResponse.questions[currentQuestion].score
+      );
     }
     setState(timeout ? "timeout" : "submitted");
   };

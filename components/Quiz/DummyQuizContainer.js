@@ -2,6 +2,7 @@ import Styles from "@/styles/Quiz.module.css";
 import OptionContainer from "./OptionContainer";
 import TextInput from "./TextInput";
 import Timer from "./Timer";
+import DifficultyBadge from "./DifficultyBadge";
 import { useState, useEffect } from "react";
 
 export default function QuizContainer({
@@ -31,6 +32,7 @@ export default function QuizContainer({
             <p className={Styles["round-name"]}>
               Question #{question.questionNo}
             </p>
+            <DifficultyBadge difficulty={question.difficulty} />
           </div>
           <Timer time={time} onTimeEnd={() => submitHandler(true)} />
         </div>

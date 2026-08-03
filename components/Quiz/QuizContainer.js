@@ -4,6 +4,7 @@ import TextInput from "./TextInput";
 import { useState, useEffect } from "react";
 import Timer from "./Timer";
 import WaitingMessage from "./WaitingMessage";
+import DifficultyBadge from "./DifficultyBadge";
 
 export default function QuizContainer({
   question,
@@ -38,6 +39,7 @@ export default function QuizContainer({
               {question.title.split(":")[0].trim()}
             </p>
             <p className={Styles["round-name"]}>Question #{question.questionNo}</p>
+            <DifficultyBadge difficulty={question.difficulty} />
           </div>
           <Timer time={time} onTimeEnd={() => submitHandler(true)} />
         </div>

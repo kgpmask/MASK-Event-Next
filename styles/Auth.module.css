@@ -31,9 +31,15 @@
   padding: 11px 10px;
   font-weight: 400;
 }
+.btnWrapper button:hover {
+  background-color: var(--dark-gray);
+}
 button.active {
   background-color: var(--red);
   color: var(--white);
+}
+button.active:hover {
+  background-color: var(--red)
 }
 .ContentWrapper {
   display: flex;
@@ -83,6 +89,9 @@ button.active {
   margin-bottom: 10px;
   width: 100%;
   font-weight: 500;
+}
+.inputWrapper button:hover {
+  background-color: var(--light-pink)
 }
 .inputWrapper input {
   padding: 0.75rem 20px;

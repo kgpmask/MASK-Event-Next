@@ -78,7 +78,7 @@ const assignRank2 = (resultsJSON) => {
 
 
 export default function Results() {
-	const [results, setResults] = useState(null);
+	const [results, setResults] = useState(0);
 	const [lastQuestion, setLastQuestion] = useState(0);
 
 	const fetchResults = async () => {
@@ -120,10 +120,6 @@ export default function Results() {
 					<tbody>
 						{results.length !== 0} {
 							<tr onClick={() => window.open('/api/get-message', '_blank')}>
-								<td>{lastQuestion >= 45 ? 0 : 1}</td>
-								<td>{lastQuestion >= 45 ? '??????' : 'Cid'}</td>
-								<td>{lastQuestion >= 45 ? '??????' : 'kagenou_cid'}</td>
-								<td>{lastQuestion >= 45 ? 10001 : (lastQuestion > 40 ? 40 * 200 + (lastQuestion - 40) * 400 : lastQuestion * 200)}</td>
 							</tr>
 						}
 						{

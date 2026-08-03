@@ -3,6 +3,7 @@ import { TiTick } from "react-icons/ti";
 import { useState } from "react";
 import Styles from "@/styles/FAQ.module.css";
 import { FaRegCircleCheck } from "react-icons/fa6";
+import Link from "next/link";
 
 export default function FAQ({ heading, description, onClick, expanded }) {
   return (
@@ -22,7 +23,7 @@ export default function FAQ({ heading, description, onClick, expanded }) {
           expanded ? Styles["Ans"] + " " + Styles["open"] : Styles["Ans"]
         }
       >
-        <p>{description}</p>
+        <p>{description}{" "}{heading.toLowerCase().includes("register") ? <Link href="/login" style={{color: "var(--red)"}}> here </Link> : null}</p>
       </div>
     </div>
   );

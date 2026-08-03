@@ -24,7 +24,8 @@ app.prepare().then(async () => {
 
 		socket.on('question', question => {
 			io.to(process.env.QUIZ_ID).emit('question', question);
-			setTimeout(() => io.to(process.env.QUIZ_ID).emit('timeout', ''), question.type === 'mcq' ? 25_000 : question.type === 'mtf' ? 45_000 : 35_000);
+			const hardBonus = question.difficulty === 'hard' ? 10_000 : question.difficulty === 'insane' ? 20_000 : 0;
+			setTimeout(() => io.to(process.env.QUIZ_ID).emit('timeout', ''), (question.type === 'mcq' ? 25_000 : question.type === 'mtf' ? 45_000 : 35_000) + hardBonus);
 		});
 
 		socket.on('end-quiz', () => {

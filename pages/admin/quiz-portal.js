@@ -114,6 +114,7 @@ export default function QuizPortalPage() {
         body: JSON.stringify({
           questionNo: question.questionNo,
           type: question.type,
+          difficulty: question.difficulty,
         }),
       });
 
@@ -140,7 +141,7 @@ export default function QuizPortalPage() {
             setDisabled(false);
             setQuestionState("Start Question");
           },
-          questionTime(question.type) * 1000
+          questionTime(question.type, question.difficulty) * 1000
         );
       }
     } catch (error) {
@@ -177,7 +178,7 @@ export default function QuizPortalPage() {
               <DifficultyBadge difficulty={questions[currentQ]?.difficulty} />
             </div>
             {questionState === "Timer Started" && (
-              <Timer time={questionTime(questions[currentQ]?.type)} />
+              <Timer time={questionTime(questions[currentQ]?.type, questions[currentQ]?.difficulty)} />
             )}
           </div>
         )}

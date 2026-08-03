@@ -4,8 +4,19 @@ const CLIENT_SECONDS = {
 	text: 30,
 };
 
-const questionTime = (type) => CLIENT_SECONDS[type] || 30;
+const HARD_BONUS = {
+	easy: 0,
+	medium: 0,
+	hard: 10,
+	insane: 20,
+};
 
-export const serverQuestionTime = (type) => questionTime(type) + 5;
+const questionTime = (type, difficulty = "medium") => {
+	const base = CLIENT_SECONDS[type] || 30;
+	return base + (HARD_BONUS[difficulty] || 0);
+};
+
+export const serverQuestionTime = (type, difficulty = "medium") =>
+	questionTime(type, difficulty) + 5;
 
 export default questionTime;

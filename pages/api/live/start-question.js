@@ -28,7 +28,7 @@ const startQuestionHandler = async (req, res) => {
 				handlerContext.cachedRecords = [];
 			}
 		},
-		serverQuestionTime(req.body.type) * 1000
+		serverQuestionTime(req.body.type, req.body.difficulty) * 1000
 	);
 
 	return res.status(200).send("Question updated");

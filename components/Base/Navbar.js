@@ -35,6 +35,7 @@ const Navbar = () => {
 	// 	setActive(index); // Set active state to the currently clicked item
 	// }
 	const router = useRouter();
+	const disableLogo = router.pathname.startsWith("/live");
 	useEffect(() => {
 		document.querySelector("#content-wrap").className = burgerOpen
 			? "burger-open"
@@ -59,28 +60,46 @@ const Navbar = () => {
 	return (
 		<div className={Styles["container"]}>
 			<div className={Styles["content"]}>
-				<Link
-					href="/"
-					style={{
-						padding: "16px 16px",
-						verticalAlign: "middle",
-					}}
-					className="nohover"
-					target="_self"
-				>
-					<Image
-						src="/logo.jpeg"
-						alt="Logo"
-						width={40}
-						height={40}
-						className={Styles["logo"]}
-					/>
-				</Link>
+				{disableLogo ? (
+					<div
+						style={{
+							padding: "16px 16px",
+							verticalAlign: "middle",
+						}}
+						className="nohover"
+					>
+						<Image
+							src="/logo.jpeg"
+							alt="Logo"
+							width={40}
+							height={40}
+							className={Styles["logo"]}
+						/>
+					</div>				) : (
+						<Link
+							href="/"
+							style={{
+								padding: "16px 16px",
+								verticalAlign: "middle",
+							}}
+							className="nohover"
+							target="_self"
+						>
+							<Image
+								src="/logo.jpeg"
+								alt="Logo"
+								width={40}
+								height={40}
+								className={Styles["logo"]}
+							/>
+						</Link>
+					)}
+
 				<ul className={Styles["list"]}>
 					{navItems.filter(item => (item.name === "Profile" && username) || item.name !== "Profile").map((item, index) => (
 						<li
 							key={index}
-						// onClick={() => handleClick(index)}
+							// onClick={() => handleClick(index)}
 						>
 							<Link href={item.href} className={Styles["navlink"]}>
 								{item.name}

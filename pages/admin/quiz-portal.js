@@ -75,7 +75,7 @@ export default function QuizPortalPage() {
     const fetchQuestions = async () => {
       try {
         if (questions.length) return;
-        let storedQuestions = JSON.parse(localStorage.getItem("questions") ?? "");
+        let storedQuestions = JSON.parse(localStorage.getItem("questions") ?? "[]");
         if (
           !storedQuestions ||
           !storedQuestions.length
@@ -85,7 +85,7 @@ export default function QuizPortalPage() {
 
           const fetchedQuestions = await response.text();
           localStorage.setItem("questions", fetchedQuestions);
-          storedQuestions = fetchedQuestions;
+          storedQuestions = JSON.parse(fetchedQuestions);
         }
 
         setQuestions(storedQuestions);

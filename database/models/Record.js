@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const recordSchema = new mongoose.Schema({
 	userId: { type: String, required: true },
-	quizId: { type: String, required: true, default: 'OCAQ-2024' },
+	quizId: { type: String, required: true, default: () => process.env.QUIZ_ID },
 	questionNo: { type: Number, required: true },
 	response: { type: String, required: false}
 }, { collection: 'ocaq-records' });

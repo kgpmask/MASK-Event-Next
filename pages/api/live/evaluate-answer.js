@@ -15,6 +15,10 @@ const evaluateAnswerHandler = async (req, res) => {
 	const results = [];
 
 	await dbInit();
+	if (handlerContext.cachedRecords.length) {
+		await Record.insertMany(handlerContext.cachedRecords);
+		handlerContext.cachedRecords = [];
+	}
 	const users = await User.find().lean();
 	const questions = await Question.find({ quizId })
 		.lean({ defaults: true })
@@ -22,21 +26,17 @@ const evaluateAnswerHandler = async (req, res) => {
 	const records = await Record.find({ quizId }).lean();
 
 	records.forEach(({ userId, questionNo, response }) => {
-		if (~~questionNo <= 0 ) return;
-		if (!results.find((obj) => obj.userId === userId))
-			results.push({
-				userId,
-				username: users.find((u) => u._id === userId).username,
-				name: users.find((u) => u._id === userId).name,
-				points: 0,
-			});
-		// console.log("QUES NO:", questionNo);
+		if (~~questionNo <= 0) return;
+		const user = users.find((u) => u._id === userId);
+		if (!user) return;
 		const ques = questions.find((q) => q.questionNo === questionNo);
-		// console.log("LIST OF QUESTIONS", questions);
-		// console.log(ques);
-		const { answer, type, score } = questions.find((q) => q.questionNo === questionNo);
-		const user = results.find((obj) => obj.userId === userId);
-		user.points += evaluateAnswer(response, answer, type, score);
+		if (!ques) return;
+		let result = results.find((obj) => obj.userId === userId);
+		if (!result) {
+			result = { userId, username: user.username, name: user.name, points: 0 };
+			results.push(result);
+		}
+		result.points += evaluateAnswer(response, ques.answer, ques.type, ques.score);
 	});
 
 

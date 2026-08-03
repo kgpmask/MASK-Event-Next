@@ -147,6 +147,17 @@ export default function QuizPortalPage() {
     }
   };
 
+  const endQuiz = async () => {
+    if (!start) return;
+    try {
+      await fetch("/api/live/evaluate-answer");
+    } catch (err) {
+      console.error("Error evaluating answers:", err);
+    }
+    socket.emit("end-quiz");
+    router.push("/results");
+  };
+
   if (!isAdmin) return <ErrorPage statusCode={404} />;
 
   return (
@@ -204,7 +215,13 @@ export default function QuizPortalPage() {
               Start Quiz
             </button>
           )}
-          <button className={styles["end-quiz"]}>End Quiz</button>
+          <button
+            onClick={endQuiz}
+            disabled={!start}
+            className={[styles["end-quiz"], !start ? styles["disabled"] : ""].join(" ")}
+          >
+            End Quiz
+          </button>
         </div>
       </div>
     </>

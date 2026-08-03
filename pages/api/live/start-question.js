@@ -20,8 +20,12 @@ const startQuestionHandler = async (req, res) => {
 		() => {
 			console.log("BEFORE CLEAR:", handlerContext)
 			process.env.QUES_NO = 'null';
-			Record.insertMany(handlerContext.cachedRecords)
-			.then(() => handlerContext.cachedRecords = []);
+			if (handlerContext.cachedRecords.length) {
+				Record.insertMany(handlerContext.cachedRecords)
+				.then(() => handlerContext.cachedRecords = []);
+			} else {
+				handlerContext.cachedRecords = [];
+			}
 		},
 		req.body.type === "mcq" ? 25000 : 35000
 	);

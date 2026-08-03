@@ -3,14 +3,13 @@ import cachedResults from "@/utils/cachedResults";
 import dbInit from "@/database/dbInit";
 import Result from "@/database/models/Result";
 import User from "@/database/models/User";
-import checkAdmin from "@/utils/checkAdmin";
 
 const getResultsHandler = async (req, res) => {
 	if (!req.cookies.sessionId)
 		return res
 			.status(401)
 			.send("You are not logged in. Please log in to continue.");
-	if (cachedResults.results.length == 0 && await checkAdmin(req.cookies.sessionId)) {
+	if (cachedResults.results.length == 0) {
 		await dbInit();
 		const users = await User.find().lean();
 		// console.log("USERS: ", users);

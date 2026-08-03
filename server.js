@@ -26,6 +26,10 @@ app.prepare().then(async () => {
 			io.to(process.env.QUIZ_ID).emit('question', question);
 			setTimeout(() => io.to(process.env.QUIZ_ID).emit('timeout', ''), question.type === 'mcq' ? 25_000 : 35_000);
 		});
+
+		socket.on('end-quiz', () => {
+			io.to(process.env.QUIZ_ID).emit('end-quiz', '');
+		});
 	});
 
   httpServer

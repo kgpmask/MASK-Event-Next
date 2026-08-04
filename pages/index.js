@@ -1,8 +1,5 @@
 import Head from "next/head";
-import Styles from "@/styles/Home.module.css";
-import MainBody from "../components/MainBody";
 import TextArea from "@/components/Base/TextArea";
-import Profile from "@/pages/profile";
 import EventInfo from "@/components/FAQ-modal/EventInfo";
 
 export default function Home() {

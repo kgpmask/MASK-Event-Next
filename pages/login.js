@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "@/styles/Auth.module.css";
 import SignInForm from "@/components/Auth/SignInForm";
 import SignUpForm from "@/components/Auth/SignUpForm";
-import { useState } from "react";
+
 const App = () => {
   const [authState, setAuthState] = useState("signin");
 

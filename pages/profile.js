@@ -1,43 +1,39 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import Styles from "@/styles/Profile.module.css";
-import { IoClose } from "react-icons/io5";
 import { FaCamera } from "react-icons/fa";
 import LogOutModal from "@/components/profile/LogOutModal";
 import ProfilePicModal from "@/components/profile/EditProfilePicModal";
 import { useRouter } from "next/router";
-// import MessageCard from "@/components/live/utils/MessageCard";
 
 function Profile() {
   const [showLogOutModal, setShowLogOutModal] = useState(false);
   const [showProfilePicModal, setShowProfilePicModal] = useState(false);
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
-  const [bufferName, setBufferName] = useState("");
-  const [editName, setEditName] = useState(false);
   const [profilePic, setProfilePic] = useState("/default");
   const router = useRouter();
 
   // getting user data on page load
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchData() {
       const storedUser = localStorage.getItem("username");
       if (storedUser) {
         setUsername(localStorage.getItem("username"));
         setName(localStorage.getItem("name"));
         setProfilePic(localStorage.getItem("profilePic") || "/default");
-      } else {
+      } else if (isMounted) {
         return router.push("/login");
       }
     }
     fetchData();
-  }, []);
 
-  // name change when asked to edit
-  useEffect(() => {
-    if (editName) {
-      setBufferName(name);
-    }
-  }, [editName]);
+    return () => {
+      isMounted = false;
+    };
+  }, [router]);
 
   // sending updated data to server
   async function submitFunction(ctx) {
@@ -50,12 +46,10 @@ function Profile() {
         }),
       });
       if (response.status >= 400) throw await response.text();
-      // console.log(await response.text());
       if (ctx.profilePic !== undefined) {
         setProfilePic(ctx.profilePic);
         localStorage.setItem("profilePic", ctx.profilePic);
       }
-      // if (ctx.name !== undefined) setName(ctx.name);
     } catch (err) {
       console.error(err);
       alert("Something went wrong");
@@ -70,21 +64,18 @@ function Profile() {
     setShowProfilePicModal(true);
   };
 
-  // if (!username) return <MessageCard message={'Fetching user information'} />;
-
   return (
     <div className={Styles["container"]}>
       <div className={Styles["wrapper"]}>
         <div style={{ borderRadius: "10px" }}>
           <div className={Styles["block"]}>
-            {/* <IoClose className={Styles["cross"]} color='white' onClick={handleClose} /> */}
-            <img src={`/profile-pics/${profilePic}.webp`} alt="MASK" />
+            <Image src={`/profile-pics/${profilePic}.webp`} alt="MASK" />
           </div>
           <div
             className={Styles["profile-img-wrapper"]}
             onClick={handleProfilePicModal}
           >
-            <img
+            <Image
               src={`/profile-pics/${profilePic}.webp`}
               alt="MASK"
               className={Styles["profile-img"]}
@@ -103,23 +94,6 @@ function Profile() {
               }}
             >
               <h1>{name}</h1>
-              {/* {editName ?
-                                <input
-                                    value={bufferName}
-                                    onChange={e => setBufferName(e.target.value.trim())}
-                                    style={{ color: 'var(--black-100)', fontSize: '16px' }}
-                                    className={Styles["name-input-box"]}
-                                /> :
-                                <h1>{name}</h1>
-                            }
-                            {editName ?
-                                <><button className={Styles["save-name-btn"]} onClick={async () => {
-                                    await submitFunction({ name: bufferName });
-                                    setEditName(false);
-                                }}> Save </button>
-                                    <button className={Styles["back-name-btn"]} onClick={() => setEditName(false)}> Back </button></> :
-                                <button className={Styles['edit-name-btn']} onClick={() => setEditName(true)}>Edit</button>
-                            } */}
             </div>
             <span>{username}</span>
           </div>

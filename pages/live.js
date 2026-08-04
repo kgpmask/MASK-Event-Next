@@ -1,8 +1,6 @@
 import Head from "next/head";
-import Link from "next/link";
-import { Inter } from "next/font/google";
 import { useRouter } from "next/router";
-import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 
 import QuizContainer from "@/components/Quiz/QuizContainer";
 import MessageCard from "@/components/Quiz/MessageCard";
@@ -24,7 +22,6 @@ const LivePageHead = () => {
   );
 };
 
-// let idx = 0;
 const LivePage = () => {
   const [state, setState] = useState("instructions");
   const [timeRemaining, setTimeRemaining] = useState(0);
@@ -33,24 +30,18 @@ const LivePage = () => {
 
   const [question, setQuestion] = useState(null);
   const answer = useRef(null);
-  const [timeoutId, setTimeoutId] = useState(null);
-
-  const [socketConnected, setSocketConnected] = useState(false);
-  const [socketTransport, setSocketTransport] = useState("N/A");
 
   const router = useRouter();
 
   const questionHandler = (question) => {
-    // console.log(question);
-    if (state !== "waiting") return;
-
+    console.log(question);
     const type = question.type;
     setQuestion(question);
     answer.current = null;
 
-		setTimeRemaining(questionTime(type, question.difficulty));
-		setState("attempting");
-	};
+    setTimeRemaining(questionTime(type, question.difficulty));
+    setState("attempting");
+  };
 
   const submissionHandler = (args) => {
     const questionNo = question.questionNo;
@@ -58,14 +49,13 @@ const LivePage = () => {
       question.type === "text"
         ? answer.current.trim()
         : answer.current;
-    console.log(args);
     fetch("/api/live/submit-answer", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ questionNo, response }),
     })
       .then((res) => res.text())
-      .then((res) => {
+      .then((_res) => {
         // console.log(res);
         setTimeRemaining(0);
         setQuestion(null);
@@ -73,112 +63,87 @@ const LivePage = () => {
       });
   };
 
-  const timeoutSubmit = useCallback(() => {
-    if (state !== "attempting") return;
-    submissionHandler({ timeout: true });
-  });
-
   useEffect(() => {
+    let isMounted = true;
+
     if (
-      !document.cookie.includes("sessionId=") ||
-      document.cookie.split("sessionId=").pop().split(";")[0] === ""
+      (!document.cookie.includes("sessionId=") ||
+      document.cookie.split("sessionId=").pop().split(";")[0] === "") && isMounted
     ) {
       router.push("/login");
     }
 
-    const onSocketConnect = () => {
-      setSocketConnected(true);
-      setSocketTransport(socket.io.engine.transport.name);
-    };
+    socket.on("connect", () => {
+      // Get the current game state from the server
+    });
+    socket.on("disconnect", () => {
 
-    const onSocketDisconnect = () => {
-      setSocketConnected(false);
-      setSocketTransport("N/A");
-    };
-
-    if (socket.connected) onSocketConnect();
-
-		socket.on("connect", onSocketConnect);
-		socket.on("disconnect", onSocketDisconnect);
-		socket.on("timeout", () => setTimeout(() => {setState('waiting')}, 4500));
-		socket.on("start-quiz", () => setState("instructions"));
-		socket.on("end-quiz", () => router.push("/results"));
+    });
+    socket.on("timeout", () => {
+      if (state === "attempting") {
+        setState("timeover");
+      }
+    });
+    socket.on("start-quiz", () => setState("instructions"));
+    socket.on("end-quiz", () => router.push("/results"));
+    socket.on("question", questionHandler);
 
     return () => {
-      socket.off("connect", onSocketConnect);
-      socket.off("disconnect", onSocketDisconnect);
+      isMounted = false;
+      socket.off("connect");
+      socket.off("disconnect");
     };
   }, []);
 
-  // useMemo(() => {
-  // 	if (state !== "attempting") return setTimeRemaining(0);
-  // 	if (timeRemaining) {
-  // 		setTimeoutId(
-  // 			setTimeout(
-  // 				() =>
-  // 					console.log({ timeRemaining }) ||
-  // 					(timeRemaining && setTimeRemaining((timeRemaining || 1) - 1)),
-  // 				1_000
-  // 			)
-  // 		);
-  // 		return () => clearTimeout(timeoutId);
-  // 	}
-  // 	submissionHandler({ timeout: true });
-  // }, [timeRemaining]);
+  useMemo(() => {
+    switch (state) {
+      case "early":
+        setRenderComponent(<EndedNotStartedMessage isEarly={true} />);
+        break;
+      case "late":
+        setRenderComponent(<EndedNotStartedMessage />);
+        break;
+      case "instructions":
+        setRenderComponent(
+          <LiveInstructions buttonCallback={() => setState("waiting")} />
+        );
+        break;
+      case "waiting":
+        setRenderComponent(<WaitingMessage />);
+        break;
+      case "attempting":
+        setRenderComponent(
+          <QuizContainer
+            question={question}
+            time={timeRemaining}
+            submitAnswer={submissionHandler}
+            updateAnswer={(val) => answer.current = val}
+          />
+        );
+        break;
+      case "submitted":
+        socket
+          .listeners("question")
+          .splice(0, socket.listeners("question").length);
+        setRenderComponent(<SubmitMessage />);
+        break;
+      case "timeover":
+        socket
+          .listeners("question")
+          .splice(0, socket.listeners("question").length);
+        setRenderComponent(<TimeoverMessage />);
+        break;
+      default:
+        setRenderComponent(<MessageCard message={"Polayadi Mone"} />);
+    }
+  }, [state, question, /* questionHandler, submissionHandler, timeRemaining, timeoutId */]);
 
-	useMemo(() => {
-		switch (state) {
-			case "early":
-				setRenderComponent(<EndedNotStartedMessage isEarly={true} />);
-				break;
-			case "late":
-				setRenderComponent(<EndedNotStartedMessage />);
-				break;
-			case "instructions":
-				setRenderComponent(
-					<LiveInstructions buttonCallback={() => setState("waiting")} />
-				);
-				break;
-			case "waiting":
-				socket.on("question", (question) => questionHandler(question));
-				setRenderComponent(<WaitingMessage />);
-				break;
-			case "attempting":
-				setRenderComponent(
-					<QuizContainer
-						question={question}
-						time={timeRemaining}
-						submitAnswer={submissionHandler}
-						updateAnswer={(val) => answer.current = val}
-					/>
-				);
-				break;
-			case "submitted":
-				socket
-					.listeners("question")
-					.splice(0, socket.listeners("question").length);
-				clearTimeout(timeoutId);
-				setRenderComponent(<SubmitMessage />);
-				// setTimeoutId(setTimeout(() => setState("waiting"), 3000));
-				break;
-			case "timeover":
-				socket
-					.listeners("question")
-					.splice(0, socket.listeners("question").length);
-				setRenderComponent(<TimeoverMessage />);
-				setTimeoutId(setTimeout(() => setState("waiting"), 4_500));
-				break;
-			default:
-				setRenderComponent(<MessageCard message={"Polayadi Mone"} />);
-		}
-	}, [state]);
-
-	return (
-		<>
-			<LivePageHead />
-			{renderComponent}
-		</>
-	);
+  return (
+    <>
+      <LivePageHead />
+      {renderComponent}
+    </>
+  );
 };
 
 export default LivePage;

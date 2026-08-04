@@ -6,4 +6,4 @@ const handlerContext = {
 	lastQuestion: 0
 };
 
-export default handlerContext;
+module.exports = handlerContext;

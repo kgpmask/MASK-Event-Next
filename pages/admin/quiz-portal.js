@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import ErrorPage from "@/pages/_error";
 import Timer from "@/components/Quiz/Timer";
 import DifficultyBadge from "@/components/Quiz/DifficultyBadge";
-import questionTime from "@/utils/questionTiming";
+import { serverQuestionTime } from "@/utils/questionTiming";
 import styles from "@/styles/Admin.module.css";
 
 import socket from "@/socket";
@@ -47,11 +47,8 @@ export default function QuizPortalPage() {
   }, []);
 
   const onTimeEnd = () => {
+    setDisabled(false);
     setQuestionState("Start Question");
-  };
-
-  const toggleQuestionState = () => {
-    setQuestionState("Timer Started");
   };
 
   // useEffect(() => {
@@ -108,7 +105,7 @@ export default function QuizPortalPage() {
   const startQuestion = async () => {
     try {
       const question = questions[currentQ];
-      const response1 = await fetch("/api/live/start-question", {
+      const response = await fetch("/api/live/start-question", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -118,31 +115,10 @@ export default function QuizPortalPage() {
         }),
       });
 
-      const result1 = await response1.text();
-      // console.log(result1);
-
-      // const response = { status: 0 };
-      if (response1.status < 400) {
+      if (response.status < 400) {
         socket.emit("question", question);
         setDisabled(true);
         setQuestionState("Timer Started");
-        const response2 = await fetch("/api/live/start-question", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            questionNo: question.questionNo,
-            type: question.type,
-          }),
-        });
-        const result2 = await response2.text();
-        // console.log(result2);
-        setTimeout(
-          () => {
-            setDisabled(false);
-            setQuestionState("Start Question");
-          },
-          questionTime(question.type, question.difficulty) * 1000
-        );
       }
     } catch (error) {
       console.error("Error starting question:", error);
@@ -178,7 +154,10 @@ export default function QuizPortalPage() {
               <DifficultyBadge difficulty={questions[currentQ]?.difficulty} />
             </div>
             {questionState === "Timer Started" && (
-              <Timer time={questionTime(questions[currentQ]?.type, questions[currentQ]?.difficulty)} />
+              <Timer
+                time={serverQuestionTime(questions[currentQ]?.type, questions[currentQ]?.difficulty)}
+                onTimeEnd={onTimeEnd}
+              />
             )}
           </div>
         )}

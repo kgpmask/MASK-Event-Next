@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 
 import QuizContainer from "@/components/Quiz/QuizContainer";
 import MessageCard from "@/components/Quiz/MessageCard";
@@ -33,6 +33,8 @@ const LivePage = () => {
 
   const router = useRouter();
 
+  const stateRef = useRef(state);
+
   const questionHandler = (question) => {
     console.log(question);
     const type = question.type;
@@ -43,7 +45,7 @@ const LivePage = () => {
     setState("attempting");
   };
 
-  const submissionHandler = (args) => {
+  const submissionHandler = useCallback((args) => {
     const questionNo = question.questionNo;
     const response =
       question.type === "text"
@@ -56,12 +58,22 @@ const LivePage = () => {
     })
       .then((res) => res.text())
       .then((_res) => {
-        // console.log(res);
         setTimeRemaining(0);
         setQuestion(null);
         setState(args?.timeout && response === "" ? "timeover" : "submitted");
       });
-  };
+  }, [question]);
+
+  const onStartQuiz = () => setState("instructions");
+  const onEndQuiz = useCallback(() => router.push("/results"), [router]);
+  const onQuestion = (question) => questionHandlerRef.current(question);
+
+  const questionHandlerRef = useRef(questionHandler);
+
+  useEffect(() => {
+    stateRef.current = state;
+    questionHandlerRef.current = questionHandler;
+  });
 
   useEffect(() => {
     let isMounted = true;
@@ -73,27 +85,25 @@ const LivePage = () => {
       router.push("/login");
     }
 
-    socket.on("connect", () => {
-      // Get the current game state from the server
-    });
-    socket.on("disconnect", () => {
-
-    });
-    socket.on("timeout", () => {
-      if (state === "attempting") {
+    const onTimeout = () => {
+      if (stateRef.current === "attempting") {
         setState("timeover");
       }
-    });
-    socket.on("start-quiz", () => setState("instructions"));
-    socket.on("end-quiz", () => router.push("/results"));
-    socket.on("question", questionHandler);
+    };
+
+    socket.on("timeout", onTimeout);
+    socket.on("start-quiz", onStartQuiz);
+    socket.on("end-quiz", onEndQuiz);
+    socket.on("question", onQuestion);
 
     return () => {
       isMounted = false;
-      socket.off("connect");
-      socket.off("disconnect");
+      socket.off("timeout", onTimeout);
+      socket.off("start-quiz", onStartQuiz);
+      socket.off("end-quiz", onEndQuiz);
+      socket.off("question", onQuestion);
     };
-  }, []);
+  }, [onEndQuiz, router]);
 
   useMemo(() => {
     switch (state) {
@@ -122,21 +132,15 @@ const LivePage = () => {
         );
         break;
       case "submitted":
-        socket
-          .listeners("question")
-          .splice(0, socket.listeners("question").length);
         setRenderComponent(<SubmitMessage />);
         break;
       case "timeover":
-        socket
-          .listeners("question")
-          .splice(0, socket.listeners("question").length);
         setRenderComponent(<TimeoverMessage />);
         break;
       default:
         setRenderComponent(<MessageCard message={"Polayadi Mone"} />);
     }
-  }, [state, question, /* questionHandler, submissionHandler, timeRemaining, timeoutId */]);
+  }, [state, question, submissionHandler, timeRemaining]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const recordSchema = new mongoose.Schema({
 	userId: { type: String, required: true },
@@ -9,4 +9,4 @@ const recordSchema = new mongoose.Schema({
 	response: { type: String, required: false}
 }, { collection: 'ocaq-records' });
 
-export default mongoose.models.Record || mongoose.model('Record', recordSchema);
+module.exports = mongoose.models.Record || mongoose.model('Record', recordSchema);

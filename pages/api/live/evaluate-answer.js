@@ -6,6 +6,7 @@ import Question from '@/database/models/Question';
 import Record from '@/database/models/Record';
 import Result from '@/database/models/Result';
 import User from '@/database/models/User';
+import flushCachedRecords from '@/utils/flushCachedRecords';
 import checkAdmin from '@/utils/checkAdmin';
 
 const evaluateAnswerHandler = async (req, res) => {
@@ -15,10 +16,7 @@ const evaluateAnswerHandler = async (req, res) => {
 	const results = [];
 
 	await dbInit();
-	if (handlerContext.cachedRecords.length) {
-		await Record.insertMany(handlerContext.cachedRecords);
-		handlerContext.cachedRecords = [];
-	}
+	await flushCachedRecords();
 	const users = await User.find().lean();
 	const questions = await Question.find({ quizId })
 		.lean({ defaults: true })
@@ -38,9 +36,6 @@ const evaluateAnswerHandler = async (req, res) => {
 		}
 		result.points += evaluateAnswer(response, ques.answer, ques.type, ques.score);
 	});
-
-
-	// console.log("RESULTS: ", results);
 
 	cachedResults.results = results;
 	await Promise.all(

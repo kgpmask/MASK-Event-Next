@@ -1,6 +1,6 @@
 import handlerContext from "@/utils/handlerContext";
-import Record from "@/database/models/Record";
 import checkAdmin from "@/utils/checkAdmin";
+import flushCachedRecords from "@/utils/flushCachedRecords";
 import { serverQuestionTime } from "@/utils/questionTiming";
 
 const startQuestionHandler = async (req, res) => {
@@ -13,20 +13,13 @@ const startQuestionHandler = async (req, res) => {
 				`Question ${handlerContext.currentQuestion} is running. Wait for it to be done.`
 			);
 	}
-	// console.log(req.body);
 	process.env.QUES_NO = ~~req.body.questionNo;
 	handlerContext.lastQuestion = req.body.questionNo;
-	// console.log("START:", handlerContext);
 	setTimeout(
 		() => {
 			console.log("BEFORE CLEAR:", handlerContext)
 			process.env.QUES_NO = 'null';
-			if (handlerContext.cachedRecords.length) {
-				Record.insertMany(handlerContext.cachedRecords)
-				.then(() => handlerContext.cachedRecords = []);
-			} else {
-				handlerContext.cachedRecords = [];
-			}
+			flushCachedRecords();
 		},
 		serverQuestionTime(req.body.type, req.body.difficulty) * 1000
 	);

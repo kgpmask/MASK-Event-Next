@@ -17,7 +17,7 @@ export default function EditUserPage() {
   useEffect(() => {
     const checkAdmin = async () => {
       try {
-        const response = (await (await fetch("/api/check-admin")).json())
+        const response = (await (await fetch("/api/admin/check-admin")).json())
           .isAdmin;
         setIsAdmin(response);
       } catch (err) {
@@ -32,7 +32,7 @@ export default function EditUserPage() {
     const fetchUser = async () => {
       if (!userId) return;
       try {
-        const response = await fetch(`/api/users/${userId}`);
+        const response = await fetch(`/api/admin/users/${userId}`);
         const userData = await response.json();
         setUser(userData);
         setName(userData.name);

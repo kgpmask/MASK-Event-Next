@@ -11,7 +11,7 @@ export default function UserCard({ user, fetchUsers }) {
   const handleDelete = async (userId) => {
     if (confirm("Are you sure you want to delete this user?")) {
       try {
-        const response = await fetch("/api/delete-user", {
+        const response = await fetch("/api/admin/delete-user", {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",

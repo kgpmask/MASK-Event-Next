@@ -12,7 +12,7 @@ export default function ListUsersPage() {
 	useEffect(() => {
 		const checkAdmin = async () => {
 			try {
-				const response = (await (await fetch("/api/check-admin")).json())
+				const response = (await (await fetch("/api/admin/check-admin")).json())
 					.isAdmin;
 				setIsAdmin(response);
 			} catch (err) {
@@ -33,7 +33,7 @@ export default function ListUsersPage() {
 
 	//       if (!isAdmin) {
 	//         try {
-	//           const response = await fetch("/api/check-admin");
+	//           const response = await fetch("/api/admin/check-admin");
 	//           const isAdminResponse = await response.json();
 	//           localStorage.setItem("is-admin", JSON.stringify(isAdminResponse));
 	//           setIsAdmin(isAdminResponse);
@@ -50,7 +50,7 @@ export default function ListUsersPage() {
 	//   }, []);
 	const fetchUsers = async () => {
 		try {
-			const response = await fetch("/api/users");
+			const response = await fetch("/api/admin/users");
 			const usersData = await response.json();
 			setUsers(usersData);
 		} catch (error) {

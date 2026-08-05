@@ -17,7 +17,7 @@ export default function AdminPage() {
 
       if (!isAdmin) {
         try {
-          const response = await fetch("/api/check-admin");
+          const response = await fetch("/api/admin/check-admin");
           const isAdminResponse = await response.json();
           localStorage.setItem("is-admin", JSON.stringify(isAdminResponse));
           setIsAdmin(isAdminResponse.isAdmin);

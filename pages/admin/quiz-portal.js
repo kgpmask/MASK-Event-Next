@@ -61,7 +61,7 @@ export default function QuizPortalPage() {
   useEffect(() => {
     const checkAdmin = async () => {
       try {
-        const response = (await (await fetch("/api/check-admin")).json())
+        const response = (await (await fetch("/api/admin/check-admin")).json())
           .isAdmin;
         setIsAdmin(response);
       } catch (err) {
@@ -79,7 +79,7 @@ export default function QuizPortalPage() {
         !storedQuestions ||
         !storedQuestions.length
       ) {
-        const response = await fetch("/api/live/get-questions");
+        const response = await fetch("/api/admin/live/get-questions");
         if (response.status !== 201) throw new Error(await response.text());
 
         const fetchedQuestions = await response.text();
@@ -137,7 +137,7 @@ export default function QuizPortalPage() {
   const startQuestion = async () => {
     try {
       const question = questions[currentQ];
-      const response = await fetch("/api/live/start-question", {
+      const response = await fetch("/api/admin/live/start-question", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -161,7 +161,7 @@ export default function QuizPortalPage() {
   const endQuiz = async () => {
     if (!start) return;
     try {
-      await fetch("/api/live/evaluate-answer");
+      await fetch("/api/admin/live/evaluate-answer");
     } catch (err) {
       console.error("Error evaluating answers:", err);
     }

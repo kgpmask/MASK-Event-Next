@@ -24,9 +24,9 @@ export default function Results() {
 
   const fetchResults = useCallback(async () => {
     try {
-      const adminResponse = await fetch('/api/check-admin');
+      const adminResponse = await fetch('/api/admin/check-admin');
       const isAdmin = (await adminResponse.json()).isAdmin;
-      if (isAdmin) await fetch('/api/live/evaluate-answer');
+      if (isAdmin) await fetch('/api/admin/live/evaluate-answer');
       const response = await fetch('/api/live/get-results');
       return await response.json();
     } catch (e) {

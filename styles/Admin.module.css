@@ -192,6 +192,13 @@
 	justify-content: space-between;
 }
 
+.active-question {
+	margin: 0;
+	color: #fff;
+	font-size: 18px;
+	text-align: center;
+}
+
 .quiz-nav-buttons button {
 	width: 40%;
 	padding: 14px 10px;

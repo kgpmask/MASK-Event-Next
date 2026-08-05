@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 
 import { Timer } from "@/components/Quiz/Timer";
@@ -21,14 +21,17 @@ export default function QuizPortalPage() {
 	const [resumeTime, setResumeTime] = useState(null);
 	const [questions, setQuestions] = useState([]);
 	const [respondentCounts, setRespondentCounts] = useState({});
+	const activeQuestionRef = useRef(0);
 
 	/**
 	 * Resets the question controls when the current question's timer ends.
+	 * The portal snaps back to the question that was active during the timer.
 	 */
 	const onTimeEnd = () => {
 		setDisabled(false);
 		setQuestionState("Start Question");
 		setResumeTime(null);
+		setCurrentQuestion(activeQuestionRef.current);
 	};
 
 	useEffect(() => {
@@ -51,6 +54,7 @@ export default function QuizPortalPage() {
 						setRespondentCounts(state.respondentCounts);
 
 					if (state.currentQuestionNo != null) {
+						activeQuestionRef.current = state.currentQuestionNo;
 						setDisabled(true);
 						setQuestionState("Timer Started");
 						setResumeTime(state.timeRemaining);
@@ -144,6 +148,7 @@ export default function QuizPortalPage() {
 			});
 
 			if (response.status < 400) {
+				activeQuestionRef.current = currentQuestion;
 				socket.emit("question", question);
 				setDisabled(true);
 				setQuestionState("Timer Started");
@@ -166,7 +171,7 @@ export default function QuizPortalPage() {
 	 * Evaluates answers, emits the end-quiz event and navigates to the results page.
 	 */
 	const endQuiz = async () => {
-		if (!start) return;
+		if (!start || disabled) return;
 		if (!window.confirm("Are you sure you want to end the quiz?")) return;
 		try {
 			await fetch("/api/admin/live/evaluate-answer");
@@ -219,39 +224,44 @@ export default function QuizPortalPage() {
 				)}
 				<div className={styles["question"]}>
 					{start ? (
-						<div className={styles["quiz-nav-buttons"]}>
-							<button
-								className={currentQuestion ? "" : styles["disabled"]}
-								onClick={() =>
-									currentQuestion
-										? setCurrentQuestion(currentQuestion - 1)
-										: null
-								}
-							>
-								Previous
-							</button>
-							<button
-								disabled={disabled}
-								className={styles["start-question"]}
-								onClick={startQuestion}
-							>
-								{questionState}
-							</button>
-							<button
-								className={
-									questions.length - (currentQuestion + 1)
-										? ""
-										: styles["disabled"]
-								}
-								onClick={() =>
-									questions.length - (currentQuestion + 1)
-										? setCurrentQuestion(currentQuestion + 1)
-										: null
-								}
-							>
-								Next
-							</button>
-						</div>
+						<>
+							<p className={styles["active-question"]}>
+								{questions[currentQuestion]?.question}
+							</p>
+							<div className={styles["quiz-nav-buttons"]}>
+								<button
+									className={currentQuestion ? "" : styles["disabled"]}
+									onClick={() =>
+										currentQuestion
+											? setCurrentQuestion(currentQuestion - 1)
+											: null
+									}
+								>
+									Previous
+								</button>
+								<button
+									disabled={disabled}
+									className={styles["start-question"]}
+									onClick={startQuestion}
+								>
+									{questionState}
+								</button>
+								<button
+									className={
+										questions.length - (currentQuestion + 1)
+											? ""
+											: styles["disabled"]
+									}
+									onClick={() =>
+										questions.length - (currentQuestion + 1)
+											? setCurrentQuestion(currentQuestion + 1)
+											: null
+									}
+								>
+									Next
+								</button>
+							</div>
+						</>
 					) : (
 						<button onClick={startQuiz} className={styles["end-quiz"]}>
 							Start Quiz
@@ -259,10 +269,10 @@ export default function QuizPortalPage() {
 					)}
 					<button
 						onClick={endQuiz}
-						disabled={!start}
+						disabled={!start || disabled}
 						className={[
 							styles["end-quiz"],
-							!start ? styles["disabled"] : "",
+							!start || disabled ? styles["disabled"] : "",
 						].join(" ")}
 					>
 						End Quiz

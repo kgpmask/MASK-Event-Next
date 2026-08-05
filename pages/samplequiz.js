@@ -6,20 +6,10 @@ import { MessageCard } from "@/components/Quiz/MessageCard";
 import { SubmitMessage } from "@/components/Quiz/SubmitMessage";
 import { SampleInstructions } from "@/components/Quiz/SampleInstructions";
 import { questionTime } from "@/utils/questionTiming";
+import { evaluateAnswer } from "@/utils/evaluateAnswer";
 
 const dummyApiResponse = {
 	questions: [
-		{
-			questionNo: 6,
-			title: "Sample Round",
-			question: "Match each character to their series.",
-			options:
-				"Light Yagami,Monkey D. Luffy,Itachi Uchiha|Death Note,One Piece,Naruto,Bleach,Dragon Ball Z",
-			type: "mtf",
-			answer: "0,1,2",
-			difficulty: "hard",
-			score: 300,
-		},
 		{
 			questionNo: 1,
 			title: "Sample Round",
@@ -70,6 +60,48 @@ const dummyApiResponse = {
 			answer: "1",
 			difficulty: "insane",
 			score: 400,
+		},
+		{
+			questionNo: 6,
+			title: "Sample Round",
+			question: "Match each character to their series.",
+			options:
+				"Light Yagami,Monkey D. Luffy,Itachi Uchiha|Death Note,One Piece,Naruto,Bleach,Dragon Ball Z",
+			type: "mtf",
+			answer: "0,1,2",
+			difficulty: "hard",
+			score: 300,
+		},
+		{
+			questionNo: 7,
+			title: "Sample Round",
+			question: "Select all of the 'Big Three' anime series (multi-select).",
+			options: "Naruto,One Piece,Bleach,Death Note",
+			type: "multi-mcq",
+			answer: "0,1,2",
+			difficulty: "medium",
+			score: 300,
+		},
+		{
+			questionNo: 8,
+			title: "Sample Round",
+			question: "Select the Weekly Shonen Jump series (partial credit).",
+			options: "Naruto,Attack on Titan,One Piece,Fullmetal Alchemist",
+			type: "part-multi-mcq",
+			answer: "0,2",
+			difficulty: "medium",
+			score: 200,
+		},
+		{
+			questionNo: 9,
+			title: "Sample Round",
+			question: "Match each villain to their series (partial credit).",
+			options:
+				"Madara Uchiha,Shigaraki Tomura|Naruto,My Hero Academia,One Piece",
+			type: "part-mtf",
+			answer: "0,1",
+			difficulty: "hard",
+			score: 300,
 		},
 	],
 };
@@ -123,21 +155,16 @@ export default function SampleQuiz() {
 	const submitAnswer = useCallback(
 		({ timeout }) => {
 			const question = dummyApiResponse.questions[currentQuestion];
-			let isCorrect;
-			if (question.type === "mtf") {
-				const answerList = String(question.answer).split(",").map(Number);
-				isCorrect =
-					Array.isArray(userAnswer.current) &&
-					userAnswer.current.length === answerList.length &&
-					userAnswer.current.every((val, i) => +val === +answerList[i]);
-			} else {
-				isCorrect =
-					~~userAnswer.current === ~~question.answer &&
-					userAnswer.current !== "";
-			}
-			if (isCorrect) {
-				setScore((prevScore) => prevScore + question.score);
-			}
+			setScore(
+				(prevScore) =>
+					prevScore +
+					evaluateAnswer(
+						userAnswer.current,
+						question.answer,
+						question.type,
+						question.score
+					)
+			);
 			setState(timeout ? "timeout" : "submitted");
 		},
 		[currentQuestion]

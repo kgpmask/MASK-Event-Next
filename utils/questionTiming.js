@@ -2,6 +2,9 @@ const CLIENT_SECONDS = {
 	mcq: 20,
 	mtf: 40,
 	text: 30,
+	"multi-mcq": 30,
+	"part-multi-mcq": 30,
+	"part-mtf": 40,
 };
 
 const HARD_BONUS = {
@@ -13,7 +16,8 @@ const HARD_BONUS = {
 
 /**
  * Computes the base duration in seconds for a question type and difficulty.
- * @param {string} type The question type ("text", "mcq", or "mtf").
+ * @param {string} type The question type ("text", "mcq", "mtf",
+ *   "multi-mcq", "part-multi-mcq", or "part-mtf").
  * @param {string} [difficulty] The question difficulty, defaulting to "medium".
  * @returns {number} The duration in seconds.
  */
@@ -24,7 +28,8 @@ export const questionTime = (type, difficulty = "medium") => {
 
 /**
  * Computes the server-side duration in seconds, adding a grace buffer.
- * @param {string} type The question type ("text", "mcq", or "mtf").
+ * @param {string} type The question type ("text", "mcq", "mtf",
+ *   "multi-mcq", "part-multi-mcq", or "part-mtf").
  * @param {string} [difficulty] The question difficulty, defaulting to "medium".
  * @returns {number} The server duration in seconds.
  */

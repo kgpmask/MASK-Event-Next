@@ -1,5 +1,6 @@
 import Styles from "@/styles/Quiz.module.css";
 import { OptionContainer } from "./OptionContainer";
+import { MultiOptionContainer } from "./MultiOptionContainer";
 import { TextInput } from "./TextInput";
 import { MatchTheFollowing } from "./MatchTheFollowing";
 import { mcqOptions } from "@/utils/questionOptions";
@@ -17,7 +18,11 @@ import { DifficultyBadge } from "./DifficultyBadge";
  * @returns {JSX.Element} The quiz question markup.
  */
 export function QuizContainer({ question, time, submitAnswer, updateAnswer }) {
-	const [answer, setAnswer] = useState("");
+	const [answer, setAnswer] = useState(
+		question.type === "multi-mcq" || question.type === "part-multi-mcq"
+			? []
+			: ""
+	);
 	const [disabled, setDisabled] = useState(false);
 
 	/**
@@ -36,7 +41,9 @@ export function QuizContainer({ question, time, submitAnswer, updateAnswer }) {
 	 */
 	const canSubmit = () => {
 		if (question.type === "mcq") return answer !== "";
-		if (question.type === "mtf")
+		if (question.type === "multi-mcq" || question.type === "part-multi-mcq")
+			return Array.isArray(answer) && answer.length > 0;
+		if (question.type === "mtf" || question.type === "part-mtf")
 			return Array.isArray(answer) && answer.some((idx) => idx !== -1);
 		return typeof answer === "string" && answer.trim() !== "";
 	};
@@ -73,10 +80,17 @@ export function QuizContainer({ question, time, submitAnswer, updateAnswer }) {
 							setSelected={setAnswer}
 							options={mcqOptions(question.options)}
 						/>
-					) : question.type === "mtf" ? (
+					) : question.type === "mtf" || question.type === "part-mtf" ? (
 						<MatchTheFollowing
 							options={question.options}
 							onChange={setAnswer}
+						/>
+					) : question.type === "multi-mcq" ||
+					  question.type === "part-multi-mcq" ? (
+						<MultiOptionContainer
+							selected={answer}
+							setSelected={setAnswer}
+							options={mcqOptions(question.options)}
 						/>
 					) : (
 						<TextInput text={answer} setText={setAnswer} />

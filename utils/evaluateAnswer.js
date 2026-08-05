@@ -52,18 +52,6 @@ const evaluatedPoints = (response, solutions, score) => {
 };
 
 /**
- * Checks whether a response list matches an answer list element-wise.
- * @param {unknown} response The submitted response value.
- * @param {unknown} answer The expected answer value.
- * @returns {boolean} True when both are equal-length arrays of equal values.
- */
-const arraysMatch = (response, answer) =>
-	Array.isArray(response) &&
-	Array.isArray(answer) &&
-	response.length === answer.length &&
-	response.every((val, i) => +val === +answer[i]);
-
-/**
  * Normalises a list-like value into an array of numbers.
  * @param {unknown} value An array or comma-separated string.
  * @returns {number[]} The parsed array of numbers.
@@ -72,10 +60,18 @@ const parseList = (value) =>
 	Array.isArray(value) ? value : String(value).split(",").map(Number);
 
 /**
+ * Normalises a list-like value into a set of its numeric elements.
+ * @param {unknown} value An array or comma-separated string.
+ * @returns {Set<number>} The set of parsed numbers.
+ */
+const parseSet = (value) => new Set(parseList(value));
+
+/**
  * Evaluates a response against a question's answer for the given type.
  * @param {unknown} response The submitted response.
  * @param {unknown} answer The expected answer.
- * @param {string} type The question type ("text", "mcq", or "mtf").
+ * @param {string} type The question type ("text", "mcq", "mtf",
+ *   "multi-mcq", "part-multi-mcq", or "part-mtf").
  * @param {number} [score] The maximum score for the question.
  * @returns {number} The awarded points.
  */
@@ -87,9 +83,36 @@ export const evaluateAnswer = (response, answer, type, score = 200) => {
 				return 0;
 			return score * (~~response === ~~answer);
 		}
-		case "mtf": {
+		case "multi-mcq": {
+			const responseSet = parseSet(response);
+			const answerSet = parseSet(answer);
+			if (!answerSet.size || responseSet.size !== answerSet.size) return 0;
+			return [...responseSet].every((val) => answerSet.has(val)) ? score : 0;
+		}
+		case "part-multi-mcq": {
+			const responseSet = parseSet(response);
+			const answerSet = parseSet(answer);
+			if (!answerSet.size) return 0;
+			const correctPicks = [...responseSet].filter((val) =>
+				answerSet.has(val)
+			).length;
+			return Math.floor((correctPicks / answerSet.size) * score);
+		}
+		case "mtf":
+		case "part-mtf": {
 			if (!Array.isArray(response) && typeof response !== "string") return 0;
-			return arraysMatch(parseList(response), parseList(answer)) ? score : 0;
+			const responseList = parseList(response);
+			const answerList = parseList(answer);
+			if (!answerList.length || responseList.length !== answerList.length)
+				return 0;
+			const correctMatches = responseList.filter(
+				(val, i) => +val === +answerList[i]
+			).length;
+			return type === "mtf"
+				? correctMatches === answerList.length
+					? score
+					: 0
+				: Math.floor((correctMatches / answerList.length) * score);
 		}
 		case "text": {
 			if (typeof response !== "string") return 0;

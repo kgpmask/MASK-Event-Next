@@ -16,5 +16,9 @@ const recordSchema = new mongoose.Schema(
 	{ collection: "ocaq-records" }
 );
 
+// One response per user per question per quiz. Duplicate writes are rejected
+// by the database even if a flush race slips past the in-memory guards.
+recordSchema.index({ quizId: 1, userId: 1, questionNo: 1 }, { unique: true });
+
 export const Record =
 	mongoose.models.Record || mongoose.model("Record", recordSchema);

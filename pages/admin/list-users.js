@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import UserCard from "@/components/admin/UserCard";
 import ErrorPage from "@/pages/_error";
 import styles from "@/styles/Admin.module.css";
-//import MessageCard from "@/components/live/utils/MessageCard";
 
 export default function ListUsersPage() {
 	const [isAdmin, setIsAdmin] = useState(false);
@@ -23,31 +22,6 @@ export default function ListUsersPage() {
 		checkAdmin();
 	}, []);
 
-	//   useEffect(() => {
-	//     const checkAdminStatus = async () => {
-	//       const isAdmin = JSON.parse(localStorage.getItem("is-admin") || "{}").isAdmin;
-	//       if (!localStorage.getItem("username")) {
-	//         setIsAdmin(false);
-	//         return;
-	//       }
-
-	//       if (!isAdmin) {
-	//         try {
-	//           const response = await fetch("/api/admin/check-admin");
-	//           const isAdminResponse = await response.json();
-	//           localStorage.setItem("is-admin", JSON.stringify(isAdminResponse));
-	//           setIsAdmin(isAdminResponse);
-	//         } catch (error) {
-	//           console.error("Error checking admin status:", error);
-	//           setIsAdmin(false);
-	//         }
-	//       } else {
-	//         setIsAdmin(isAdmin);
-	//       }
-	//     };
-
-	//     checkAdminStatus();
-	//   }, []);
 	const fetchUsers = async () => {
 		try {
 			const response = await fetch("/api/admin/users");

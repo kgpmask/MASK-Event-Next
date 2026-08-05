@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useCallback, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { useRouter } from "next/router";
 
 import ErrorPage from "@/pages/_error";
@@ -14,49 +14,17 @@ export default function QuizPortalPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [questionState, setQuestionState] = useState("Start Question");
-  const [currentQ, setCurrentQ] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [start, setStart] = useState(false);
   const [resumeTime, setResumeTime] = useState(null);
 
   const [questions, setQuestions] = useState([]);
-
-  const [socketConnected, setSocketConnected] = useState(false);
-  const [socketTransport, setSocketTransport] = useState("N/A");
-
-  useEffect(() => {
-    if (!localStorage.getItem("username")) router.push("/login");
-
-    const onSocketConnect = () => {
-      setSocketConnected(true);
-      setSocketTransport(socket.io.engine.transport.name);
-    };
-
-    const onSocketDisconnect = () => {
-      setSocketConnected(false);
-      setSocketTransport("N/A");
-    };
-
-    if (socket.connected) onSocketConnect();
-
-    socket.on("connect", onSocketConnect);
-    socket.on("disconnect", onSocketDisconnect);
-
-    return () => {
-      socket.off("connect", onSocketConnect);
-      socket.off("disconnect", onSocketDisconnect);
-    };
-  }, []);
 
   const onTimeEnd = () => {
     setDisabled(false);
     setQuestionState("Start Question");
     setResumeTime(null);
   };
-
-  // useEffect(() => {
-  // 	setHasChecked(localStorage.getItem("is-admin"));
-  // 	setIsAdmin(eval(localStorage.getItem("is-admin") || "false"));
-  // }, []);
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -109,15 +77,15 @@ export default function QuizPortalPage() {
         const stateResponse = await fetch("/api/live/get-quiz-state");
         if (stateResponse.status !== 200) return;
         const state = await stateResponse.json();
-        if (state.currentQuestionNo == null && !state.lastQuestionNo) return;
+        if (state.currentQuestionNumber == null && !state.lastQuestionNo) return;
 
         const loadedQuestions = await loadQuestions();
         if (!loadedQuestions.length) return;
 
-        setCurrentQ(state.currentQuestionNo ?? state.lastQuestionNo);
+        setCurrentQuestion(state.currentQuestionNumber ?? state.lastQuestionNo);
         setStart(true);
 
-        if (state.currentQuestionNo != null) {
+        if (state.currentQuestionNumber != null) {
           setDisabled(true);
           setQuestionState("Timer Started");
           setResumeTime(state.timeRemaining);
@@ -130,13 +98,9 @@ export default function QuizPortalPage() {
     resume();
   }, [isAdmin, loadQuestions]);
 
-  // useEffect(() => {
-  //   console.log(currentQ);
-  // }, [currentQ]);
-
   const startQuestion = async () => {
     try {
-      const question = questions[currentQ];
+      const question = questions[currentQuestion];
       const response = await fetch("/api/admin/live/start-question", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -178,29 +142,29 @@ export default function QuizPortalPage() {
           <div className={styles["question-info"]}>
             <div className={styles["round-info"]}>
               <p>
-                {currentQ
-                  ? questions[currentQ]?.title.split(":")[0].trim()
-                  : questions[currentQ]?.title}
+                {currentQuestion
+                  ? questions[currentQuestion]?.title.split(":")[0].trim()
+                  : questions[currentQuestion]?.title}
               </p>
               <h2>Shiri Masu Ka?</h2>
-              <p>{`Question #${currentQ}`}</p>
-              <DifficultyBadge difficulty={questions[currentQ]?.difficulty} />
+              <p>{`Question #${questions[currentQuestion].questionNo}`}</p>
+              <DifficultyBadge difficulty={questions[currentQuestion]?.difficulty} />
             </div>
             {questionState === "Timer Started" && (
               <Timer
-                time={resumeTime ?? serverQuestionTime(questions[currentQ]?.type, questions[currentQ]?.difficulty)}
+                time={resumeTime ?? serverQuestionTime(questions[currentQuestion]?.type, questions[currentQuestion]?.difficulty)}
                 onTimeEnd={onTimeEnd}
               />
             )}
           </div>
         )}
         <div className={styles["question"]}>
-          <p>{questions[currentQ]?.question}</p>
+          <p>{questions[currentQuestion]?.question}</p>
           {start ? (
             <div className={styles["quiz-nav-buttons"]}>
               <button
-                className={currentQ ? "" : styles["disabled"]}
-                onClick={() => (currentQ ? setCurrentQ(currentQ - 1) : null)}
+                className={currentQuestion ? "" : styles["disabled"]}
+                onClick={() => (currentQuestion ? setCurrentQuestion(currentQuestion - 1) : null)}
               >
                 Previous
               </button>
@@ -213,11 +177,11 @@ export default function QuizPortalPage() {
               </button>
               <button
                 className={
-                  questions.length - (currentQ + 1) ? "" : styles["disabled"]
+                  questions.length - (currentQuestion + 1) ? "" : styles["disabled"]
                 }
                 onClick={() =>
-                  questions.length - (currentQ + 1)
-                    ? setCurrentQ(currentQ + 1)
+                  questions.length - (currentQuestion + 1)
+                    ? setCurrentQuestion(currentQuestion + 1)
                     : null
                 }
               >

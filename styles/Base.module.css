@@ -10,7 +10,7 @@
 
 .card {
   border-radius: 10px;
-  width: 70%;
+  width: 70vw;
   background: rgba(0, 0, 0, 0.8);
   padding: 5rem;
   max-width: 1400px;
@@ -26,14 +26,14 @@
 
 @media screen and (max-width: 1100px) {
   .card {
-    width: 80%;
+    width: 80vw;
     padding: 3rem;
   }
 }
 
 @media screen and (max-width: 800px) {
   .card {
-    width: 90%;
+    width: 90vw;
     padding: 2.5rem;
   }
 

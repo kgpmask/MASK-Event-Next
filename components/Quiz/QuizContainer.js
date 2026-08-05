@@ -31,6 +31,17 @@ export function QuizContainer({ question, time, submitAnswer, updateAnswer }) {
 	};
 
 	/**
+	 * Checks whether the current answer is complete enough to be submitted.
+	 * @returns {boolean} Whether the answer is non-empty for the question type.
+	 */
+	const canSubmit = () => {
+		if (question.type === "mcq") return answer !== "";
+		if (question.type === "mtf")
+			return Array.isArray(answer) && answer.some((idx) => idx !== -1);
+		return typeof answer === "string" && answer.trim() !== "";
+	};
+
+	/**
 	 * Notifies the parent whenever the answer changes.
 	 * @param {string} answer - The current answer value.
 	 * @param {function} updateAnswer - The parent's answer update callback.
@@ -73,12 +84,12 @@ export function QuizContainer({ question, time, submitAnswer, updateAnswer }) {
 				</div>
 				<button
 					className={
-						!disabled
+						!disabled && canSubmit()
 							? Styles["submit-btn"]
 							: Styles["submit-btn"] + " " + Styles["disabled"]
 					}
 					onClick={() => submitHandler(false)}
-					disabled={disabled}
+					disabled={disabled || !canSubmit()}
 				>
 					Submit
 				</button>

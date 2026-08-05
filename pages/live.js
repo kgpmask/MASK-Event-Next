@@ -95,12 +95,14 @@ export default function LivePage() {
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ questionNo, response }),
 			})
-				.then((res) => res.text())
-				.then((_res) => {
+				.then((res) => Promise.all([res.status, res.text()]))
+				.then(([status]) => {
+					if (status < 200 || status >= 300) return;
 					setTimeRemaining(0);
 					setQuestion(null);
 					setState(args?.timeout && response === "" ? "timeover" : "submitted");
-				});
+				})
+				.catch((err) => console.error("Error submitting answer:", err));
 		},
 		[question]
 	);
@@ -207,4 +209,4 @@ export default function LivePage() {
 			{renderComponent}
 		</>
 	);
-};
+}

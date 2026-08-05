@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useCallback, useState } from "react";
 import { useRouter } from "next/router";
 
 import ErrorPage from "@/pages/_error";
@@ -16,6 +16,7 @@ export default function QuizPortalPage() {
   const [questionState, setQuestionState] = useState("Start Question");
   const [currentQ, setCurrentQ] = useState(0);
   const [start, setStart] = useState(false);
+  const [resumeTime, setResumeTime] = useState(null);
 
   const [questions, setQuestions] = useState([]);
 
@@ -49,6 +50,7 @@ export default function QuizPortalPage() {
   const onTimeEnd = () => {
     setDisabled(false);
     setQuestionState("Start Question");
+    setResumeTime(null);
   };
 
   // useEffect(() => {
@@ -70,33 +72,63 @@ export default function QuizPortalPage() {
     checkAdmin();
   }, []);
 
+  const loadQuestions = useCallback(async () => {
+    try {
+      let storedQuestions = JSON.parse(localStorage.getItem("questions") ?? "[]");
+      if (
+        !storedQuestions ||
+        !storedQuestions.length
+      ) {
+        const response = await fetch("/api/live/get-questions");
+        if (response.status !== 201) throw new Error(await response.text());
+
+        const fetchedQuestions = await response.text();
+        localStorage.setItem("questions", fetchedQuestions);
+        storedQuestions = JSON.parse(fetchedQuestions);
+      }
+
+      setQuestions(storedQuestions);
+      return storedQuestions;
+    } catch (err) {
+      console.error("Error fetching questions:", err);
+      return [];
+    }
+  }, []);
+
   const startQuiz = () => {
-    const fetchQuestions = async () => {
+    loadQuestions().then((loaded) => {
+      if (loaded.length) setStart(true);
+    });
+  };
+
+  useEffect(() => {
+    if (!isAdmin) return;
+
+    const resume = async () => {
       try {
-        if (questions.length) return;
-        let storedQuestions = JSON.parse(localStorage.getItem("questions") ?? "[]");
-        if (
-          !storedQuestions ||
-          !storedQuestions.length
-        ) {
-          const response = await fetch("/api/live/get-questions");
-          if (response.status !== 201) throw new Error(await response.text());
+        const stateResponse = await fetch("/api/live/get-quiz-state");
+        if (stateResponse.status !== 200) return;
+        const state = await stateResponse.json();
+        if (state.currentQuestionNo == null && !state.lastQuestionNo) return;
 
-          const fetchedQuestions = await response.text();
-          localStorage.setItem("questions", fetchedQuestions);
-          storedQuestions = JSON.parse(fetchedQuestions);
-        }
+        const loadedQuestions = await loadQuestions();
+        if (!loadedQuestions.length) return;
 
-        setQuestions(storedQuestions);
+        setCurrentQ(state.currentQuestionNo ?? state.lastQuestionNo);
         setStart(true);
+
+        if (state.currentQuestionNo != null) {
+          setDisabled(true);
+          setQuestionState("Timer Started");
+          setResumeTime(state.timeRemaining);
+        }
       } catch (err) {
-        console.error("Error fetching questions:", err);
-        //alert("Something went wrong while fetching questions.");
+        console.error("Error resuming quiz:", err);
       }
     };
 
-    fetchQuestions();
-  };
+    resume();
+  }, [isAdmin, loadQuestions]);
 
   // useEffect(() => {
   //   console.log(currentQ);
@@ -119,6 +151,7 @@ export default function QuizPortalPage() {
         socket.emit("question", question);
         setDisabled(true);
         setQuestionState("Timer Started");
+        setResumeTime(null);
       }
     } catch (error) {
       console.error("Error starting question:", error);
@@ -155,7 +188,7 @@ export default function QuizPortalPage() {
             </div>
             {questionState === "Timer Started" && (
               <Timer
-                time={serverQuestionTime(questions[currentQ]?.type, questions[currentQ]?.difficulty)}
+                time={resumeTime ?? serverQuestionTime(questions[currentQ]?.type, questions[currentQ]?.difficulty)}
                 onTimeEnd={onTimeEnd}
               />
             )}

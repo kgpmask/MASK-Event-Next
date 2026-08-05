@@ -1,4 +1,4 @@
-import handlerContext from '@/utils/handlerContext';
+import quizState from '@/utils/quizState';
 import cachedResults from '@/utils/cachedResults';
 import evaluateAnswer from '@/utils/evaluateAnswer';
 import dbInit from '@/database/dbInit';
@@ -12,7 +12,7 @@ import checkAdmin from '@/utils/checkAdmin';
 const evaluateAnswerHandler = async (req, res) => {
 	if (!(await checkAdmin(req.cookies.sessionId))) return res.status(401).send('You are NOT an admin. Go away immediately.');
 
-	const quizId = handlerContext.quizId;
+	const quizId = quizState.quizId;
 	const results = [];
 
 	await dbInit();

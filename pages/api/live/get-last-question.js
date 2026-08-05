@@ -1,8 +1,8 @@
-import handlerContext from "@/utils/handlerContext";
+import quizState from "@/utils/quizState";
 
 const getLastQuestionHandler = async (req, res) => {
 	return res.status(200).json({
-		lastQuestion: handlerContext.lastQuestion,
+		lastQuestion: quizState.lastQuestionNo,
 	});
 };
 

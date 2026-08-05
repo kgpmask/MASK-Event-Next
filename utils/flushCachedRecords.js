@@ -1,11 +1,11 @@
-import handlerContext from "./handlerContext.js";
+import quizState from "./quizState.js";
 import Record from "../database/models/Record.js";
 
 const flushCachedRecords = async () => {
-	const count = handlerContext.cachedRecords.length;
+	const count = quizState.cachedRecords.length;
 	if (!count) return 0;
-	await Record.insertMany(handlerContext.cachedRecords);
-	handlerContext.cachedRecords = [];
+	await Record.insertMany(quizState.cachedRecords);
+	quizState.cachedRecords = [];
 	return count;
 };
 

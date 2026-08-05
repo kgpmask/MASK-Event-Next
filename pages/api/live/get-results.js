@@ -1,4 +1,4 @@
-import handlerContext from "@/utils/handlerContext";
+import quizState from "@/utils/quizState";
 import cachedResults from "@/utils/cachedResults";
 import dbInit from "@/database/dbInit";
 import Result from "@/database/models/Result";
@@ -13,7 +13,7 @@ const getResultsHandler = async (req, res) => {
 		await dbInit();
 		const users = await User.find().lean();
 		// console.log("USERS: ", users);
-		const results = await Result.find({ quizId: handlerContext.quizId });
+		const results = await Result.find({ quizId: quizState.quizId });
 		// console.log(results);
 		cachedResults.results = results.map((obj) => {
 			const result = { points: obj.score };

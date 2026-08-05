@@ -60,7 +60,6 @@ Root
   ```
     MONGO_URL=<A valid MongoDB URL. An example includes mongodb://localhost:27017/<your_db_name>>
     QUIZ_ID=<A unique identifier for the quiz questions>
-    QUES_NO=null
   ```
 - Run either of the commands based on your requirements:
    1) `npm run dev` : To run the website in development mode with hot reloading and detailed error messages.

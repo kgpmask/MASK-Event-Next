@@ -35,6 +35,27 @@ const LivePage = () => {
 
   const stateRef = useRef(state);
 
+  const resumeQuiz = useCallback(async () => {
+    try {
+      const stateResponse = await fetch("/api/live/get-quiz-state");
+      if (stateResponse.status !== 200) return;
+      const state = await stateResponse.json();
+      if (state.currentQuestionNo == null) return;
+
+      const questionResponse = await fetch("/api/live/get-current-question");
+      if (questionResponse.status !== 200) return;
+      const question = await questionResponse.json();
+
+      const remaining = Math.max(0, state.timeRemaining - 5);
+      setQuestion(question);
+      answer.current = null;
+      setTimeRemaining(remaining);
+      setState(remaining > 0 ? "attempting" : "timeover");
+    } catch (err) {
+      console.error("Error resuming live quiz:", err);
+    }
+  }, []);
+
   const questionHandler = (question) => {
     console.log(question);
     const type = question.type;
@@ -95,6 +116,9 @@ const LivePage = () => {
     socket.on("start-quiz", onStartQuiz);
     socket.on("end-quiz", onEndQuiz);
     socket.on("question", onQuestion);
+    socket.on("connect", resumeQuiz);
+
+    if (socket.connected) resumeQuiz();
 
     return () => {
       isMounted = false;
@@ -102,8 +126,9 @@ const LivePage = () => {
       socket.off("start-quiz", onStartQuiz);
       socket.off("end-quiz", onEndQuiz);
       socket.off("question", onQuestion);
+      socket.off("connect", resumeQuiz);
     };
-  }, [onEndQuiz, router]);
+  }, [onEndQuiz, resumeQuiz, router]);
 
   useMemo(() => {
     switch (state) {

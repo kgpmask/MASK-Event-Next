@@ -1,4 +1,5 @@
-import Image from "next/image";
+import nextImage from "next/image";
+const Image = nextImage.default || nextImage;
 import Styles from "@/styles/Navbar.module.css";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";

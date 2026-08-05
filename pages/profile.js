@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
+import nextImage from "next/image";
 import Styles from "@/styles/Profile.module.css";
 import { FaCamera } from "react-icons/fa";
 import LogOutModal from "@/components/profile/LogOutModal";
 import ProfilePicModal from "@/components/profile/EditProfilePicModal";
 import { useRouter } from "next/router";
+
+const Image = nextImage.default || nextImage;
 
 function Profile() {
   const [showLogOutModal, setShowLogOutModal] = useState(false);
@@ -69,7 +71,12 @@ function Profile() {
       <div className={Styles["wrapper"]}>
         <div style={{ borderRadius: "10px" }}>
           <div className={Styles["block"]}>
-            <Image src={`/profile-pics/${profilePic}.webp`} alt="MASK" />
+            <Image
+              src={`/profile-pics/${profilePic}.webp`}
+              alt="MASK"
+              width={350}
+              height={120}
+            />
           </div>
           <div
             className={Styles["profile-img-wrapper"]}
@@ -79,6 +86,8 @@ function Profile() {
               src={`/profile-pics/${profilePic}.webp`}
               alt="MASK"
               className={Styles["profile-img"]}
+              width={100}
+              height={100}
             />
             <FaCamera className={Styles["camera-icon"]} />
           </div>

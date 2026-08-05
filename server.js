@@ -6,6 +6,8 @@ import { Server } from "socket.io";
 import mongoose from "mongoose";
 import dbInit from "./database/dbInit.js";
 import flushCachedRecords from "./utils/flushCachedRecords.js";
+import quizState from "./utils/quizState.js";
+import { serverQuestionTime } from "./utils/questionTiming.js";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -25,11 +27,16 @@ app.prepare().then(async () => {
 
 		socket.on('question', question => {
 			io.to(process.env.QUIZ_ID).emit('question', question);
-			const hardBonus = question.difficulty === 'hard' ? 10_000 : question.difficulty === 'insane' ? 20_000 : 0;
-			setTimeout(() => io.to(process.env.QUIZ_ID).emit('timeout', ''), (question.type === 'mcq' ? 25_000 : question.type === 'mtf' ? 45_000 : 35_000) + hardBonus);
+			quizState.scheduleClientTimeout(
+				() => {
+					io.to(process.env.QUIZ_ID).emit('timeout', '');
+				},
+				serverQuestionTime(question.type, question.difficulty) * 1000
+			);
 		});
 
 		socket.on('end-quiz', () => {
+			quizState.markEnded();
 			io.to(process.env.QUIZ_ID).emit('end-quiz', '');
 		});
 	});

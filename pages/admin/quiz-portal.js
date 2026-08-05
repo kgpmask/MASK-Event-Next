@@ -41,16 +41,13 @@ export default function QuizPortalPage() {
 				const stateResponse = await fetch("/api/live/get-quiz-state");
 				if (stateResponse.status !== 200) return;
 				const state = await stateResponse.json();
-				if (state.currentQuestionNumber == null && !state.lastQuestionNo)
-					return;
+				if (state.currentQuestionNo == null && !state.lastQuestionNo) return;
 
 				if (isMounted) {
-					setCurrentQuestion(
-						state.currentQuestionNumber ?? state.lastQuestionNo
-					);
+					setCurrentQuestion(state.currentQuestionNo ?? state.lastQuestionNo);
 					setStart(true);
 
-					if (state.currentQuestionNumber != null) {
+					if (state.currentQuestionNo != null) {
 						setDisabled(true);
 						setQuestionState("Timer Started");
 						setResumeTime(state.timeRemaining);

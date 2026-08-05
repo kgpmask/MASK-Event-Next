@@ -145,7 +145,6 @@ export default function QuizPortalPage() {
 					</div>
 				)}
 				<div className={styles["question"]}>
-					<p>{questions[currentQuestion]?.question}</p>
 					{start ? (
 						<div className={styles["quiz-nav-buttons"]}>
 							<button

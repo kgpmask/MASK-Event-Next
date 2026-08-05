@@ -1,8 +1,14 @@
-import quizState from "@/utils/quizState";
-import dbInit from "@/database/dbInit";
-import Question from "@/database/models/Question";
+import { quizState } from "@/utils/quizState";
+import { dbInit } from "@/database/dbInit";
+import { Question } from "@/database/models/Question";
 
-const getCurrentQuestionHandler = async (req, res) => {
+/**
+ * Returns the currently running question with its answer stripped out.
+ * @param {object} req The incoming HTTP request.
+ * @param {object} res The outgoing HTTP response.
+ * @returns {Promise<object>} The HTTP response.
+ */
+export default async function getCurrentQuestionHandler(req, res) {
 	if (!req.cookies.sessionId)
 		return res
 			.status(401)
@@ -19,6 +25,4 @@ const getCurrentQuestionHandler = async (req, res) => {
 
 	const { answer, _id, __v, ...safeQuestion } = question;
 	return res.status(200).json(safeQuestion);
-};
-
-export default getCurrentQuestionHandler;
+}

@@ -1,3 +1,9 @@
+/**
+ * Computes the Levenshtein edit distance between two strings.
+ * @param {string} a The first string.
+ * @param {string} b The second string.
+ * @returns {number} The edit distance between the strings.
+ */
 const editDistance = (a, b) => {
 	const lenA = a.length,
 		lenB = b.length;
@@ -22,6 +28,13 @@ const editDistance = (a, b) => {
 	return dp[lenA][lenB];
 };
 
+/**
+ * Awards partial or full score based on how close a text response is to the answers.
+ * @param {string} response The submitted text response.
+ * @param {string[]} solutions The accepted answer strings.
+ * @param {number} score The maximum score for the question.
+ * @returns {number} The awarded points.
+ */
 const evaluatedPoints = (response, solutions, score) => {
 	const normalisedDistances = solutions
 		.map((answer) => {
@@ -38,16 +51,35 @@ const evaluatedPoints = (response, solutions, score) => {
 	return 0;
 };
 
+/**
+ * Checks whether a response list matches an answer list element-wise.
+ * @param {unknown} response The submitted response value.
+ * @param {unknown} answer The expected answer value.
+ * @returns {boolean} True when both are equal-length arrays of equal values.
+ */
 const arraysMatch = (response, answer) =>
 	Array.isArray(response) &&
 	Array.isArray(answer) &&
 	response.length === answer.length &&
 	response.every((val, i) => +val === +answer[i]);
 
+/**
+ * Normalises a list-like value into an array of numbers.
+ * @param {unknown} value An array or comma-separated string.
+ * @returns {number[]} The parsed array of numbers.
+ */
 const parseList = (value) =>
 	Array.isArray(value) ? value : String(value).split(",").map(Number);
 
-const evaluateAnswer = (response, answer, type, score = 200) => {
+/**
+ * Evaluates a response against a question's answer for the given type.
+ * @param {unknown} response The submitted response.
+ * @param {unknown} answer The expected answer.
+ * @param {string} type The question type ("text", "mcq", or "mtf").
+ * @param {number} [score] The maximum score for the question.
+ * @returns {number} The awarded points.
+ */
+export const evaluateAnswer = (response, answer, type, score = 200) => {
 	if (response == null || response === "") return 0;
 	switch (type) {
 		case "mcq": {
@@ -68,5 +100,3 @@ const evaluateAnswer = (response, answer, type, score = 200) => {
 			return 0;
 	}
 };
-
-export default evaluateAnswer;

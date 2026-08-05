@@ -13,4 +13,5 @@ const resultSchema = new mongoose.Schema(
 	{ collection: "ocaq-results" }
 );
 
-export default mongoose.models.Result || mongoose.model("Result", resultSchema);
+export const Result =
+	mongoose.models.Result || mongoose.model("Result", resultSchema);

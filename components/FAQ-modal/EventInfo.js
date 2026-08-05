@@ -1,9 +1,13 @@
-import FAQContainer from "./FAQContainer";
+import { FAQContainer } from "./FAQContainer";
 import FAQs from "./FAQs.json";
 import Styles from "@/styles/FAQ.module.css";
 import { useRouter } from "next/router";
 
-export default function EventInfo() {
+/**
+ * EventInfo component that renders event details, the FAQ list and contact information.
+ * @returns {JSX.Element} The event info markup.
+ */
+export function EventInfo() {
 	const router = useRouter();
 	return (
 		<div className={Styles["body-container"]}>

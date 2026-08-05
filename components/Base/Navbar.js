@@ -4,10 +4,13 @@ import Styles from "@/styles/Navbar.module.css";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import LogOutModal from "@/components/profile/LogOutModal.js";
+import { LogOutModal } from "@/components/profile/LogOutModal.js";
 
-const Navbar = () => {
-	// const [active, setActive] = useState(0); // Initialize active state to the first item
+/**
+ * Navbar component that displays navigation links, login/logout actions and a responsive hamburger menu.
+ * @returns {JSX.Element} The navbar markup.
+ */
+export const Navbar = () => {
 	const [showLogOutModal, setShowLogOutModal] = useState(false);
 	const [burgerOpen, setBurgerOpen] = useState(false);
 	const [username, setUsername] = useState("");
@@ -32,21 +35,29 @@ const Navbar = () => {
 		},
 	];
 
-	// const handleClick = (index) => {
-	// 	setActive(index); // Set active state to the currently clicked item
-	// }
 	const router = useRouter();
 	const disableLogo = router.pathname.startsWith("/live");
+
+	/**
+	 * Toggles the burger-open class on the content wrapper whenever the burger menu state changes.
+	 * @param {boolean} burgerOpen - Whether the burger menu is currently open.
+	 */
 	useEffect(() => {
 		document.querySelector("#content-wrap").className = burgerOpen
 			? "burger-open"
 			: "";
 	}, [burgerOpen]);
 
+	/**
+	 * Opens the logout confirmation modal.
+	 */
 	const handleLogout = () => {
 		setShowLogOutModal(true);
 	};
 
+	/**
+	 * Reads the logged-in user's details from localStorage on mount and updates the username state.
+	 */
 	useEffect(() => {
 		if (
 			!document.cookie.includes("sessionId=") ||
@@ -104,10 +115,7 @@ const Navbar = () => {
 								(item.name === "Profile" && username) || item.name !== "Profile"
 						)
 						.map((item, index) => (
-							<li
-								key={index}
-								// onClick={() => handleClick(index)}
-							>
+							<li key={index}>
 								<Link href={item.href} className={Styles["navlink"]}>
 									{item.name}
 								</Link>
@@ -195,5 +203,3 @@ const Navbar = () => {
 		</div>
 	);
 };
-
-export default Navbar;

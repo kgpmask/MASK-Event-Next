@@ -1,16 +1,22 @@
-import quizState from "@/utils/quizState";
-import cachedResults from "@/utils/cachedResults";
-import evaluateAnswer from "@/utils/evaluateAnswer";
-import dbInit from "@/database/dbInit";
-import Question from "@/database/models/Question";
-import Record from "@/database/models/Record";
-import Result from "@/database/models/Result";
-import User from "@/database/models/User";
-import flushCachedRecords from "@/utils/flushCachedRecords";
+import { quizState } from "@/utils/quizState";
+import { cachedResults } from "@/utils/cachedResults";
+import { evaluateAnswer } from "@/utils/evaluateAnswer";
+import { dbInit } from "@/database/dbInit";
+import { Question } from "@/database/models/Question";
+import { Record } from "@/database/models/Record";
+import { Result } from "@/database/models/Result";
+import { User } from "@/database/models/User";
+import { flushCachedRecords } from "@/utils/flushCachedRecords";
 
 let answerEvaluationLock = false;
 
-const evaluateAnswerHandler = async (_req, res) => {
+/**
+ * Evaluates all recorded answers, writes results, and caches the leaderboard.
+ * @param {object} _req The incoming HTTP request (unused).
+ * @param {object} res The outgoing HTTP response.
+ * @returns {Promise<object>} The HTTP response.
+ */
+export default async function evaluateAnswerHandler(_req, res) {
 	if (answerEvaluationLock)
 		return res.status(201).send("Evaluation successful!");
 	answerEvaluationLock = true;
@@ -69,6 +75,4 @@ const evaluateAnswerHandler = async (_req, res) => {
 	} finally {
 		answerEvaluationLock = false;
 	}
-};
-
-export default evaluateAnswerHandler;
+}

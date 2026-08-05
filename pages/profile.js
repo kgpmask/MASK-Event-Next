@@ -2,13 +2,17 @@ import React, { useEffect, useState } from "react";
 import nextImage from "next/image";
 import Styles from "@/styles/Profile.module.css";
 import { FaCamera } from "react-icons/fa";
-import LogOutModal from "@/components/profile/LogOutModal";
-import ProfilePicModal from "@/components/profile/EditProfilePicModal";
+import { LogOutModal } from "@/components/profile/LogOutModal";
+import { EditProfilePicModal } from "@/components/profile/EditProfilePicModal";
 import { useRouter } from "next/router";
 
 const Image = nextImage.default || nextImage;
 
-function Profile() {
+/**
+ * Profile page that displays the logged-in user's details and lets them change their profile picture.
+ * @returns {JSX.Element} The profile page markup.
+ */
+export default function Profile() {
 	const [showLogOutModal, setShowLogOutModal] = useState(false);
 	const [showProfilePicModal, setShowProfilePicModal] = useState(false);
 	const [username, setUsername] = useState("");
@@ -16,10 +20,12 @@ function Profile() {
 	const [profilePic, setProfilePic] = useState("/default");
 	const router = useRouter();
 
-	// getting user data on page load
 	useEffect(() => {
 		let isMounted = true;
 
+		/**
+		 * Loads the user's stored details into state or redirects to login if absent.
+		 */
 		async function fetchData() {
 			const storedUser = localStorage.getItem("username");
 			if (storedUser) {
@@ -37,7 +43,11 @@ function Profile() {
 		};
 	}, [router]);
 
-	// sending updated data to server
+	/**
+	 * Sends the updated profile picture to the server and updates local state.
+	 * @param {object} ctx - The update context containing the new profilePic.
+	 * @param {string} ctx.profilePic - The newly selected profile picture value.
+	 */
 	async function submitFunction(ctx) {
 		try {
 			const response = await fetch("/api/update-profile", {
@@ -58,10 +68,16 @@ function Profile() {
 		}
 	}
 
+	/**
+	 * Opens the logout confirmation modal.
+	 */
 	const handleLogout = () => {
 		setShowLogOutModal(true);
 	};
 
+	/**
+	 * Opens the profile picture selection modal.
+	 */
 	const handleProfilePicModal = () => {
 		setShowProfilePicModal(true);
 	};
@@ -113,7 +129,7 @@ function Profile() {
 			</div>
 			{showLogOutModal && <LogOutModal showModal={setShowLogOutModal} />}
 			{showProfilePicModal && (
-				<ProfilePicModal
+				<EditProfilePicModal
 					showModal={setShowProfilePicModal}
 					profilePic={profilePic}
 					submitFunction={submitFunction}
@@ -122,5 +138,3 @@ function Profile() {
 		</div>
 	);
 }
-
-export default Profile;

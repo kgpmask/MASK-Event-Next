@@ -1,9 +1,15 @@
-import quizState from "@/utils/quizState";
-import dbInit from "@/database/dbInit";
-import User from "@/database/models/User";
-import Session from "@/database/models/Session";
+import { quizState } from "@/utils/quizState";
+import { dbInit } from "@/database/dbInit";
+import { User } from "@/database/models/User";
+import { Session } from "@/database/models/Session";
 
-const submitAnswerHandler = async (req, res) => {
+/**
+ * Records a submitted answer for the running question into the cached records.
+ * @param {object} req The incoming HTTP request.
+ * @param {object} res The outgoing HTTP response.
+ * @returns {Promise<object>} The HTTP response.
+ */
+export default async function submitAnswerHandler(req, res) {
 	if (!req.cookies.sessionId)
 		return res
 			.status(401)
@@ -24,12 +30,7 @@ const submitAnswerHandler = async (req, res) => {
 		!quizState.isQuestionRunning ||
 		Number(quizState.currentQuestionNo) !== Number(questionNo)
 	)
-		return (
-			console.log({
-				serverQuestionNo: quizState.currentQuestionNo,
-				clientQuestionNo: questionNo,
-			}) || res.status(400).send("Questions not in sync")
-		);
+		return res.status(400).send("Questions not in sync");
 
 	if (
 		quizState.cachedRecords.some(
@@ -48,6 +49,4 @@ const submitAnswerHandler = async (req, res) => {
 	quizState.cachedRecords.push(record);
 
 	return res.status(201).send("Response recorded");
-};
-
-export default submitAnswerHandler;
+}

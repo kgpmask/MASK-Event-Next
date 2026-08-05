@@ -1,26 +1,40 @@
 import Styles from "@/styles/Quiz.module.css";
-import OptionContainer from "./OptionContainer";
-import TextInput from "./TextInput";
-import MatchTheFollowing from "./MatchTheFollowing";
+import { OptionContainer } from "./OptionContainer";
+import { TextInput } from "./TextInput";
+import { MatchTheFollowing } from "./MatchTheFollowing";
 import { mcqOptions } from "@/utils/questionOptions";
 import { useState, useEffect } from "react";
-import Timer from "./Timer";
-import DifficultyBadge from "./DifficultyBadge";
+import { Timer } from "./Timer";
+import { DifficultyBadge } from "./DifficultyBadge";
 
-export default function QuizContainer({
-	question,
-	time,
-	submitAnswer,
-	updateAnswer,
-}) {
+/**
+ * QuizContainer component that renders a live quiz question with a timer and answer input.
+ * @param {object} props - The component props.
+ * @param {object} props.question - The question object containing type, text, options and difficulty.
+ * @param {number} props.time - The time in seconds allotted for the question.
+ * @param {function} props.submitAnswer - Callback invoked to submit the answer.
+ * @param {function} props.updateAnswer - Callback invoked when the answer changes.
+ * @returns {JSX.Element} The quiz question markup.
+ */
+export function QuizContainer({ question, time, submitAnswer, updateAnswer }) {
 	const [answer, setAnswer] = useState("");
 	const [disabled, setDisabled] = useState(false);
 
+	/**
+	 * Disables the submit button and dispatches the submitAnswer callback.
+	 * @param {boolean} timeout - Whether the submission is due to a timeout.
+	 * @returns {*} The result of the submitAnswer call.
+	 */
 	const submitHandler = (timeout) => {
 		setDisabled(true);
 		return submitAnswer({ timeout });
 	};
 
+	/**
+	 * Notifies the parent whenever the answer changes.
+	 * @param {string} answer - The current answer value.
+	 * @param {function} updateAnswer - The parent's answer update callback.
+	 */
 	useEffect(() => {
 		updateAnswer(answer);
 	}, [answer, updateAnswer]);
@@ -28,7 +42,6 @@ export default function QuizContainer({
 	return (
 		<div className={Styles["container"]}>
 			<div className={Styles["card"]}>
-				{/* <WaitingMessage /> */}
 				<div className={Styles["header"]}>
 					<div className={Styles["info"]}>
 						<p className={Styles["round-no"]}>

@@ -1,13 +1,22 @@
 import Styles from "@/styles/Quiz.module.css";
-import OptionContainer from "./OptionContainer";
-import TextInput from "./TextInput";
-import MatchTheFollowing from "./MatchTheFollowing";
+import { OptionContainer } from "./OptionContainer";
+import { TextInput } from "./TextInput";
+import { MatchTheFollowing } from "./MatchTheFollowing";
 import { mcqOptions } from "@/utils/questionOptions";
-import Timer from "./Timer";
-import DifficultyBadge from "./DifficultyBadge";
+import { Timer } from "./Timer";
+import { DifficultyBadge } from "./DifficultyBadge";
 import { useState, useEffect } from "react";
 
-export default function QuizContainer({
+/**
+ * DummyQuizContainer component that renders a sample quiz question with a timer and answer input.
+ * @param {object} props - The component props.
+ * @param {object} props.question - The question object containing type, text, options and difficulty.
+ * @param {number} props.time - The time in seconds allotted for the question.
+ * @param {function} props.submitAnswer - Callback invoked to submit the answer.
+ * @param {function} props.updateAnswer - Callback invoked when the answer changes.
+ * @returns {JSX.Element} The quiz question markup.
+ */
+export function DummyQuizContainer({
 	question,
 	time,
 	submitAnswer,
@@ -15,10 +24,20 @@ export default function QuizContainer({
 }) {
 	const [answer, setAnswer] = useState("");
 
+	/**
+	 * Dispatches the submitAnswer callback with a timeout flag.
+	 * @param {boolean} timeout - Whether the submission is due to a timeout.
+	 * @returns {*} The result of the submitAnswer call.
+	 */
 	const submitHandler = (timeout) => {
 		return submitAnswer({ timeout });
 	};
 
+	/**
+	 * Notifies the parent whenever the answer changes.
+	 * @param {string} answer - The current answer value.
+	 * @param {function} updateAnswer - The parent's answer update callback.
+	 */
 	useEffect(() => {
 		updateAnswer(answer);
 	}, [answer, updateAnswer]);

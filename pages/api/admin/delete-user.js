@@ -1,5 +1,11 @@
-import User from "@/database/models/User";
+import { User } from "@/database/models/User";
 
+/**
+ * Deletes a user by id, invoked via a DELETE request.
+ * @param {object} req The incoming HTTP request.
+ * @param {object} res The outgoing HTTP response.
+ * @returns {Promise<object>} The HTTP response.
+ */
 export default async function handler(req, res) {
 	try {
 		if (req.method === "DELETE") {

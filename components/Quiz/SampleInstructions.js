@@ -1,9 +1,15 @@
 import Head from "next/head";
 import Link from "next/link";
-import TextArea from "@/components/Base/TextArea";
+import { TextArea } from "@/components/Base/TextArea";
 import styles from "@/styles/Instructions.module.css";
 
-export default function SampleInstructions({ onClick }) {
+/**
+ * SampleInstructions component that renders the instructions page for the sample quiz.
+ * @param {object} props - The component props.
+ * @param {function} props.onClick - Callback invoked when the sample quiz start button is clicked.
+ * @returns {JSX.Element} The instructions markup.
+ */
+export function SampleInstructions({ onClick }) {
 	return (
 		<>
 			<Head>

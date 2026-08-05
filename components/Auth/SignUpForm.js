@@ -4,7 +4,11 @@ import styles from "@/styles/Auth.module.css";
 import axios from "axios";
 import { useRouter } from "next/router";
 
-const SignUpForm = () => {
+/**
+ * SignUpForm component that renders a sign-up form and creates a new account.
+ * @returns {JSX.Element} The sign-up form markup.
+ */
+export const SignUpForm = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [name, setName] = useState("");
@@ -12,16 +16,17 @@ const SignUpForm = () => {
 
 	const router = useRouter();
 
+	/**
+	 * Registers the user by posting their details to the register API and logging them in.
+	 * @param {object} e - The form submission event.
+	 */
 	const handleSubmit = async (e) => {
-		// console.log(username, name, password);
 		e.preventDefault();
 
 		if (password !== confirmPass) {
 			return alert("Password and Confirm Password donot match");
 		}
 		try {
-			// console.log(username, name, password);
-
 			const response = await axios.post("/api/register", {
 				username,
 				name,
@@ -88,5 +93,3 @@ const SignUpForm = () => {
 		</div>
 	);
 };
-
-export default SignUpForm;

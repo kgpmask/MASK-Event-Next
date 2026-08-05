@@ -1,13 +1,18 @@
-import User from "@/database/models/User";
-import Session from "@/database/models/Session";
+import { User } from "@/database/models/User";
+import { Session } from "@/database/models/Session";
 import bcrypt from "bcrypt";
 
-const updateProfileHandler = async (req, res) => {
+/**
+ * Updates the profile of the logged-in user or the targeted user when admin.
+ * @param {object} req The incoming HTTP request.
+ * @param {object} res The outgoing HTTP response.
+ * @returns {Promise<object>} The HTTP response.
+ */
+export default async function updateProfileHandler(req, res) {
 	try {
 		let user;
 
 		const { name, username, password, profilePic } = req.body;
-		// console.log(req.body);
 
 		if (req.cookies.isAdmin) {
 			user = await User.findOne({ username });
@@ -39,8 +44,6 @@ const updateProfileHandler = async (req, res) => {
 		console.error("Error updating profile:", error);
 		return res
 			.status(500)
-			.send("An error occurred while updating the profile.");
+			.send("an error occurred while updating the profile.");
 	}
-};
-
-export default updateProfileHandler;
+}

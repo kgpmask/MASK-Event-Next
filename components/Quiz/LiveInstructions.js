@@ -1,9 +1,15 @@
 import Head from "next/head";
 import Link from "next/link";
-import TextArea from "@/components/Base/TextArea";
+import { TextArea } from "@/components/Base/TextArea";
 import styles from "@/styles/Instructions.module.css";
 
-export default function Instructions({ buttonCallback }) {
+/**
+ * LiveInstructions component that renders the instructions page for the live quiz.
+ * @param {object} props - The component props.
+ * @param {function} props.buttonCallback - Callback invoked when the start quiz button is clicked.
+ * @returns {JSX.Element} The instructions markup.
+ */
+export function LiveInstructions({ buttonCallback }) {
 	return (
 		<>
 			<Head>

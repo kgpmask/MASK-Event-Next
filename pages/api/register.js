@@ -1,9 +1,15 @@
-import dbInit from "@/database/dbInit";
-import User from "@/database/models/User";
-import Session from "@/database/models/Session";
+import { dbInit } from "@/database/dbInit";
+import { User } from "@/database/models/User";
+import { Session } from "@/database/models/Session";
 import bcrypt from "bcrypt";
 
-const registerHandler = async (req, res) => {
+/**
+ * Registers a new user, creates a session, and sets the session cookie.
+ * @param {object} req The incoming HTTP request.
+ * @param {object} res The outgoing HTTP response.
+ * @returns {Promise<object>} The HTTP response.
+ */
+export default async function registerHandler(req, res) {
 	try {
 		await dbInit();
 		const { username, name, password } = req.body;
@@ -13,7 +19,6 @@ const registerHandler = async (req, res) => {
 			return res.status(601).send("Password not valid");
 
 		const existUser = await User.findOne({ username });
-		// console.log(70);
 		if (existUser) {
 			return res.status(400).json({ message: "username already exists" });
 		}
@@ -25,7 +30,6 @@ const registerHandler = async (req, res) => {
 			password: hashedPassword,
 		});
 		await newUser.save();
-		// console.log(69);
 		const userId = newUser._id;
 		const newSession = new Session({
 			_id: [11, 6]
@@ -42,6 +46,4 @@ const registerHandler = async (req, res) => {
 		console.error("Error during sign-up:", error);
 		return res.status(500).send("Internal Server Error", error);
 	}
-};
-
-export default registerHandler;
+}

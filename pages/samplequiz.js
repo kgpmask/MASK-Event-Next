@@ -1,11 +1,11 @@
 import { useState, useMemo, useRef, useCallback } from "react";
-import DummyQuizContainer from "@/components/Quiz/DummyQuizContainer";
-import WaitingMessage from "@/components/Quiz/WaitingMessage";
-import TimeoverMessage from "@/components/Quiz/TimeoverMessage";
-import MessageCard from "@/components/Quiz/MessageCard";
-import SubmitMessage from "@/components/Quiz/SubmitMessage";
-import SampleInstructions from "@/components/Quiz/SampleInstructions";
-import questionTime from "@/utils/questionTiming";
+import { DummyQuizContainer } from "@/components/Quiz/DummyQuizContainer";
+import { WaitingMessage } from "@/components/Quiz/WaitingMessage";
+import { TimeoverMessage } from "@/components/Quiz/TimeoverMessage";
+import { MessageCard } from "@/components/Quiz/MessageCard";
+import { SubmitMessage } from "@/components/Quiz/SubmitMessage";
+import { SampleInstructions } from "@/components/Quiz/SampleInstructions";
+import { questionTime } from "@/utils/questionTiming";
 
 const dummyApiResponse = {
 	questions: [
@@ -74,6 +74,12 @@ const dummyApiResponse = {
 	],
 };
 
+/**
+ * Complete component that shows the final score once the sample quiz finishes.
+ * @param {object} props - The component props.
+ * @param {number} props.score - The user's total score.
+ * @returns {JSX.Element} The completion message markup.
+ */
 function Complete({ score }) {
 	return (
 		<MessageCard>
@@ -94,6 +100,10 @@ const maxScore = dummyApiResponse.questions.reduce(
 	0
 );
 
+/**
+ * SampleQuiz page that runs the interactive sample quiz with timed questions and scoring.
+ * @returns {JSX.Element} The sample quiz page markup.
+ */
 export default function SampleQuiz() {
 	const [currentQuestion, setCurrentQuestion] = useState(0);
 	const [score, setScore] = useState(0);
@@ -105,6 +115,11 @@ export default function SampleQuiz() {
 		<SampleInstructions />
 	);
 
+	/**
+	 * Checks the submitted answer against the correct answer and updates the score and state.
+	 * @param {object} args - The submission arguments.
+	 * @param {boolean} args.timeout - Whether the submission was due to a timeout.
+	 */
 	const submitAnswer = useCallback(
 		({ timeout }) => {
 			const question = dummyApiResponse.questions[currentQuestion];
@@ -128,12 +143,22 @@ export default function SampleQuiz() {
 		[currentQuestion]
 	);
 
+	/**
+	 * Stores the current answer in a ref so it is available at submission time.
+	 * @param {string|Array<number>} answer - The current answer value.
+	 */
 	const updateAnswer = (answer) => {
 		userAnswer.current = answer;
 	};
 
+	/**
+	 * Starts the sample quiz and schedules question transitions, waiting and completion states.
+	 */
 	const startQuiz = () => {
 		let idx = 0;
+		/**
+		 * Loads the question at the current index and schedules the next question transition.
+		 */
 		function question() {
 			userAnswer.current = "";
 			setCurrentQuestion(idx);

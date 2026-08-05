@@ -4,12 +4,17 @@ import next from "next";
 import { Server } from "socket.io";
 
 import mongoose from "mongoose";
-import dbInit from "./database/dbInit.js";
-import flushCachedRecords from "./utils/flushCachedRecords.js";
-import quizState from "./utils/quizState.js";
-import checkAdmin from "./utils/checkAdmin.js";
+import { dbInit } from "./database/dbInit.js";
+import { flushCachedRecords } from "./utils/flushCachedRecords.js";
+import { quizState } from "./utils/quizState.js";
+import { checkAdmin } from "./utils/checkAdmin.js";
 import { serverQuestionTime } from "./utils/questionTiming.js";
 
+/**
+ * Parses a raw Cookie header string into a key-value object.
+ * @param {string} [header] The Cookie request header value.
+ * @returns {Record<string, string>} The parsed cookies.
+ */
 const parseCookies = (header = "") =>
 	Object.fromEntries(
 		header
@@ -92,6 +97,10 @@ app.prepare().then(async () => {
 
 	let shuttingDown = false;
 
+	/**
+	 * Flushes cached records and shuts the server down on a signal.
+	 * @param {string} signal The received process signal name.
+	 */
 	const flushAndShutdown = (signal) => {
 		if (shuttingDown) return;
 		shuttingDown = true;

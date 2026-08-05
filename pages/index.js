@@ -1,7 +1,11 @@
 import Head from "next/head";
-import TextArea from "@/components/Base/TextArea";
-import EventInfo from "@/components/FAQ-modal/EventInfo";
+import { TextArea } from "@/components/Base/TextArea";
+import { EventInfo } from "@/components/FAQ-modal/EventInfo";
 
+/**
+ * Home page that renders the event information section with FAQs.
+ * @returns {JSX.Element} The home page markup.
+ */
 export default function Home() {
 	return (
 		<>

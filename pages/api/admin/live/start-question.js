@@ -1,7 +1,13 @@
-import quizState from "@/utils/quizState";
-import flushCachedRecords from "@/utils/flushCachedRecords";
+import { quizState } from "@/utils/quizState";
+import { flushCachedRecords } from "@/utils/flushCachedRecords";
 
-const startQuestionHandler = async (req, res) => {
+/**
+ * Starts the given question and schedules a flush when its duration elapses.
+ * @param {object} req The incoming HTTP request.
+ * @param {object} res The outgoing HTTP response.
+ * @returns {Promise<object>} The HTTP response.
+ */
+export default async function startQuestionHandler(req, res) {
 	if (quizState.isQuestionRunning) {
 		return res
 			.status(401)
@@ -17,6 +23,4 @@ const startQuestionHandler = async (req, res) => {
 	});
 
 	return res.status(200).send("Question updated");
-};
-
-export default startQuestionHandler;
+}

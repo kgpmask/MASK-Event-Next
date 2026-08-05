@@ -1,7 +1,14 @@
 import Styles from "@/styles/Quiz.module.css";
 import { useState, useMemo, useEffect } from "react";
 
-export default function Timer({ time, onTimeEnd }) {
+/**
+ * Timer component that counts down from a given time and triggers a callback on expiry.
+ * @param {object} props - The component props.
+ * @param {number} props.time - The initial time in seconds to count down from.
+ * @param {function} props.onTimeEnd - Callback invoked when the timer reaches zero.
+ * @returns {JSX.Element} The timer markup.
+ */
+export function Timer({ time, onTimeEnd }) {
 	const [timeLeft, setTimeLeft] = useState(time);
 
 	useEffect(() => {

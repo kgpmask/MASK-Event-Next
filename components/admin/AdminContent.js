@@ -2,7 +2,11 @@ import React from "react";
 import { useRouter } from "next/router";
 import styles from "@/styles/Admin.module.css";
 
-const AdminContent = () => {
+/**
+ * AdminContent component that renders the admin dashboard with links to user and quiz management.
+ * @returns {JSX.Element} The admin dashboard markup.
+ */
+export const AdminContent = () => {
 	const router = useRouter();
 	return (
 		<>
@@ -24,5 +28,3 @@ const AdminContent = () => {
 		</>
 	);
 };
-
-export default AdminContent;

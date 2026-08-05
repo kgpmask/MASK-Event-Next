@@ -1,5 +1,11 @@
-import User from "@/database/models/User";
+import { User } from "@/database/models/User";
 
+/**
+ * Fetches a single user by id (password excluded), invoked via a GET request.
+ * @param {object} req The incoming HTTP request.
+ * @param {object} res The outgoing HTTP response.
+ * @returns {Promise<object>} The HTTP response.
+ */
 export default async function handler(req, res) {
 	if (req.method === "GET") {
 		try {

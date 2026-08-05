@@ -1,5 +1,11 @@
-import User from "@/database/models/User";
+import { User } from "@/database/models/User";
 
+/**
+ * Promotes a user to admin when the correct secret key is provided.
+ * @param {object} req The incoming HTTP request.
+ * @param {object} res The outgoing HTTP response.
+ * @returns {Promise<object>} The HTTP response.
+ */
 export default async function adminPromoteHandler(req, res) {
 	try {
 		if (req.body.secret !== process.env.ADMIN_SECRET) {
@@ -13,8 +19,6 @@ export default async function adminPromoteHandler(req, res) {
 
 		user.isAdmin = true;
 		await user.save();
-
-		console.log(`User ${user.username} promoted to admin.`);
 
 		return res.status(200).json({ message: "User promoted to admin." });
 	} catch (error) {

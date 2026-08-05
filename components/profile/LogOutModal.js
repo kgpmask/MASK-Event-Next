@@ -4,18 +4,33 @@ import { IoClose } from "react-icons/io5";
 import { useRouter } from "next/router";
 import axios from "axios";
 
-function LogOutModal({ showModal }) {
+/**
+ * LogOutModal component that confirms whether the user wants to log out.
+ * @param {object} props - The component props.
+ * @param {function} props.showModal - Callback used to open/close the modal.
+ * @returns {JSX.Element} The modal markup.
+ */
+export function LogOutModal({ showModal }) {
 	const router = useRouter();
+
+	/**
+	 * Closes the modal by calling showModal with false.
+	 */
 	const handleClose = () => {
-		// console.log('close')
 		showModal(false);
 	};
+
+	/**
+	 * Closes the modal and navigates back to the home page.
+	 */
 	const handleBackHome = () => {
-		// console.log('close')
 		showModal(false);
 		router.push("/");
 	};
 
+	/**
+	 * Logs the user out via the logout API, clears localStorage and navigates home.
+	 */
 	const handleLogout = async () => {
 		try {
 			const response = await axios.post("/api/logout");
@@ -23,7 +38,7 @@ function LogOutModal({ showModal }) {
 			showModal(false);
 			router.push("/");
 		} catch (e) {
-			console.log(e);
+			console.error("Error logging out:", e);
 			alert("Server Error");
 		}
 	};
@@ -68,5 +83,3 @@ function LogOutModal({ showModal }) {
 		</div>
 	);
 }
-
-export default LogOutModal;

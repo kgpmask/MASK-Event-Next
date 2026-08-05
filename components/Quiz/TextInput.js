@@ -1,6 +1,13 @@
 import Styles from "@/styles/Quiz.module.css";
 
-export default function TextInput({ text, setText }) {
+/**
+ * TextInput component that renders a text input for a text-based quiz answer.
+ * @param {object} props - The component props.
+ * @param {string} props.text - The current answer value.
+ * @param {function} props.setText - Callback invoked with the new answer value.
+ * @returns {JSX.Element} The text input markup.
+ */
+export function TextInput({ text, setText }) {
 	return (
 		<input
 			className={Styles["text-input"]}

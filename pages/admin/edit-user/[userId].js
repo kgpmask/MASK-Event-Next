@@ -2,6 +2,10 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styles from "@/styles/Admin.module.css";
 
+/**
+ * EditUserPage that lets an admin update a user's name, username and password.
+ * @returns {JSX.Element} The edit user page markup.
+ */
 export default function EditUserPage() {
 	const router = useRouter();
 	const { userId } = router.query;
@@ -15,6 +19,9 @@ export default function EditUserPage() {
 		if (!userId) return;
 		let isMounted = true;
 
+		/**
+		 * Fetches the user's details from the admin API and populates the form fields.
+		 */
 		const fetchUser = async () => {
 			try {
 				const response = await fetch(`/api/admin/users/${userId}`);
@@ -36,6 +43,9 @@ export default function EditUserPage() {
 		};
 	}, [userId]);
 
+	/**
+	 * Sends the updated user details to the server and returns to the users list on success.
+	 */
 	const handleSave = async () => {
 		try {
 			const response = await fetch(`/api/update-profile`, {

@@ -8,5 +8,5 @@ const sessionSchema = new mongoose.Schema(
 	{ collection: "ocaq-sessions" }
 );
 
-export default mongoose.models.Session ||
-	mongoose.model("Session", sessionSchema);
+export const Session =
+	mongoose.models.Session || mongoose.model("Session", sessionSchema);

@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 
 const publicAdminPaths = ["/api/admin/check-admin", "/api/admin/promote-admin"];
 
+/**
+ * Guards admin pages and admin API routes using cookie-based admin checks.
+ * @param {import("next/server").NextRequest} request The incoming Next.js request.
+ * @returns {Promise<import("next/server").NextResponse>} The response, allowing or blocking the request.
+ */
 export async function middleware(request) {
 	const { pathname } = request.nextUrl;
 

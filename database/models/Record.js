@@ -16,4 +16,5 @@ const recordSchema = new mongoose.Schema(
 	{ collection: "ocaq-records" }
 );
 
-export default mongoose.models.Record || mongoose.model("Record", recordSchema);
+export const Record =
+	mongoose.models.Record || mongoose.model("Record", recordSchema);

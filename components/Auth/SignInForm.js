@@ -4,12 +4,20 @@ import styles from "@/styles/Auth.module.css";
 import axios from "axios";
 import { useRouter } from "next/router";
 
-const SignInForm = () => {
+/**
+ * SignInForm component that renders a sign-in form and logs the user in.
+ * @returns {JSX.Element} The sign-in form markup.
+ */
+export const SignInForm = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
 	const router = useRouter();
 
+	/**
+	 * Logs the user in by posting credentials to the login API and storing the session locally.
+	 * @param {object} e - The form submission event.
+	 */
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
@@ -68,5 +76,3 @@ const SignInForm = () => {
 		</div>
 	);
 };
-
-export default SignInForm;

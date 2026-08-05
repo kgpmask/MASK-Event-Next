@@ -1,7 +1,11 @@
 import Styles from "@/styles/Footer.module.css";
 import { SocialIcon } from "react-social-icons";
 
-function Footer() {
+/**
+ * Footer component that renders the site footer with about text and social media links.
+ * @returns {JSX.Element} The footer markup.
+ */
+export function Footer() {
 	const footerLinks = [
 		{
 			name: "YouTube",
@@ -49,5 +53,3 @@ function Footer() {
 		</div>
 	);
 }
-
-export default Footer;

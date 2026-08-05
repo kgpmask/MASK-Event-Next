@@ -2,13 +2,27 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import styles from "@/styles/Admin.module.css";
 
-export default function UserCard({ user, fetchUsers }) {
+/**
+ * UserCard component that displays a user's details with edit and delete actions.
+ * @param {object} props - The component props.
+ * @param {object} props.user - The user object containing name, username and profilePic.
+ * @param {function} props.fetchUsers - Callback invoked to refresh the users list after deletion.
+ * @returns {JSX.Element} The user card markup.
+ */
+export function UserCard({ user, fetchUsers }) {
 	const router = useRouter();
 
+	/**
+	 * Navigates to the edit page for the given user.
+	 */
 	const handleEdit = () => {
 		router.push(`/admin/edit-user/${user?._id}`);
 	};
 
+	/**
+	 * Deletes the user with the given id after confirmation and refreshes the list.
+	 * @param {string} userId - The id of the user to delete.
+	 */
 	const handleDelete = async (userId) => {
 		if (confirm("Are you sure you want to delete this user?")) {
 			try {

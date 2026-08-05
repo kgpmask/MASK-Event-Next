@@ -1,7 +1,11 @@
 import React from "react";
 import Styles from "@/styles/MainBody.module.css";
 
-function QuesOptions() {
+/**
+ * QuesOptions component that renders a sample quiz question card with a timer and answer options.
+ * @returns {JSX.Element} The question card markup.
+ */
+export function QuesOptions() {
 	const [selectedOption, setSelectedOption] = React.useState("");
 	const [isQuizStarted, setIsQuizStarted] = React.useState(false);
 	const [isTypeOptions, setIsTypeOptions] = React.useState(false);
@@ -24,10 +28,15 @@ function QuesOptions() {
 			numbering: "D",
 		},
 	];
-	const handleStartQuiz = (e) => {
-		// setSelectedOption(e.currentTarget.textContent)
+	/**
+	 * Sets the quiz state to started when the start button is clicked.
+	 */
+	const handleStartQuiz = () => {
 		setIsQuizStarted(true);
 	};
+	/**
+	 * Marks the current question as answered on submission.
+	 */
 	const handleSubmission = () => {
 		setIsQuestionAnswered(true);
 	};
@@ -40,7 +49,6 @@ function QuesOptions() {
 						<h2 style={{ color: "white" }}>Shiri Masu Ka?</h2>
 						<h4>{!isQuestionAnswered ? "Question" : "Answer"} #5</h4>
 					</div>
-					{/* need to implement timer */}
 					<div className={Styles["timer"]}>
 						<h3>Round 2</h3>
 						<h1>00:00</h1>
@@ -137,5 +145,3 @@ function QuesOptions() {
 		</div>
 	);
 }
-
-export default QuesOptions;

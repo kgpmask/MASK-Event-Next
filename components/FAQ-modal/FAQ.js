@@ -5,7 +5,16 @@ import Styles from "@/styles/FAQ.module.css";
 import { FaRegCircleCheck } from "react-icons/fa6";
 import Link from "next/link";
 
-export default function FAQ({ heading, description, onClick, expanded }) {
+/**
+ * FAQ component that renders a single collapsible question-answer item.
+ * @param {object} props - The component props.
+ * @param {string} props.heading - The FAQ question heading.
+ * @param {string} props.description - The FAQ answer description.
+ * @param {function} props.onClick - Callback fired when the question is clicked.
+ * @param {boolean} props.expanded - Whether the answer section is expanded.
+ * @returns {JSX.Element} The FAQ item markup.
+ */
+export function FAQ({ heading, description, onClick, expanded }) {
 	return (
 		<div className={Styles["FAQs"]}>
 			<div className={Styles["Qna"]} onClick={onClick}>

@@ -12,4 +12,4 @@ const userSchema = new mongoose.Schema(
 	{ collection: "ocaq-users" }
 );
 
-export default mongoose.models.User || mongoose.model("User", userSchema);
+export const User = mongoose.models.User || mongoose.model("User", userSchema);

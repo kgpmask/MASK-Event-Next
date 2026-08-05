@@ -1,8 +1,12 @@
 import styles from "@/styles/Results.module.css";
-import TextArea from "@/components/Base/TextArea";
-import MessageCard from "@/components/Quiz/MessageCard";
+import { TextArea } from "@/components/Base/TextArea";
+import { MessageCard } from "@/components/Quiz/MessageCard";
 import { useCallback, useEffect, useState } from "react";
 
+/**
+ * Assigns competition ranks to the results based on points, using standard competition ranking.
+ * @param {Array<object>} resultsJSON - Array of result objects with points fields.
+ */
 const assignRank = (resultsJSON) => {
 	// Ranks will look like 1,1,3,4,5
 	resultsJSON.sort((a, b) => b.points - a.points);
@@ -18,10 +22,18 @@ const assignRank = (resultsJSON) => {
 	}
 };
 
+/**
+ * Results page that evaluates and displays the quiz leaderboard with ranks.
+ * @returns {JSX.Element} The results page markup.
+ */
 export default function Results() {
 	const [results, setResults] = useState([]);
 	const [loading, setLoading] = useState(true);
 
+	/**
+	 * Evaluates answers as admin if applicable and fetches the results list.
+	 * @returns {Promise<Array<object>>} The list of result objects.
+	 */
 	const fetchResults = useCallback(async () => {
 		try {
 			const adminResponse = await fetch("/api/admin/check-admin");
@@ -30,7 +42,6 @@ export default function Results() {
 			const response = await fetch("/api/live/get-results");
 			return await response.json();
 		} catch (e) {
-			console.log(e);
 			return [];
 		}
 	}, []);
@@ -38,6 +49,9 @@ export default function Results() {
 	useEffect(() => {
 		let isMounted = true;
 
+		/**
+		 * Fetches the results, assigns ranks and updates state once data arrives.
+		 */
 		async function loadData() {
 			setLoading(true);
 			const data = await fetchResults();

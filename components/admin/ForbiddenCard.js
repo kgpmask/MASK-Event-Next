@@ -1,9 +1,16 @@
 import { useRouter } from "next/router";
 import styles from "@/styles/Admin.module.css";
 
-export default function ForbiddenCard() {
+/**
+ * ForbiddenCard component that shows a message when a user lacks access to a resource.
+ * @returns {JSX.Element} The forbidden message markup.
+ */
+export function ForbiddenCard() {
 	const router = useRouter();
 
+	/**
+	 * Navigates the user back to the main website.
+	 */
 	const handleGoHome = () => {
 		router.push("/");
 	};

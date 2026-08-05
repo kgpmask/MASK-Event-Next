@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import Timer from "@/components/Quiz/Timer";
-import DifficultyBadge from "@/components/Quiz/DifficultyBadge";
+import { Timer } from "@/components/Quiz/Timer";
+import { DifficultyBadge } from "@/components/Quiz/DifficultyBadge";
 import { serverQuestionTime } from "@/utils/questionTiming";
 import styles from "@/styles/Admin.module.css";
 
-import socket from "@/socket";
+import { socket } from "@/socket";
 
+/**
+ * QuizPortalPage that lets the quizmaster start, time and navigate live quiz questions.
+ * @returns {JSX.Element} The quiz portal page markup.
+ */
 export default function QuizPortalPage() {
 	const router = useRouter();
 	const [disabled, setDisabled] = useState(false);
@@ -17,6 +21,9 @@ export default function QuizPortalPage() {
 	const [resumeTime, setResumeTime] = useState(null);
 	const [questions, setQuestions] = useState([]);
 
+	/**
+	 * Resets the question controls when the current question's timer ends.
+	 */
 	const onTimeEnd = () => {
 		setDisabled(false);
 		setQuestionState("Start Question");
@@ -26,6 +33,9 @@ export default function QuizPortalPage() {
 	useEffect(() => {
 		let isMounted = true;
 
+		/**
+		 * Restores the in-progress question state when the page loads or reconnects.
+		 */
 		const resume = async () => {
 			try {
 				const stateResponse = await fetch("/api/live/get-quiz-state");
@@ -51,6 +61,9 @@ export default function QuizPortalPage() {
 			}
 		};
 
+		/**
+		 * Loads the question list from localStorage or the admin API and caches it.
+		 */
 		const loadQuestions = async () => {
 			try {
 				let storedQuestions = JSON.parse(
@@ -82,6 +95,10 @@ export default function QuizPortalPage() {
 	}, []);
 
 	useEffect(() => {
+		/**
+		 * Alerts the quizmaster and resets controls when an unauthorized action is attempted.
+		 * @param {string} message - The unauthorized message received from the socket.
+		 */
 		const onUnauthorized = (message) => {
 			alert(message);
 			setDisabled(false);
@@ -93,6 +110,9 @@ export default function QuizPortalPage() {
 		};
 	}, []);
 
+	/**
+	 * Starts the current question by notifying the server and emitting it over the socket.
+	 */
 	const startQuestion = async () => {
 		try {
 			const question = questions[currentQuestion];
@@ -118,10 +138,16 @@ export default function QuizPortalPage() {
 		}
 	};
 
+	/**
+	 * Marks the quiz as started, enabling the question controls.
+	 */
 	const startQuiz = () => {
 		setStart(true);
 	};
 
+	/**
+	 * Evaluates answers, emits the end-quiz event and navigates to the results page.
+	 */
 	const endQuiz = async () => {
 		if (!start) return;
 		try {

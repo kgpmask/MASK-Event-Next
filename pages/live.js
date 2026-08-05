@@ -2,17 +2,21 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 
-import QuizContainer from "@/components/Quiz/QuizContainer";
-import MessageCard from "@/components/Quiz/MessageCard";
-import EndedNotStartedMessage from "@/components/Quiz/EndedNotStartedMessage";
-import SubmitMessage from "@/components/Quiz/SubmitMessage";
-import WaitingMessage from "@/components/Quiz/WaitingMessage";
-import TimeoverMessage from "@/components/Quiz/TimeoverMessage";
-import LiveInstructions from "@/components/Quiz/LiveInstructions";
-import questionTime from "@/utils/questionTiming";
+import { QuizContainer } from "@/components/Quiz/QuizContainer";
+import { MessageCard } from "@/components/Quiz/MessageCard";
+import { EndedNotStartedMessage } from "@/components/Quiz/EndedNotStartedMessage";
+import { SubmitMessage } from "@/components/Quiz/SubmitMessage";
+import { WaitingMessage } from "@/components/Quiz/WaitingMessage";
+import { TimeoverMessage } from "@/components/Quiz/TimeoverMessage";
+import { LiveInstructions } from "@/components/Quiz/LiveInstructions";
+import { questionTime } from "@/utils/questionTiming";
 
-import socket from "@/socket";
+import { socket } from "@/socket";
 
+/**
+ * LivePageHead component that renders the page head with title and description.
+ * @returns {JSX.Element} The head markup.
+ */
 const LivePageHead = () => {
 	return (
 		<Head>
@@ -22,7 +26,11 @@ const LivePageHead = () => {
 	);
 };
 
-const LivePage = () => {
+/**
+ * LivePage page that streams live quiz questions over a socket and manages quiz states.
+ * @returns {JSX.Element} The live quiz page markup.
+ */
+export default function LivePage() {
 	const [state, setState] = useState("instructions");
 	const [timeRemaining, setTimeRemaining] = useState(0);
 
@@ -35,6 +43,9 @@ const LivePage = () => {
 
 	const stateRef = useRef(state);
 
+	/**
+	 * Fetches the current quiz state and question to restore an in-progress quiz.
+	 */
 	const resumeQuiz = useCallback(async () => {
 		try {
 			const stateResponse = await fetch("/api/live/get-quiz-state");
@@ -56,8 +67,11 @@ const LivePage = () => {
 		}
 	}, []);
 
+	/**
+	 * Handles an incoming question event by setting the question and starting its timer.
+	 * @param {object} question - The question object received from the socket.
+	 */
 	const questionHandler = (question) => {
-		console.log(question);
 		const type = question.type;
 		setQuestion(question);
 		answer.current = null;
@@ -66,6 +80,11 @@ const LivePage = () => {
 		setState("attempting");
 	};
 
+	/**
+	 * Submits the current answer to the API and updates the quiz state.
+	 * @param {object} args - The submission arguments.
+	 * @param {boolean} args.timeout - Whether the submission was due to a timeout.
+	 */
 	const submissionHandler = useCallback(
 		(args) => {
 			const questionNo = question.questionNo;
@@ -86,8 +105,18 @@ const LivePage = () => {
 		[question]
 	);
 
+	/**
+	 * Resets the quiz to the instructions state.
+	 */
 	const onStartQuiz = () => setState("instructions");
+	/**
+	 * Navigates to the results page when the quiz ends.
+	 */
 	const onEndQuiz = useCallback(() => router.push("/results"), [router]);
+	/**
+	 * Forwards an incoming question event to the latest question handler.
+	 * @param {object} question - The question object received from the socket.
+	 */
 	const onQuestion = (question) => questionHandlerRef.current(question);
 
 	const questionHandlerRef = useRef(questionHandler);
@@ -108,6 +137,9 @@ const LivePage = () => {
 			router.push("/login");
 		}
 
+		/**
+		 * Marks the quiz as time over when the timeout event fires during an attempt.
+		 */
 		const onTimeout = () => {
 			if (stateRef.current === "attempting") {
 				setState("timeover");
@@ -176,5 +208,3 @@ const LivePage = () => {
 		</>
 	);
 };
-
-export default LivePage;

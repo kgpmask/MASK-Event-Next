@@ -32,5 +32,5 @@ const questionSchema = new mongoose.Schema(
 	{ collection: "ocaq-questions" }
 );
 
-export default mongoose.models.Question ||
-	mongoose.model("Question", questionSchema);
+export const Question =
+	mongoose.models.Question || mongoose.model("Question", questionSchema);

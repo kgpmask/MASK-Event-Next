@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import styles from "@/styles/Auth.module.css";
-import SignInForm from "@/components/Auth/SignInForm";
-import SignUpForm from "@/components/Auth/SignUpForm";
+import { SignInForm } from "@/components/Auth/SignInForm";
+import { SignUpForm } from "@/components/Auth/SignUpForm";
 
+/**
+ * App login page that toggles between the sign-in and sign-up forms.
+ * @returns {JSX.Element} The authentication page markup.
+ */
 const App = () => {
 	const [authState, setAuthState] = useState("signin");
 

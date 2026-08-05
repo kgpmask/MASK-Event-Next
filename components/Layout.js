@@ -1,9 +1,15 @@
-import Navbar from "@/components/Base/Navbar.js";
-import Footer from "@/components/Base/Footer.js";
+import { Navbar } from "@/components/Base/Navbar.js";
+import { Footer } from "@/components/Base/Footer.js";
 import Styles from "@/styles/Layout.module.css";
 import { useRouter } from "next/router";
 
-export default function Home({ children }) {
+/**
+ * Layout component that wraps page content with the site background, navbar and footer.
+ * @param {object} props - The component props.
+ * @param {JSX.Element} props.children - The page content to render inside the layout.
+ * @returns {JSX.Element} The layout markup.
+ */
+export function Layout({ children }) {
 	const router = useRouter();
 	const live = router.pathname.startsWith("/live");
 	if (live) {

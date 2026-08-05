@@ -8,18 +8,35 @@ const profilePictures = [
 	...Array.from({ length: 13 }, (_e, i) => String(i + 1)),
 ];
 
-function LogOutModal({ showModal, profilePic, submitFunction }) {
+/**
+ * EditProfilePicModal component that lets the user pick a new profile picture and submit it.
+ * @param {object} props - The component props.
+ * @param {function} props.showModal - Callback used to open/close the modal.
+ * @param {string} props.profilePic - The currently selected profile picture.
+ * @param {function} props.submitFunction - Async callback invoked with the selected profile picture.
+ * @returns {JSX.Element} The modal markup.
+ */
+export function EditProfilePicModal({ showModal, profilePic, submitFunction }) {
+	/**
+	 * Closes the modal by calling showModal with false.
+	 */
 	const handleClose = () => {
-		// console.log('close')
 		showModal(false);
 	};
 	const [selected, setSelected] = useState(profilePic);
 
+	/**
+	 * Toggles the selection of the given picture value.
+	 * @param {string} value - The picture value to toggle.
+	 */
 	function toggleSelect(value) {
 		if (selected === value) setSelected(null);
 		else setSelected(value);
 	}
 
+	/**
+	 * Submits the selected profile picture and closes the modal.
+	 */
 	async function submit() {
 		await submitFunction({ profilePic: selected });
 		showModal(false);
@@ -67,5 +84,3 @@ function LogOutModal({ showModal, profilePic, submitFunction }) {
 		</div>
 	);
 }
-
-export default LogOutModal;

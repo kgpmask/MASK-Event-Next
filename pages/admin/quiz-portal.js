@@ -79,6 +79,18 @@ export default function QuizPortalPage() {
 		};
 	}, []);
 
+	useEffect(() => {
+		const onUnauthorized = (message) => {
+			alert(message);
+			setDisabled(false);
+			setQuestionState("Start Question");
+		};
+		socket.on("unauthorized", onUnauthorized);
+		return () => {
+			socket.off("unauthorized", onUnauthorized);
+		};
+	}, []);
+
 	const startQuestion = async () => {
 		try {
 			const question = questions[currentQuestion];

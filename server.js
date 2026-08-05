@@ -7,7 +7,17 @@ import mongoose from "mongoose";
 import dbInit from "./database/dbInit.js";
 import flushCachedRecords from "./utils/flushCachedRecords.js";
 import quizState from "./utils/quizState.js";
+import checkAdmin from "./utils/checkAdmin.js";
 import { serverQuestionTime } from "./utils/questionTiming.js";
+
+const parseCookies = (header = "") =>
+	Object.fromEntries(
+		header
+			.split(";")
+			.map((pair) => pair.trim().split("="))
+			.filter(([key]) => key)
+			.map(([key, ...rest]) => [key, rest.join("=")])
+	);
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -21,11 +31,30 @@ app.prepare().then(async () => {
 	await dbInit();
 	const io = new Server(httpServer);
 
+	io.use(async (socket, next) => {
+		try {
+			const { sessionId } = parseCookies(socket.request.headers.cookie);
+			socket.isAdmin = sessionId ? await checkAdmin(sessionId) : false;
+		} catch (error) {
+			socket.isAdmin = false;
+			console.error("Error authenticating socket:", error);
+		}
+		next();
+	});
+
 	io.on("connection", (socket) => {
 		console.log("Connection count:", io.engine.clientsCount);
+		if (!process.env.QUIZ_ID) {
+			console.error("QUIZ_ID is not set. Socket could not join a room.");
+			return socket.disconnect(true);
+		}
 		socket.join(process.env.QUIZ_ID);
 
 		socket.on('question', question => {
+			if (!socket.isAdmin) {
+				console.warn(`Unauthorized 'question' emit rejected from socket ${socket.id}`);
+				return socket.emit("unauthorized", "Only admins can broadcast questions");
+			}
 			io.to(process.env.QUIZ_ID).emit('question', question);
 			quizState.scheduleClientTimeout(
 				() => {
@@ -36,6 +65,10 @@ app.prepare().then(async () => {
 		});
 
 		socket.on('end-quiz', () => {
+			if (!socket.isAdmin) {
+				console.warn(`Unauthorized 'end-quiz' emit rejected from socket ${socket.id}`);
+				return socket.emit("unauthorized", "Only admins can end the quiz");
+			}
 			quizState.markEnded();
 			io.to(process.env.QUIZ_ID).emit('end-quiz', '');
 		});

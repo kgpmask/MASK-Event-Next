@@ -1,6 +1,6 @@
-import dbInit from "@/database/dbInit";
-import User from "@/database/models/User";
-import Session from "@/database/models/Session";
+import dbInit from "../database/dbInit.js";
+import User from "../database/models/User.js";
+import Session from "../database/models/Session.js";
 
 const checkAdmin = async (sessionId) => {
 	try {

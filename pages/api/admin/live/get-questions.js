@@ -1,7 +1,7 @@
 import dbInit from "@/database/dbInit";
 import Question from "@/database/models/Question";
 
-const getQuestionsHandler = async (req, res) => {
+const getQuestionsHandler = async (_req, res) => {
 	await dbInit();
 	const questions = await Question.find({ quizId: process.env.QUIZ_ID })
 		.lean({ defaults: true })

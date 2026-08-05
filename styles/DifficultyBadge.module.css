@@ -1,35 +1,35 @@
 .difficulty-badge {
-  display: inline-block;
-  padding: 2px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border: 1px solid transparent;
-  text-align: center;
+	display: inline-block;
+	padding: 2px 10px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	border: 1px solid transparent;
+	text-align: center;
 }
 
 .easy {
-  color: #7bd88f;
-  border-color: #7bd88f;
-  background-color: rgba(123, 216, 143, 0.1);
+	color: #7bd88f;
+	border-color: #7bd88f;
+	background-color: rgba(123, 216, 143, 0.1);
 }
 
 .medium {
-  color: #f2c94c;
-  border-color: #f2c94c;
-  background-color: rgba(242, 201, 76, 0.1);
+	color: #f2c94c;
+	border-color: #f2c94c;
+	background-color: rgba(242, 201, 76, 0.1);
 }
 
 .hard {
-  color: #f2994a;
-  border-color: #f2994a;
-  background-color: rgba(242, 153, 74, 0.1);
+	color: #f2994a;
+	border-color: #f2994a;
+	background-color: rgba(242, 153, 74, 0.1);
 }
 
 .insane {
-  color: #eb5757;
-  border-color: #eb5757;
-  background-color: rgba(235, 87, 87, 0.1);
+	color: #eb5757;
+	border-color: #eb5757;
+	background-color: rgba(235, 87, 87, 0.1);
 }

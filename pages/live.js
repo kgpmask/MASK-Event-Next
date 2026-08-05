@@ -14,165 +14,165 @@ import questionTime from "@/utils/questionTiming";
 import socket from "@/socket";
 
 const LivePageHead = () => {
-  return (
-    <Head>
-      <title>Live Quiz Portal</title>
-      <meta name="description" content="Quiz is starting, good luck!" />
-    </Head>
-  );
+	return (
+		<Head>
+			<title>Live Quiz Portal</title>
+			<meta name="description" content="Quiz is starting, good luck!" />
+		</Head>
+	);
 };
 
 const LivePage = () => {
-  const [state, setState] = useState("instructions");
-  const [timeRemaining, setTimeRemaining] = useState(0);
+	const [state, setState] = useState("instructions");
+	const [timeRemaining, setTimeRemaining] = useState(0);
 
-  const [renderComponent, setRenderComponent] = useState(<LiveInstructions />);
+	const [renderComponent, setRenderComponent] = useState(<LiveInstructions />);
 
-  const [question, setQuestion] = useState(null);
-  const answer = useRef(null);
+	const [question, setQuestion] = useState(null);
+	const answer = useRef(null);
 
-  const router = useRouter();
+	const router = useRouter();
 
-  const stateRef = useRef(state);
+	const stateRef = useRef(state);
 
-  const resumeQuiz = useCallback(async () => {
-    try {
-      const stateResponse = await fetch("/api/live/get-quiz-state");
-      if (stateResponse.status !== 200) return;
-      const state = await stateResponse.json();
-      if (state.currentQuestionNo == null) return;
+	const resumeQuiz = useCallback(async () => {
+		try {
+			const stateResponse = await fetch("/api/live/get-quiz-state");
+			if (stateResponse.status !== 200) return;
+			const state = await stateResponse.json();
+			if (state.currentQuestionNo == null) return;
 
-      const questionResponse = await fetch("/api/live/get-current-question");
-      if (questionResponse.status !== 200) return;
-      const question = await questionResponse.json();
+			const questionResponse = await fetch("/api/live/get-current-question");
+			if (questionResponse.status !== 200) return;
+			const question = await questionResponse.json();
 
-      const remaining = Math.max(0, state.timeRemaining - 5);
-      setQuestion(question);
-      answer.current = null;
-      setTimeRemaining(remaining);
-      setState(remaining > 0 ? "attempting" : "timeover");
-    } catch (err) {
-      console.error("Error resuming live quiz:", err);
-    }
-  }, []);
+			const remaining = Math.max(0, state.timeRemaining - 5);
+			setQuestion(question);
+			answer.current = null;
+			setTimeRemaining(remaining);
+			setState(remaining > 0 ? "attempting" : "timeover");
+		} catch (err) {
+			console.error("Error resuming live quiz:", err);
+		}
+	}, []);
 
-  const questionHandler = (question) => {
-    console.log(question);
-    const type = question.type;
-    setQuestion(question);
-    answer.current = null;
+	const questionHandler = (question) => {
+		console.log(question);
+		const type = question.type;
+		setQuestion(question);
+		answer.current = null;
 
-    setTimeRemaining(questionTime(type, question.difficulty));
-    setState("attempting");
-  };
+		setTimeRemaining(questionTime(type, question.difficulty));
+		setState("attempting");
+	};
 
-  const submissionHandler = useCallback((args) => {
-    const questionNo = question.questionNo;
-    const response =
-      question.type === "text"
-        ? answer.current.trim()
-        : answer.current;
-    fetch("/api/live/submit-answer", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ questionNo, response }),
-    })
-      .then((res) => res.text())
-      .then((_res) => {
-        setTimeRemaining(0);
-        setQuestion(null);
-        setState(args?.timeout && response === "" ? "timeover" : "submitted");
-      });
-  }, [question]);
+	const submissionHandler = useCallback((args) => {
+		const questionNo = question.questionNo;
+		const response =
+			question.type === "text"
+				? answer.current.trim()
+				: answer.current;
+		fetch("/api/live/submit-answer", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ questionNo, response }),
+		})
+			.then((res) => res.text())
+			.then((_res) => {
+				setTimeRemaining(0);
+				setQuestion(null);
+				setState(args?.timeout && response === "" ? "timeover" : "submitted");
+			});
+	}, [question]);
 
-  const onStartQuiz = () => setState("instructions");
-  const onEndQuiz = useCallback(() => router.push("/results"), [router]);
-  const onQuestion = (question) => questionHandlerRef.current(question);
+	const onStartQuiz = () => setState("instructions");
+	const onEndQuiz = useCallback(() => router.push("/results"), [router]);
+	const onQuestion = (question) => questionHandlerRef.current(question);
 
-  const questionHandlerRef = useRef(questionHandler);
+	const questionHandlerRef = useRef(questionHandler);
 
-  useEffect(() => {
-    stateRef.current = state;
-    questionHandlerRef.current = questionHandler;
-  });
+	useEffect(() => {
+		stateRef.current = state;
+		questionHandlerRef.current = questionHandler;
+	});
 
-  useEffect(() => {
-    let isMounted = true;
+	useEffect(() => {
+		let isMounted = true;
 
-    if (
-      (!document.cookie.includes("sessionId=") ||
-      document.cookie.split("sessionId=").pop().split(";")[0] === "") && isMounted
-    ) {
-      router.push("/login");
-    }
+		if (
+			(!document.cookie.includes("sessionId=") ||
+			document.cookie.split("sessionId=").pop().split(";")[0] === "") && isMounted
+		) {
+			router.push("/login");
+		}
 
-    const onTimeout = () => {
-      if (stateRef.current === "attempting") {
-        setState("timeover");
-      }
-    };
+		const onTimeout = () => {
+			if (stateRef.current === "attempting") {
+				setState("timeover");
+			}
+		};
 
-    socket.on("timeout", onTimeout);
-    socket.on("start-quiz", onStartQuiz);
-    socket.on("end-quiz", onEndQuiz);
-    socket.on("question", onQuestion);
-    socket.on("connect", resumeQuiz);
+		socket.on("timeout", onTimeout);
+		socket.on("start-quiz", onStartQuiz);
+		socket.on("end-quiz", onEndQuiz);
+		socket.on("question", onQuestion);
+		socket.on("connect", resumeQuiz);
 
-    if (socket.connected) resumeQuiz();
+		if (socket.connected) resumeQuiz();
 
-    return () => {
-      isMounted = false;
-      socket.off("timeout", onTimeout);
-      socket.off("start-quiz", onStartQuiz);
-      socket.off("end-quiz", onEndQuiz);
-      socket.off("question", onQuestion);
-      socket.off("connect", resumeQuiz);
-    };
-  }, [onEndQuiz, resumeQuiz, router]);
+		return () => {
+			isMounted = false;
+			socket.off("timeout", onTimeout);
+			socket.off("start-quiz", onStartQuiz);
+			socket.off("end-quiz", onEndQuiz);
+			socket.off("question", onQuestion);
+			socket.off("connect", resumeQuiz);
+		};
+	}, [onEndQuiz, resumeQuiz, router]);
 
-  useMemo(() => {
-    switch (state) {
-      case "early":
-        setRenderComponent(<EndedNotStartedMessage isEarly={true} />);
-        break;
-      case "late":
-        setRenderComponent(<EndedNotStartedMessage />);
-        break;
-      case "instructions":
-        setRenderComponent(
-          <LiveInstructions buttonCallback={() => setState("waiting")} />
-        );
-        break;
-      case "waiting":
-        setRenderComponent(<WaitingMessage />);
-        break;
-      case "attempting":
-        setRenderComponent(
-          <QuizContainer
-            question={question}
-            time={timeRemaining}
-            submitAnswer={submissionHandler}
-            updateAnswer={(val) => answer.current = val}
-          />
-        );
-        break;
-      case "submitted":
-        setRenderComponent(<SubmitMessage />);
-        break;
-      case "timeover":
-        setRenderComponent(<TimeoverMessage />);
-        break;
-      default:
-        setRenderComponent(<MessageCard message={"Polayadi Mone"} />);
-    }
-  }, [state, question, submissionHandler, timeRemaining]);
+	useMemo(() => {
+		switch (state) {
+			case "early":
+				setRenderComponent(<EndedNotStartedMessage isEarly={true} />);
+				break;
+			case "late":
+				setRenderComponent(<EndedNotStartedMessage />);
+				break;
+			case "instructions":
+				setRenderComponent(
+					<LiveInstructions buttonCallback={() => setState("waiting")} />
+				);
+				break;
+			case "waiting":
+				setRenderComponent(<WaitingMessage />);
+				break;
+			case "attempting":
+				setRenderComponent(
+					<QuizContainer
+						question={question}
+						time={timeRemaining}
+						submitAnswer={submissionHandler}
+						updateAnswer={(val) => answer.current = val}
+					/>
+				);
+				break;
+			case "submitted":
+				setRenderComponent(<SubmitMessage />);
+				break;
+			case "timeover":
+				setRenderComponent(<TimeoverMessage />);
+				break;
+			default:
+				setRenderComponent(<MessageCard message={"Polayadi Mone"} />);
+		}
+	}, [state, question, submissionHandler, timeRemaining]);
 
-  return (
-    <>
-      <LivePageHead />
-      {renderComponent}
-    </>
-  );
+	return (
+		<>
+			<LivePageHead />
+			{renderComponent}
+		</>
+	);
 };
 
 export default LivePage;

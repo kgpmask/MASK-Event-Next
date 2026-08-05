@@ -8,204 +8,185 @@ import SampleInstructions from "@/components/Quiz/SampleInstructions";
 import questionTime from "@/utils/questionTiming";
 
 const dummyApiResponse = {
-  questions: [
-    {
-      questionNo: 6,
-      title: "Sample Round",
-      question: "Match each character to their series.",
-      options:
-        "Light Yagami,Monkey D. Luffy,Itachi Uchiha|Death Note,One Piece,Naruto,Bleach,Dragon Ball Z",
-      type: "mtf",
-      answer: "0,1,2",
-      difficulty: "hard",
-      score: 300,
-    },
-    {
-      questionNo: 1,
-      title: "Sample Round",
-      question: "Who is the protagonist of 'Naruto'?",
-      options: "Sasuke Uchiha,Naruto Uzumaki,Sakura Haruno,Kakashi Hatake",
-      type: "mcq",
-      answer: "1",
-      difficulty: "easy",
-      score: 100,
-    },
-    {
-      questionNo: 2,
-      title: "Sample Round",
-      question:
-        "In 'Attack on Titan', what is Eren Yeager's Titan form called?",
-      options: "Colossal Titan,Armored Titan,Attack Titan,Beast Titan",
-      type: "mcq",
-      answer: "2",
-      difficulty: "medium",
-      score: 200,
-    },
-    {
-      questionNo: 3,
-      title: "Sample Round",
-      question: "Which anime features the character 'Light Yagami'?",
-      options: "Death Note,Bleach,One Piece,Tokyo Ghoul",
-      type: "mcq",
-      answer: "0",
-      difficulty: "medium",
-      score: 200,
-    },
-    {
-      questionNo: 4,
-      title: "Sample Round",
-      question: "In 'Dragon Ball Z', what is Goku's Saiyan name?",
-      options: "Vegeta,Raditz,Kakarot,Nappa",
-      type: "mcq",
-      answer: "2",
-      difficulty: "hard",
-      score: 300,
-    },
-    {
-      questionNo: 5,
-      title: "Sample Round",
-      question: "Which anime involves 'Alchemy' as a central theme?",
-      options: "Naruto,Fullmetal Alchemist,One Punch Man,Fairy Tail",
-      type: "mcq",
-      answer: "1",
-      difficulty: "insane",
-      score: 400,
-    },
-  ],
+	questions: [
+		{
+			questionNo: 6,
+			title: "Sample Round",
+			question: "Match each character to their series.",
+			options:
+				"Light Yagami,Monkey D. Luffy,Itachi Uchiha|Death Note,One Piece,Naruto,Bleach,Dragon Ball Z",
+			type: "mtf",
+			answer: "0,1,2",
+			difficulty: "hard",
+			score: 300,
+		},
+		{
+			questionNo: 1,
+			title: "Sample Round",
+			question: "Who is the protagonist of 'Naruto'?",
+			options: "Sasuke Uchiha,Naruto Uzumaki,Sakura Haruno,Kakashi Hatake",
+			type: "mcq",
+			answer: "1",
+			difficulty: "easy",
+			score: 100,
+		},
+		{
+			questionNo: 2,
+			title: "Sample Round",
+			question:
+				"In 'Attack on Titan', what is Eren Yeager's Titan form called?",
+			options: "Colossal Titan,Armored Titan,Attack Titan,Beast Titan",
+			type: "mcq",
+			answer: "2",
+			difficulty: "medium",
+			score: 200,
+		},
+		{
+			questionNo: 3,
+			title: "Sample Round",
+			question: "Which anime features the character 'Light Yagami'?",
+			options: "Death Note,Bleach,One Piece,Tokyo Ghoul",
+			type: "mcq",
+			answer: "0",
+			difficulty: "medium",
+			score: 200,
+		},
+		{
+			questionNo: 4,
+			title: "Sample Round",
+			question: "In 'Dragon Ball Z', what is Goku's Saiyan name?",
+			options: "Vegeta,Raditz,Kakarot,Nappa",
+			type: "mcq",
+			answer: "2",
+			difficulty: "hard",
+			score: 300,
+		},
+		{
+			questionNo: 5,
+			title: "Sample Round",
+			question: "Which anime involves 'Alchemy' as a central theme?",
+			options: "Naruto,Fullmetal Alchemist,One Punch Man,Fairy Tail",
+			type: "mcq",
+			answer: "1",
+			difficulty: "insane",
+			score: 400,
+		},
+	],
 };
 
 function Complete({ score }) {
-  return (
-    <MessageCard>
-      <p>
-        Dummy Quiz complete, please head on over to Quiz Portal for the real
-        quiz
-      </p>
-      <br />
-      <p>Score: {score}/{maxScore}</p>
-    </MessageCard>
-  );
+	return (
+		<MessageCard>
+			<p>
+				Dummy Quiz complete, please head on over to Quiz Portal for the real
+				quiz
+			</p>
+			<br />
+			<p>Score: {score}/{maxScore}</p>
+		</MessageCard>
+	);
 }
 
 const maxScore = dummyApiResponse.questions.reduce(
-  (total, q) => total + q.score,
-  0
+	(total, q) => total + q.score,
+	0
 );
 
 export default function SampleQuiz() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [score, setScore] = useState(0);
-  const userAnswer = useRef("");
-  const [time, setTime] = useState(0);
-  const [state, setState] = useState("before-start");
+	const [currentQuestion, setCurrentQuestion] = useState(0);
+	const [score, setScore] = useState(0);
+	const userAnswer = useRef("");
+	const [time, setTime] = useState(0);
+	const [state, setState] = useState("before-start");
 
-  const [renderComponent, setRenderComponent] = useState(
-    <SampleInstructions />
-  );
+	const [renderComponent, setRenderComponent] = useState(
+		<SampleInstructions />
+	);
 
-  const submitAnswer = ({ timeout }) => {
-    const question = dummyApiResponse.questions[currentQuestion];
-    let isCorrect;
-    if (question.type === "mtf") {
-      const answerList = String(question.answer).split(",").map(Number);
-      isCorrect =
-        Array.isArray(userAnswer.current) &&
-        userAnswer.current.length === answerList.length &&
-        userAnswer.current.every((val, i) => +val === +answerList[i]);
-    } else {
-      isCorrect =
-        ~~userAnswer.current === ~~question.answer && userAnswer.current !== "";
-    }
-    if (isCorrect) {
-      setScore((prevScore) => prevScore + question.score);
-    }
-    setState(timeout ? "timeout" : "submitted");
-  };
+	const submitAnswer = ({ timeout }) => {
+		const question = dummyApiResponse.questions[currentQuestion];
+		let isCorrect;
+		if (question.type === "mtf") {
+			const answerList = String(question.answer).split(",").map(Number);
+			isCorrect =
+				Array.isArray(userAnswer.current) &&
+				userAnswer.current.length === answerList.length &&
+				userAnswer.current.every((val, i) => +val === +answerList[i]);
+		} else {
+			isCorrect =
+				~~userAnswer.current === ~~question.answer && userAnswer.current !== "";
+		}
+		if (isCorrect) {
+			setScore((prevScore) => prevScore + question.score);
+		}
+		setState(timeout ? "timeout" : "submitted");
+	};
 
-  const updateAnswer = (answer) => {
-    userAnswer.current = answer;
-  };
+	const updateAnswer = (answer) => {
+		userAnswer.current = answer;
+	};
 
-  const startQuiz = () => {
-    let idx = 0;
-    function question() {
-      userAnswer.current = "";
-      setCurrentQuestion(idx);
-      setState("attempting");
-      setTime(questionTime(dummyApiResponse.questions[idx].type));
+	const startQuiz = () => {
+		let idx = 0;
+		function question() {
+			userAnswer.current = "";
+			setCurrentQuestion(idx);
+			setState("attempting");
+			setTime(questionTime(dummyApiResponse.questions[idx].type));
 
-      setTimeout(
-        () => {
-          setTimeout(() => {
-            setState("waiting");
-            setTimeout(() => {
-              idx++;
-              if (idx >= dummyApiResponse.questions.length) {
-                setState("complete");
-                return;
-              }
-              question();
-            }, 4000);
-          }, 2000);
-        },
-        questionTime(dummyApiResponse.questions[idx].type) * 1000
-      );
-    }
-    question();
-  };
+			setTimeout(
+				() => {
+					setTimeout(() => {
+						setState("waiting");
+						setTimeout(() => {
+							idx++;
+							if (idx >= dummyApiResponse.questions.length) {
+								setState("complete");
+								return;
+							}
+							question();
+						}, 4000);
+					}, 2000);
+				},
+				questionTime(dummyApiResponse.questions[idx].type) * 1000
+			);
+		}
+		question();
+	};
 
-  useMemo(() => {
-    switch (state) {
-      case "before-start":
-        setRenderComponent(<SampleInstructions onClick={startQuiz} />);
-        break;
-      case "waiting":
-        setRenderComponent(<WaitingMessage />);
-        break;
-      case "attempting":
-        setRenderComponent(
-          <DummyQuizContainer
-            question={dummyApiResponse.questions[currentQuestion]}
-            time={time}
-            submitAnswer={submitAnswer}
-            updateAnswer={updateAnswer}
-          />
-        );
-        break;
-      case "submitted":
-        setRenderComponent(<SubmitMessage />);
-        break;
-      case "timeout":
-        setRenderComponent(<TimeoverMessage />);
-        break;
-      case "complete":
-        setRenderComponent(<Complete score={score} />);
-        break;
-      default:
-        setRenderComponent(
-          <MessageCard message="Why did you even reach here, this is not supposed to be visible to mortal eyes" />
-        );
-    }
-  }, [state]);
+	useMemo(() => {
+		switch (state) {
+			case "before-start":
+				setRenderComponent(<SampleInstructions onClick={startQuiz} />);
+				break;
+			case "waiting":
+				setRenderComponent(<WaitingMessage />);
+				break;
+			case "attempting":
+				setRenderComponent(
+					<DummyQuizContainer
+						question={dummyApiResponse.questions[currentQuestion]}
+						time={time}
+						submitAnswer={submitAnswer}
+						updateAnswer={updateAnswer}
+					/>
+				);
+				break;
+			case "submitted":
+				setRenderComponent(<SubmitMessage />);
+				break;
+			case "timeout":
+				setRenderComponent(<TimeoverMessage />);
+				break;
+			case "complete":
+				setRenderComponent(<Complete score={score} />);
+				break;
+			default:
+				setRenderComponent(
+					<MessageCard message="Why did you even reach here, this is not supposed to be visible to mortal eyes" />
+				);
+		}
+	}, [state, score, currentQuestion, submitAnswer, time]);
 
-  // useEffect(() => {
-  // 	if (currentQuestion >= dummyApiResponse.questions.length) {
-  // 		alert(
-  // 			`Quiz finished! Your score: ${score}/${dummyApiResponse.questions.length * 10
-  // 			}`
-  // 		);
-  // 		return;
-  // 	}
-
-  // 	const timerDuration = dummyApiResponse.questions[currentQuestion].type === "mcq" ? 15 : 25;
-  // 	setTime(timerDuration);
-
-  // 	const timer = setTimeout(() => {
-  // 		submitAnswer({ timeout: true });
-  // 	}, timerDuration * 1000);
-
-  // 	return () => clearTimeout(timer);
-  // }, [currentQuestion]);
-
-  return <>{renderComponent}</>;
+	return <>{renderComponent}</>;
 }

@@ -1,6 +1,5 @@
 import User from "@/database/models/User";
 import Session from "@/database/models/Session";
-import checkAdmin from "@/utils/checkAdmin";
 import bcrypt from "bcrypt";
 
 const updateProfileHandler = async (req, res) => {

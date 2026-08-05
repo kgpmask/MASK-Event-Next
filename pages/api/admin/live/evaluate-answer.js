@@ -8,7 +8,13 @@ import Result from '@/database/models/Result';
 import User from '@/database/models/User';
 import flushCachedRecords from '@/utils/flushCachedRecords';
 
-const evaluateAnswerHandler = async (req, res) => {
+let answerEvaluationLock = false;
+
+const evaluateAnswerHandler = async (_req, res) => {
+	if (answerEvaluationLock)
+		return res.status(201).send('Evaluation successful!');
+	answerEvaluationLock = true;
+
 	const quizId = quizState.quizId;
 	const results = [];
 
@@ -43,6 +49,7 @@ const evaluateAnswerHandler = async (req, res) => {
 		})
 	);
 
+	answerEvaluationLock = false;
 	return res.status(201).send('Evaluation successful!');
 };
 

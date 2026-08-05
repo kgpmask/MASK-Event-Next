@@ -1,6 +1,6 @@
 import quizState from "@/utils/quizState";
 
-const getLastQuestionHandler = async (req, res) => {
+const getLastQuestionHandler = async (_req, res) => {
 	return res.status(200).json({
 		lastQuestion: quizState.lastQuestionNo,
 	});

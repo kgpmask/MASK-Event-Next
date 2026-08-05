@@ -1,18 +1,18 @@
 const editDistance = (a, b) => {
-    const lenA = a.length, lenB = b.length;
-    const dp = Array.from({ length: lenA + 1 }, (_, i) => Array(lenB + 1).fill(0));
+	const lenA = a.length, lenB = b.length;
+	const dp = Array.from({ length: lenA + 1 }, (_, _i) => Array(lenB + 1).fill(0));
 
-    for (let i = 0; i <= lenA; i++) dp[i][0] = i;
-    for (let j = 0; j <= lenB; j++) dp[0][j] = j;
+	for (let i = 0; i <= lenA; i++) dp[i][0] = i;
+	for (let j = 0; j <= lenB; j++) dp[0][j] = j;
 
-    for (let i = 1; i <= lenA; i++) {
-        for (let j = 1; j <= lenB; j++) {
-            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-            dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
-        }
-    }
+	for (let i = 1; i <= lenA; i++) {
+		for (let j = 1; j <= lenB; j++) {
+			const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+			dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
+		}
+	}
 
-    return dp[lenA][lenB];
+	return dp[lenA][lenB];
 }
 
 const evaluatedPoints = (response, solutions, score) => {

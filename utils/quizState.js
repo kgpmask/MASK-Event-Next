@@ -7,9 +7,6 @@ const GLOBAL_KEY = "__maskQuizState";
  * @returns {object} The quiz state object with timer and question lifecycle helpers.
  */
 const createQuizState = () => {
-	let flushTimer = null;
-	let clientTimer = null;
-
 	const quizState = {
 		quizId: process.env.QUIZ_ID,
 		quizStatus: "idle",
@@ -20,6 +17,7 @@ const createQuizState = () => {
 		durationSeconds: null,
 		lastQuestionNo: 0,
 		cachedRecords: [],
+		flushTimer: null,
 
 		get isQuestionRunning() {
 			return this.currentQuestionNo !== null;
@@ -45,34 +43,21 @@ const createQuizState = () => {
 
 		/**
 		 * Schedules a flush callback once the current question's duration elapses.
+		 * The callback also ends the question so a new one can be started.
 		 * @param {Function} callback Invoked after the question ends.
 		 */
 		scheduleFlush(callback) {
-			flushTimer = setTimeout(() => {
-				flushTimer = null;
+			this.flushTimer = setTimeout(() => {
+				this.flushTimer = null;
 				this.resetQuestionState();
 				callback();
 			}, this.durationSeconds * 1000);
 		},
 
-		/**
-		 * Schedules a client-facing timeout event after the given duration.
-		 * @param {Function} callback Invoked when the timeout fires.
-		 * @param {number} [durationMs] Timeout delay in milliseconds.
-		 */
-		scheduleClientTimeout(callback, durationMs = this.durationSeconds * 1000) {
-			clientTimer = setTimeout(() => {
-				clientTimer = null;
-				callback();
-			}, durationMs);
-		},
-
-		/** Clears both the flush and client timers. */
+		/** Clears the pending flush timer. */
 		clearTimers() {
-			if (flushTimer) clearTimeout(flushTimer);
-			if (clientTimer) clearTimeout(clientTimer);
-			flushTimer = null;
-			clientTimer = null;
+			if (this.flushTimer) clearTimeout(this.flushTimer);
+			this.flushTimer = null;
 		},
 
 		/** Resets the running-question fields without touching the quiz status. */

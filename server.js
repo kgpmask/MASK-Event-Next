@@ -8,7 +8,6 @@ import { dbInit } from "./database/dbInit.js";
 import { flushCachedRecords } from "./utils/flushCachedRecords.js";
 import { quizState } from "./utils/quizState.js";
 import { checkAdmin } from "./utils/checkAdmin.js";
-import { serverQuestionTime } from "./utils/questionTiming.js";
 
 /**
  * Parses a raw Cookie header string into a key-value object.
@@ -65,13 +64,23 @@ app.prepare().then(async () => {
 					"Only admins can broadcast questions"
 				);
 			}
+			if (quizState.isQuestionRunning) {
+				return socket.emit(
+					"unauthorized",
+					`Question ${quizState.currentQuestionNo} is running. Wait for it to be done.`
+				);
+			}
+			quizState.startQuestion({
+				questionNo: question.questionNo,
+				type: question.type,
+				difficulty: question.difficulty,
+			});
 			io.to(process.env.QUIZ_ID).emit("question", question);
-			quizState.scheduleClientTimeout(
-				() => {
-					io.to(process.env.QUIZ_ID).emit("timeout", "");
-				},
-				serverQuestionTime(question.type, question.difficulty) * 1000
-			);
+			quizState.scheduleFlush(() => {
+				io.to(process.env.QUIZ_ID).emit("timeout", "");
+				quizState.endQuestion();
+				flushCachedRecords();
+			});
 		});
 
 		socket.on("end-quiz", () => {

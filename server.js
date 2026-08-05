@@ -53,6 +53,7 @@ app.prepare().then(async () => {
 			return socket.disconnect(true);
 		}
 		socket.join(process.env.QUIZ_ID);
+		if (socket.isAdmin) socket.join("admins");
 
 		socket.on("question", (question) => {
 			if (!socket.isAdmin) {
@@ -78,6 +79,10 @@ app.prepare().then(async () => {
 			io.to(process.env.QUIZ_ID).emit("question", question);
 			quizState.scheduleFlush(() => {
 				io.to(process.env.QUIZ_ID).emit("timeout", "");
+				io.to("admins").emit("question-respondents", {
+					questionNo: quizState.lastQuestionNo,
+					count: quizState.respondentCount(quizState.lastQuestionNo),
+				});
 				quizState.endQuestion();
 				flushCachedRecords().catch((err) =>
 					console.error("Error flushing cached records:", err)

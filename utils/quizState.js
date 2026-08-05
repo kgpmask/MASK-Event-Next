@@ -18,6 +18,7 @@ const createQuizState = () => {
 		lastQuestionNo: 0,
 		cachedRecords: [],
 		flushTimer: null,
+		respondents: new Map(),
 
 		get isQuestionRunning() {
 			return this.currentQuestionNo !== null;
@@ -69,6 +70,27 @@ const createQuizState = () => {
 			this.durationSeconds = null;
 		},
 
+		/**
+		 * Records a distinct respondent for the given question.
+		 * @param {string} userId The respondent's user id.
+		 * @param {number} questionNo The question number they responded to.
+		 */
+		addRespondent(userId, questionNo) {
+			if (!this.respondents.has(questionNo)) {
+				this.respondents.set(questionNo, new Set());
+			}
+			this.respondents.get(questionNo).add(String(userId));
+		},
+
+		/**
+		 * Returns the number of respondents for the given question.
+		 * @param {number} questionNo The question number to look up.
+		 * @returns {number} The respondent count, or 0 if unknown.
+		 */
+		respondentCount(questionNo) {
+			return this.respondents.get(questionNo)?.size ?? 0;
+		},
+
 		/** Stops the running question and clears all associated timers. */
 		endQuestion() {
 			this.clearTimers();
@@ -112,6 +134,12 @@ const createQuizState = () => {
 				durationSeconds: this.durationSeconds,
 				lastQuestionNo: this.lastQuestionNo,
 				timeRemaining: this.timeRemaining(),
+				respondentCounts: Object.fromEntries(
+					[...this.respondents].map(([questionNo, ids]) => [
+						questionNo,
+						ids.size,
+					])
+				),
 			};
 		},
 	};

@@ -50,6 +50,7 @@ export default async function submitAnswerHandler(req, res) {
 			response: Array.isArray(response) ? response.join(",") : response,
 		};
 		quizState.cachedRecords.push(record);
+		quizState.addRespondent(user._id, questionNo);
 
 		return res.status(201).send("Response recorded");
 	} catch (error) {

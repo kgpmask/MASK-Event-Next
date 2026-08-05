@@ -20,6 +20,7 @@ export default function QuizPortalPage() {
 	const [start, setStart] = useState(false);
 	const [resumeTime, setResumeTime] = useState(null);
 	const [questions, setQuestions] = useState([]);
+	const [respondentCounts, setRespondentCounts] = useState({});
 
 	/**
 	 * Resets the question controls when the current question's timer ends.
@@ -46,6 +47,8 @@ export default function QuizPortalPage() {
 				if (isMounted) {
 					setCurrentQuestion(state.currentQuestionNo ?? state.lastQuestionNo);
 					setStart(true);
+					if (state.respondentCounts)
+						setRespondentCounts(state.respondentCounts);
 
 					if (state.currentQuestionNo != null) {
 						setDisabled(true);
@@ -104,6 +107,22 @@ export default function QuizPortalPage() {
 		socket.on("unauthorized", onUnauthorized);
 		return () => {
 			socket.off("unauthorized", onUnauthorized);
+		};
+	}, []);
+
+	useEffect(() => {
+		/**
+		 * Stores the respondent count for a question once it times out.
+		 * @param {object} payload The question-respondents payload.
+		 * @param {number} payload.questionNo The question that ended.
+		 * @param {number} payload.count The number of respondents for it.
+		 */
+		const onQuestionRespondents = ({ questionNo, count }) => {
+			setRespondentCounts((prev) => ({ ...prev, [questionNo]: count }));
+		};
+		socket.on("question-respondents", onQuestionRespondents);
+		return () => {
+			socket.off("question-respondents", onQuestionRespondents);
 		};
 	}, []);
 
@@ -177,7 +196,7 @@ export default function QuizPortalPage() {
 								difficulty={questions[currentQuestion]?.difficulty}
 							/>
 						</div>
-						{questionState === "Timer Started" && (
+						{questionState === "Timer Started" ? (
 							<Timer
 								time={
 									resumeTime ??
@@ -188,6 +207,13 @@ export default function QuizPortalPage() {
 								}
 								onTimeEnd={onTimeEnd}
 							/>
+						) : (
+							respondentCounts[questions[currentQuestion]?.questionNo] !=
+								null && (
+								<div className={styles["respondents"]}>
+									{respondentCounts[questions[currentQuestion]?.questionNo]}
+								</div>
+							)
 						)}
 					</div>
 				)}

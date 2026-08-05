@@ -162,6 +162,19 @@
 	color: #e43332 !important;
 }
 
+.respondents {
+	color: #fff;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+}
+
+.respondents {
+	margin: 0;
+	font-size: 18px;
+}
+
 .question {
 	display: flex;
 	flex-direction: column;

@@ -13,19 +13,22 @@ const submitAnswerHandler = async (req, res) => {
 	const user = await User.findById(
 		(await Session.findById(req.cookies.sessionId))?.userId
 	);
-	const obj = quizState.cachedRecords.filter(e => e.userId === user._id && e.questionNo === '0');
-	if(obj.length) return res.status(400).send();
+	if (!user) return res.status(401).send("Invalid session. Please login again.");
 
 	const { questionNo, response } = req.body;
-	if (response === '') return res.status(400).send("Empty Response");
+	if (response === '' || response == null) return res.status(400).send("Empty Response");
 
-	if (!quizState.isQuestionRunning || Number(quizState.currentQuestionNo) !== questionNo)
+	if (!quizState.isQuestionRunning || Number(quizState.currentQuestionNo) !== Number(questionNo))
 		return (
 			console.log({
 				serverQuestionNo: quizState.currentQuestionNo,
 				clientQuestionNo: questionNo,
 			}) || res.status(400).send("Questions not in sync")
 		);
+
+	if (quizState.cachedRecords.some((e) => e.userId === user._id && Number(e.questionNo) === Number(questionNo)))
+		return res.status(400).send("Already answered");
+
 	const record = {
 		quizId: quizState.quizId,
 		userId: user._id,

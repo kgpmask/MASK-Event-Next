@@ -7,7 +7,7 @@ const findUserHandler = async (req, res) => {
 		(
 			await Session.findById(req.cookies.sessionId)
 		)?.userId
-	);
+	).select("-password");
 	return res.status(200).json(user);
 };
 

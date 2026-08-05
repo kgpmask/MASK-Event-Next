@@ -36,12 +36,18 @@ const parseList = (value) =>
 	Array.isArray(value) ? value : String(value).split(',').map(Number);
 
 const evaluateAnswer = (response, answer, type, score = 200) => {
+	if (response == null || response === '') return 0;
 	switch (type) {
-		case 'mcq':
+		case 'mcq': {
+			if (typeof response !== 'number' && !/^\d+$/.test(String(response))) return 0;
 			return score * (~~response === ~~answer);
-		case 'mtf':
+		}
+		case 'mtf': {
+			if (!Array.isArray(response) && typeof response !== 'string') return 0;
 			return arraysMatch(parseList(response), parseList(answer)) ? score : 0;
+		}
 		case 'text': {
+			if (typeof response !== 'string') return 0;
 			const solutions = Array.isArray(answer) ? answer : [answer];
 			return evaluatedPoints(response, solutions, score);
 		}

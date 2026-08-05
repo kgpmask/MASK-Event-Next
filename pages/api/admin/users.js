@@ -3,7 +3,7 @@ import User from "@/database/models/User";
 export default async function fetchAllUsers(req, res) {
 	try {
 		if (req.method === "GET") {
-			const users = await User.find({});
+			const users = await User.find({}).select("-password");
 
 			return res.status(200).json(users);
 		} else {

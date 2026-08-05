@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
       const { userId } = req.query;
-      const user = await User.findById(userId);
+      const user = await User.findById(userId).select("-password");
       if (!user) return res.status(404).json({ message: "User not found" });
 
       return res.status(200).json(user);

@@ -51,6 +51,14 @@ export default function LivePage() {
 			const stateResponse = await fetch("/api/live/get-quiz-state");
 			if (stateResponse.status !== 200) return;
 			const state = await stateResponse.json();
+			if (state.quizStatus === "ended") {
+				setState("late");
+				return;
+			}
+			if (state.quizStatus === "idle") {
+				setState("early");
+				return;
+			}
 			if (state.currentQuestionNo == null) return;
 
 			const questionResponse = await fetch("/api/live/get-current-question");
@@ -90,27 +98,36 @@ export default function LivePage() {
 			const questionNo = question.questionNo;
 			const response =
 				question.type === "text" ? answer.current.trim() : answer.current;
-			fetch("/api/live/submit-answer", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ questionNo, response }),
-			})
-				.then((res) => Promise.all([res.status, res.text()]))
-				.then(([status]) => {
-					if (status < 200 || status >= 300) return;
-					setTimeRemaining(0);
-					setQuestion(null);
-					setState(args?.timeout && response === "" ? "timeover" : "submitted");
-				})
-				.catch((err) => console.error("Error submitting answer:", err));
+
+			/**
+			 * Makes the API call to submit the answer
+			 */
+			const submitAnswer = async () => {
+				try {
+				const res = await fetch("/api/live/submit-answer", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ questionNo, response }),
+				});
+				if (res.status < 200 || res.status >= 300) return;
+				setTimeRemaining(0);
+				setQuestion(null);
+				setState(args?.timeout && response === "" ? "timeover" : "submitted");
+				} catch(err) {
+					console.error("Error submitting answer:", err)
+				}
+			};
+
+			submitAnswer();
 		},
 		[question]
 	);
 
 	/**
-	 * Resets the quiz to the instructions state.
+	 * Shows the instructions to users who were waiting for the quiz to start.
 	 */
-	const onStartQuiz = () => setState("instructions");
+	const onStartQuiz = () =>
+		setState((prev) => (prev === "early" ? "instructions" : prev));
 	/**
 	 * Navigates to the results page when the quiz ends.
 	 */

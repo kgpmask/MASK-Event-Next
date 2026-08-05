@@ -136,9 +136,10 @@ export default function QuizPortalPage() {
 	};
 
 	/**
-	 * Marks the quiz as started, enabling the question controls.
+	 * Marks the quiz as started and notifies all connected clients.
 	 */
 	const startQuiz = () => {
+		socket.emit("start-quiz");
 		setStart(true);
 	};
 

@@ -79,8 +79,20 @@ app.prepare().then(async () => {
 			quizState.scheduleFlush(() => {
 				io.to(process.env.QUIZ_ID).emit("timeout", "");
 				quizState.endQuestion();
-				flushCachedRecords();
+				flushCachedRecords().catch((err) =>
+					console.error("Error flushing cached records:", err)
+				);
 			});
+		});
+
+		socket.on("start-quiz", () => {
+			if (!socket.isAdmin) {
+				console.warn(
+					`Unauthorized 'start-quiz' emit rejected from socket ${socket.id}`
+				);
+				return socket.emit("unauthorized", "Only admins can start the quiz");
+			}
+			io.to(process.env.QUIZ_ID).emit("start-quiz", "");
 		});
 
 		socket.on("end-quiz", () => {

@@ -148,6 +148,7 @@ export default function QuizPortalPage() {
 	 */
 	const endQuiz = async () => {
 		if (!start) return;
+		if (!window.confirm("Are you sure you want to end the quiz?")) return;
 		try {
 			await fetch("/api/admin/live/evaluate-answer");
 		} catch (err) {

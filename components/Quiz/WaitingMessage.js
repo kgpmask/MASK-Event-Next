@@ -14,7 +14,7 @@ export const WaitingMessage = () => {
 	 * @param {number} ellipse - The current number of dots displayed.
 	 */
 	useEffect(() => {
-		setInterval(() => setEllipse((ellipse) => (ellipse + 1) % 3 + 1), 1000);
+		setInterval(() => setEllipse((ellipse) => ((ellipse + 1) % 3) + 1), 1000);
 	}, [setEllipse]);
 
 	return (
@@ -26,12 +26,7 @@ export const WaitingMessage = () => {
 					.fill("\u00A0")
 					.join("")}
 				<div className={styles["imgdiv"]}>
-					<img
-						src="/waiting.gif"
-						alt="Waiting..."
-						width={100}
-						height={100}
-					/>
+					<img src="/waiting.gif" alt="Waiting..." width={100} height={100} />
 				</div>
 			</div>
 		</MessageCard>

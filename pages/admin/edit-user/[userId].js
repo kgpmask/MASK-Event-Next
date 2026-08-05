@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import ErrorPage from "@/pages/_error";
 import styles from "@/styles/Admin.module.css";
 
 export default function EditUserPage() {
@@ -9,41 +8,32 @@ export default function EditUserPage() {
   const [user, setUser] = useState(null);
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
-  const [profilePic, setProfilePic] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
   const [password, setPassword] = useState("");
 
-  const [isAdmin, setIsAdmin] = useState(false);
-
   useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const response = (await (await fetch("/api/admin/check-admin")).json())
-          .isAdmin;
-        setIsAdmin(response);
-      } catch (err) {
-        console.error("Error checking admin status:", err);
-      }
-    };
+    if (!userId) return;
+    let isMounted = false;
 
-    checkAdmin();
-  }, []);
-
-  useEffect(() => {
     const fetchUser = async () => {
-      if (!userId) return;
       try {
         const response = await fetch(`/api/admin/users/${userId}`);
         const userData = await response.json();
+        if (isMounted) return;
         setUser(userData);
         setName(userData.name);
         setUsername(userData.username);
-        setProfilePic(userData.profilePic);
+        setProfilePicture(userData.profilePicture);
       } catch (error) {
         console.error("Error fetching user:", error);
       }
     };
 
     fetchUser();
+
+    return () => {
+      isMounted = true;
+    };
   }, [userId]);
 
   const handleSave = async () => {
@@ -57,7 +47,7 @@ export default function EditUserPage() {
           userId,
           name,
           username,
-          profilePic,
+          profilePicture,
           password,
         }),
       });
@@ -74,8 +64,6 @@ export default function EditUserPage() {
       alert("An error occurred while updating the user.");
     }
   };
-
-  if (!isAdmin) return <ErrorPage statusCode={404} />;
 
   if (!user) return <div>Loading...</div>;
 

@@ -1,16 +1,9 @@
 import User from "@/database/models/User";
-import checkAdmin from "@/utils/checkAdmin";
 
 export default async function handler(req, res) {
   try {
     if (req.method === "DELETE") {
       const { userId } = req.body;
-
-      /*if (!checkAdmin(req.cookies.sessionId)) {
-        return res.status(403).json({ message: "Forbidden: Admins only" });
-      }
-    */
-
       if (!userId) {
         return res.status(400).json({ message: "User ID is required" });
       }

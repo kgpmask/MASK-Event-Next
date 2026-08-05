@@ -1,7 +1,6 @@
 import { useEffect, useCallback, useState } from "react";
 import { useRouter } from "next/router";
 
-import ErrorPage from "@/pages/_error";
 import Timer from "@/components/Quiz/Timer";
 import DifficultyBadge from "@/components/Quiz/DifficultyBadge";
 import { serverQuestionTime } from "@/utils/questionTiming";
@@ -11,7 +10,6 @@ import socket from "@/socket";
 
 export default function QuizPortalPage() {
   const router = useRouter();
-  const [isAdmin, setIsAdmin] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [questionState, setQuestionState] = useState("Start Question");
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -25,20 +23,6 @@ export default function QuizPortalPage() {
     setQuestionState("Start Question");
     setResumeTime(null);
   };
-
-  useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const response = (await (await fetch("/api/admin/check-admin")).json())
-          .isAdmin;
-        setIsAdmin(response);
-      } catch (err) {
-        console.error("Error checking admin status:", err);
-      }
-    };
-
-    checkAdmin();
-  }, []);
 
   const loadQuestions = useCallback(async () => {
     try {
@@ -70,7 +54,7 @@ export default function QuizPortalPage() {
   };
 
   useEffect(() => {
-    if (!isAdmin) return;
+    let isMounted = false;
 
     const resume = async () => {
       try {
@@ -80,7 +64,7 @@ export default function QuizPortalPage() {
         if (state.currentQuestionNumber == null && !state.lastQuestionNo) return;
 
         const loadedQuestions = await loadQuestions();
-        if (!loadedQuestions.length) return;
+        if (!loadedQuestions.length || isMounted) return;
 
         setCurrentQuestion(state.currentQuestionNumber ?? state.lastQuestionNo);
         setStart(true);
@@ -96,11 +80,16 @@ export default function QuizPortalPage() {
     };
 
     resume();
-  }, [isAdmin, loadQuestions]);
+
+    return () => {
+      isMounted = true;
+    };
+  }, [loadQuestions]);
 
   const startQuestion = async () => {
     try {
       const question = questions[currentQuestion];
+      if (!question) return;
       const response = await fetch("/api/admin/live/start-question", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -133,7 +122,7 @@ export default function QuizPortalPage() {
     router.push("/results");
   };
 
-  if (!isAdmin) return <ErrorPage statusCode={404} />;
+  if (start && !questions.length) return <div>Loading...</div>;
 
   return (
     <>
@@ -143,11 +132,11 @@ export default function QuizPortalPage() {
             <div className={styles["round-info"]}>
               <p>
                 {currentQuestion
-                  ? questions[currentQuestion]?.title.split(":")[0].trim()
+                  ? questions[currentQuestion]?.title?.split(":")?.[0]?.trim()
                   : questions[currentQuestion]?.title}
               </p>
               <h2>Shiri Masu Ka?</h2>
-              <p>{`Question #${questions[currentQuestion].questionNo}`}</p>
+              <p>{`Question #${questions[currentQuestion]?.questionNo}`}</p>
               <DifficultyBadge difficulty={questions[currentQuestion]?.difficulty} />
             </div>
             {questionState === "Timer Started" && (

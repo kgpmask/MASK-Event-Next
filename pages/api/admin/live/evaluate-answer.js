@@ -7,11 +7,8 @@ import Record from '@/database/models/Record';
 import Result from '@/database/models/Result';
 import User from '@/database/models/User';
 import flushCachedRecords from '@/utils/flushCachedRecords';
-import checkAdmin from '@/utils/checkAdmin';
 
 const evaluateAnswerHandler = async (req, res) => {
-	if (!(await checkAdmin(req.cookies.sessionId))) return res.status(401).send('You are NOT an admin. Go away immediately.');
-
 	const quizId = quizState.quizId;
 	const results = [];
 

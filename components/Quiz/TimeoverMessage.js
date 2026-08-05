@@ -1,7 +1,7 @@
-import MessageCard from './MessageCard';
+import MessageCard from "./MessageCard";
 
 const TimeoverMessage = () => {
-	return <MessageCard message='Womp Womp, Time is Over!' />;
+	return <MessageCard message="Womp Womp, Time is Over!" />;
 };
 
 export default TimeoverMessage;

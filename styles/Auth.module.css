@@ -39,7 +39,7 @@ button.active {
 	color: var(--white);
 }
 button.active:hover {
-	background-color: var(--red)
+	background-color: var(--red);
 }
 .ContentWrapper {
 	display: flex;
@@ -91,7 +91,7 @@ button.active:hover {
 	font-weight: 500;
 }
 .inputWrapper button:hover {
-	background-color: var(--light-pink)
+	background-color: var(--light-pink);
 }
 .inputWrapper input {
 	padding: 0.75rem 20px;

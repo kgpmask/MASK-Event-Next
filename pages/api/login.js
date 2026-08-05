@@ -17,7 +17,7 @@ const loginHandler = async (req, res) => {
 		if (!(await bcrypt.compare(password, user.password)))
 			return res.status(404).send("Invalid credentials");
 
-		console.log(user._id)
+		console.log(user._id);
 		const newSession = new Session({
 			_id: [11, 6]
 				.map((i) => (Math.random() + 1).toString(36).substring(2, 2 + i))

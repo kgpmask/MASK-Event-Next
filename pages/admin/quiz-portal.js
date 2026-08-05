@@ -31,10 +31,13 @@ export default function QuizPortalPage() {
 				const stateResponse = await fetch("/api/live/get-quiz-state");
 				if (stateResponse.status !== 200) return;
 				const state = await stateResponse.json();
-				if (state.currentQuestionNumber == null && !state.lastQuestionNo) return;
+				if (state.currentQuestionNumber == null && !state.lastQuestionNo)
+					return;
 
 				if (isMounted) {
-					setCurrentQuestion(state.currentQuestionNumber ?? state.lastQuestionNo);
+					setCurrentQuestion(
+						state.currentQuestionNumber ?? state.lastQuestionNo
+					);
 					setStart(true);
 
 					if (state.currentQuestionNumber != null) {
@@ -50,11 +53,10 @@ export default function QuizPortalPage() {
 
 		const loadQuestions = async () => {
 			try {
-				let storedQuestions = JSON.parse(localStorage.getItem("questions") ?? "[]");
-				if (
-					!storedQuestions ||
-					!storedQuestions.length
-				) {
+				let storedQuestions = JSON.parse(
+					localStorage.getItem("questions") ?? "[]"
+				);
+				if (!storedQuestions || !storedQuestions.length) {
 					const response = await fetch("/api/admin/live/get-questions");
 					if (response.status !== 201) throw new Error(await response.text());
 
@@ -146,11 +148,19 @@ export default function QuizPortalPage() {
 							</p>
 							<h2>Shiri Masu Ka?</h2>
 							<p>{`Question #${questions[currentQuestion]?.questionNo}`}</p>
-							<DifficultyBadge difficulty={questions[currentQuestion]?.difficulty} />
+							<DifficultyBadge
+								difficulty={questions[currentQuestion]?.difficulty}
+							/>
 						</div>
 						{questionState === "Timer Started" && (
 							<Timer
-								time={resumeTime ?? serverQuestionTime(questions[currentQuestion]?.type, questions[currentQuestion]?.difficulty)}
+								time={
+									resumeTime ??
+									serverQuestionTime(
+										questions[currentQuestion]?.type,
+										questions[currentQuestion]?.difficulty
+									)
+								}
 								onTimeEnd={onTimeEnd}
 							/>
 						)}
@@ -161,7 +171,11 @@ export default function QuizPortalPage() {
 						<div className={styles["quiz-nav-buttons"]}>
 							<button
 								className={currentQuestion ? "" : styles["disabled"]}
-								onClick={() => (currentQuestion ? setCurrentQuestion(currentQuestion - 1) : null)}
+								onClick={() =>
+									currentQuestion
+										? setCurrentQuestion(currentQuestion - 1)
+										: null
+								}
 							>
 								Previous
 							</button>
@@ -174,7 +188,9 @@ export default function QuizPortalPage() {
 							</button>
 							<button
 								className={
-									questions.length - (currentQuestion + 1) ? "" : styles["disabled"]
+									questions.length - (currentQuestion + 1)
+										? ""
+										: styles["disabled"]
 								}
 								onClick={() =>
 									questions.length - (currentQuestion + 1)
@@ -193,7 +209,10 @@ export default function QuizPortalPage() {
 					<button
 						onClick={endQuiz}
 						disabled={!start}
-						className={[styles["end-quiz"], !start ? styles["disabled"] : ""].join(" ")}
+						className={[
+							styles["end-quiz"],
+							!start ? styles["disabled"] : "",
+						].join(" ")}
 					>
 						End Quiz
 					</button>

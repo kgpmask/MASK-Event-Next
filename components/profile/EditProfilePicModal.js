@@ -1,54 +1,71 @@
-import React, { useState } from 'react'
-import Image from 'next/image';
-import Styles from '@/styles/Profile.module.css'
+import React, { useState } from "react";
+import Image from "next/image";
+import Styles from "@/styles/Profile.module.css";
 import { IoClose } from "react-icons/io5";
 
 const profilePictures = [
 	null,
-	...Array.from({ length: 13 }, (_e, i) => String(i + 1))
-]
+	...Array.from({ length: 13 }, (_e, i) => String(i + 1)),
+];
 
 function LogOutModal({ showModal, profilePic, submitFunction }) {
 	const handleClose = () => {
 		// console.log('close')
-		showModal(false)
-	}
+		showModal(false);
+	};
 	const [selected, setSelected] = useState(profilePic);
 
-	function toggleSelect (value) {
+	function toggleSelect(value) {
 		if (selected === value) setSelected(null);
 		else setSelected(value);
 	}
 
-	async function submit () {
+	async function submit() {
 		await submitFunction({ profilePic: selected });
 		showModal(false);
 	}
 	return (
-		<div className={Styles['modal-container']}>
-			<div className={Styles['modal-wrapper']}>
-				<div className={Styles['modal-block']}>
-					<div style={{ display: 'flex', justifyContent: 'end', alignItems: 'center' }}>
-						<IoClose className={Styles['modal-cross']} color='white' onClick={handleClose} />
+		<div className={Styles["modal-container"]}>
+			<div className={Styles["modal-wrapper"]}>
+				<div className={Styles["modal-block"]}>
+					<div
+						style={{
+							display: "flex",
+							justifyContent: "end",
+							alignItems: "center",
+						}}
+					>
+						<IoClose
+							className={Styles["modal-cross"]}
+							color="white"
+							onClick={handleClose}
+						/>
 					</div>
 					<div className={Styles["profile-pics-array"]}>
-						{
-							profilePictures.map(pic => (
-								<Image
-									key={pic}
-									alt=""
-									src={pic != null ? `/profile-pics/${pic}.webp` : `/profile-pics/default.webp`}
-									className={ selected == pic ? Styles['selected'] : '' }
-									onClick={() => toggleSelect(pic)}
-								/>
-							))
-						}
+						{profilePictures.map((pic) => (
+							<Image
+								key={pic}
+								alt=""
+								src={
+									pic != null
+										? `/profile-pics/${pic}.webp`
+										: `/profile-pics/default.webp`
+								}
+								className={selected == pic ? Styles["selected"] : ""}
+								onClick={() => toggleSelect(pic)}
+							/>
+						))}
 					</div>
 				</div>
-				<div style={{ textAlign: 'center' }}><button className={Styles['edit-profilepic-btn']} onClick={submit}> Update </button></div>
+				<div style={{ textAlign: "center" }}>
+					<button className={Styles["edit-profilepic-btn"]} onClick={submit}>
+						{" "}
+						Update{" "}
+					</button>
+				</div>
 			</div>
 		</div>
-	)
+	);
 }
 
-export default LogOutModal
+export default LogOutModal;

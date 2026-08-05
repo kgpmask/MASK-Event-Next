@@ -50,27 +50,34 @@ app.prepare().then(async () => {
 		}
 		socket.join(process.env.QUIZ_ID);
 
-		socket.on('question', question => {
+		socket.on("question", (question) => {
 			if (!socket.isAdmin) {
-				console.warn(`Unauthorized 'question' emit rejected from socket ${socket.id}`);
-				return socket.emit("unauthorized", "Only admins can broadcast questions");
+				console.warn(
+					`Unauthorized 'question' emit rejected from socket ${socket.id}`
+				);
+				return socket.emit(
+					"unauthorized",
+					"Only admins can broadcast questions"
+				);
 			}
-			io.to(process.env.QUIZ_ID).emit('question', question);
+			io.to(process.env.QUIZ_ID).emit("question", question);
 			quizState.scheduleClientTimeout(
 				() => {
-					io.to(process.env.QUIZ_ID).emit('timeout', '');
+					io.to(process.env.QUIZ_ID).emit("timeout", "");
 				},
 				serverQuestionTime(question.type, question.difficulty) * 1000
 			);
 		});
 
-		socket.on('end-quiz', () => {
+		socket.on("end-quiz", () => {
 			if (!socket.isAdmin) {
-				console.warn(`Unauthorized 'end-quiz' emit rejected from socket ${socket.id}`);
+				console.warn(
+					`Unauthorized 'end-quiz' emit rejected from socket ${socket.id}`
+				);
 				return socket.emit("unauthorized", "Only admins can end the quiz");
 			}
 			quizState.markEnded();
-			io.to(process.env.QUIZ_ID).emit('end-quiz', '');
+			io.to(process.env.QUIZ_ID).emit("end-quiz", "");
 		});
 	});
 
@@ -97,7 +104,8 @@ app.prepare().then(async () => {
 
 		const flush = async () => {
 			const count = await flushCachedRecords();
-			if (count) console.log(`${count} cached records flushed to the database.`);
+			if (count)
+				console.log(`${count} cached records flushed to the database.`);
 			clearTimeout(forceExit);
 			await mongoose.connection.close();
 			process.exit(0);

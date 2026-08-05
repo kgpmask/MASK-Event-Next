@@ -15,14 +15,16 @@ const getResultsHandler = async (req, res) => {
 		// console.log("USERS: ", users);
 		const results = await Result.find({ quizId: quizState.quizId });
 		// console.log(results);
-		cachedResults.results = results.map((obj) => {
-			const result = { points: obj.score };
-			const user = users.find((u) => u._id === obj.userId);
-			if (!user) return;
-			result.username = user.username;
-			result.name = user.name;
-			return result;
-		}).filter((e) => e);
+		cachedResults.results = results
+			.map((obj) => {
+				const result = { points: obj.score };
+				const user = users.find((u) => u._id === obj.userId);
+				if (!user) return;
+				result.username = user.username;
+				result.name = user.name;
+				return result;
+			})
+			.filter((e) => e);
 	}
 
 	return res.status(201).json(cachedResults.results);

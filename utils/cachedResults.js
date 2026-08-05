@@ -1,5 +1,5 @@
 const cachedResults = {
-	results: []
+	results: [],
 };
 
 export default cachedResults;

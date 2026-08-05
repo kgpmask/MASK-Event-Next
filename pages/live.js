@@ -66,24 +66,25 @@ const LivePage = () => {
 		setState("attempting");
 	};
 
-	const submissionHandler = useCallback((args) => {
-		const questionNo = question.questionNo;
-		const response =
-			question.type === "text"
-				? answer.current.trim()
-				: answer.current;
-		fetch("/api/live/submit-answer", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ questionNo, response }),
-		})
-			.then((res) => res.text())
-			.then((_res) => {
-				setTimeRemaining(0);
-				setQuestion(null);
-				setState(args?.timeout && response === "" ? "timeover" : "submitted");
-			});
-	}, [question]);
+	const submissionHandler = useCallback(
+		(args) => {
+			const questionNo = question.questionNo;
+			const response =
+				question.type === "text" ? answer.current.trim() : answer.current;
+			fetch("/api/live/submit-answer", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ questionNo, response }),
+			})
+				.then((res) => res.text())
+				.then((_res) => {
+					setTimeRemaining(0);
+					setQuestion(null);
+					setState(args?.timeout && response === "" ? "timeover" : "submitted");
+				});
+		},
+		[question]
+	);
 
 	const onStartQuiz = () => setState("instructions");
 	const onEndQuiz = useCallback(() => router.push("/results"), [router]);
@@ -101,7 +102,8 @@ const LivePage = () => {
 
 		if (
 			(!document.cookie.includes("sessionId=") ||
-			document.cookie.split("sessionId=").pop().split(";")[0] === "") && isMounted
+				document.cookie.split("sessionId=").pop().split(";")[0] === "") &&
+			isMounted
 		) {
 			router.push("/login");
 		}
@@ -152,7 +154,7 @@ const LivePage = () => {
 						question={question}
 						time={timeRemaining}
 						submitAnswer={submissionHandler}
-						updateAnswer={(val) => answer.current = val}
+						updateAnswer={(val) => (answer.current = val)}
 					/>
 				);
 				break;

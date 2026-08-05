@@ -11,11 +11,11 @@ const checkAdmin = async (sessionId) => {
 		const userId = session.userId;
 		const user = await User.findById(userId).lean();
 		// console.log(user.username);
-		if(!user) return false;
+		if (!user) return false;
 		return Boolean(user.isAdmin);
 	} catch (e) {
 		return false;
 	}
-}
+};
 
 export default checkAdmin;

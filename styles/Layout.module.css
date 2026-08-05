@@ -1,5 +1,7 @@
 .background {
-	background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url("/background.jpg");
+	background:
+		linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
+		url("/background.jpg");
 	background-repeat: no-repeat;
 	background-position: center;
 	height: 100vh;
@@ -14,7 +16,6 @@
 	flex-direction: column;
 	justify-content: space-between;
 	align-items: center;
-
 }
 .flex-container-live {
 	min-height: 100vh;
@@ -22,7 +23,6 @@
 	flex-direction: column;
 	justify-content: flex-start;
 	align-items: center;
-
 }
 
 .container {

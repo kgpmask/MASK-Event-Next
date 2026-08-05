@@ -1,9 +1,9 @@
-import Styles from '@/styles/Quiz.module.css';
+import Styles from "@/styles/Quiz.module.css";
 
 const MessageCard = ({ message, children }) => {
 	return (
 		<>
-			<div className={Styles['message-card']}>{message || children}</div>
+			<div className={Styles["message-card"]}>{message || children}</div>
 		</>
 	);
 };

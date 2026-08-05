@@ -76,37 +76,43 @@ const Navbar = () => {
 							height={40}
 							className={Styles["logo"]}
 						/>
-					</div>				) : (
-						<Link
-							href="/"
-							style={{
-								padding: "16px 16px",
-								verticalAlign: "middle",
-							}}
-							className="nohover"
-							target="_self"
-						>
-							<Image
-								src="/logo.jpeg"
-								alt="Logo"
-								width={40}
-								height={40}
-								className={Styles["logo"]}
-							/>
-						</Link>
-					)}
+					</div>
+				) : (
+					<Link
+						href="/"
+						style={{
+							padding: "16px 16px",
+							verticalAlign: "middle",
+						}}
+						className="nohover"
+						target="_self"
+					>
+						<Image
+							src="/logo.jpeg"
+							alt="Logo"
+							width={40}
+							height={40}
+							className={Styles["logo"]}
+						/>
+					</Link>
+				)}
 
 				<ul className={Styles["list"]}>
-					{navItems.filter(item => (item.name === "Profile" && username) || item.name !== "Profile").map((item, index) => (
-						<li
-							key={index}
-							// onClick={() => handleClick(index)}
-						>
-							<Link href={item.href} className={Styles["navlink"]}>
-								{item.name}
-							</Link>
-						</li>
-					))}
+					{navItems
+						.filter(
+							(item) =>
+								(item.name === "Profile" && username) || item.name !== "Profile"
+						)
+						.map((item, index) => (
+							<li
+								key={index}
+								// onClick={() => handleClick(index)}
+							>
+								<Link href={item.href} className={Styles["navlink"]}>
+									{item.name}
+								</Link>
+							</li>
+						))}
 					{username ? (
 						<button className={Styles["list-item"]} onClick={handleLogout}>
 							Logout
@@ -139,24 +145,37 @@ const Navbar = () => {
 							: Styles["hamburger-menu"]
 					}
 				>
-					{navItems.filter(item => (item.name === "Profile" && username) || item.name !== "Profile").map((item, index) => (
-						<li key={index}>
-							<Link
-								href={item.href}
-								className={Styles["burger-link"]}
-								onClick={() => setBurgerOpen(false)}
-							>
-								{item.name}
-							</Link>
-						</li>
-					))}
+					{navItems
+						.filter(
+							(item) =>
+								(item.name === "Profile" && username) || item.name !== "Profile"
+						)
+						.map((item, index) => (
+							<li key={index}>
+								<Link
+									href={item.href}
+									className={Styles["burger-link"]}
+									onClick={() => setBurgerOpen(false)}
+								>
+									{item.name}
+								</Link>
+							</li>
+						))}
 					{username ? (
-						<button style={{ backgroundColor: 'transparent', outline: 'none', border: 'none' }} className={Styles["burger-link"]} onClick={() => setShowLogOutModal(true)}>
+						<button
+							style={{
+								backgroundColor: "transparent",
+								outline: "none",
+								border: "none",
+							}}
+							className={Styles["burger-link"]}
+							onClick={() => setShowLogOutModal(true)}
+						>
 							Logout
 						</button>
 					) : (
 						<Link
-							href='/login'
+							href="/login"
 							className={Styles["burger-link"]}
 							onClick={() => setBurgerOpen(false)}
 						>
@@ -165,7 +184,14 @@ const Navbar = () => {
 					)}
 				</div>
 			</div>
-			{showLogOutModal && <LogOutModal showModal={(val) => {setBurgerOpen(false); setShowLogOutModal(val);}} />}
+			{showLogOutModal && (
+				<LogOutModal
+					showModal={(val) => {
+						setBurgerOpen(false);
+						setShowLogOutModal(val);
+					}}
+				/>
+			)}
 		</div>
 	);
 };

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400..700;1,400..700&display=swap");
 
 :root {
 	--abyss: #060606;
@@ -30,7 +30,12 @@
 body {
 	background-color: black;
 	color: var(--light-gray);
-	font-family: Ubuntu, Roboto, Arial, Open Sans, sans-serif;
+	font-family:
+		Ubuntu,
+		Roboto,
+		Arial,
+		Open Sans,
+		sans-serif;
 }
 
 .burger-open {

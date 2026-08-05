@@ -13,9 +13,7 @@ export default function Home({ children }) {
 				<div className={Styles["flex-container-live"]}>
 					<Navbar />
 					<main className={Styles["container"]}>
-						<div id="content-wrap">
-							{children}
-						</div>
+						<div id="content-wrap">{children}</div>
 					</main>
 				</div>
 			</>
@@ -27,9 +25,7 @@ export default function Home({ children }) {
 				<div className={Styles["flex-container"]}>
 					<Navbar />
 					<main className={Styles["container"]}>
-						<div id="content-wrap">
-							{children}
-						</div>
+						<div id="content-wrap">{children}</div>
 					</main>
 					<Footer />
 				</div>

@@ -3,7 +3,8 @@ const getMessageHandler = async (req, res) => {
 		_id: "I4m4t0mic",
 		name: "??????",
 		username: "??????",
-		message: "My name is Shadow: he who lurks in the shadows to hunt the shadows."
+		message:
+			"My name is Shadow: he who lurks in the shadows to hunt the shadows.",
 	});
 };
 

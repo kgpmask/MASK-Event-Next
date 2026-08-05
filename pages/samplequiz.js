@@ -82,7 +82,9 @@ function Complete({ score }) {
 				quiz
 			</p>
 			<br />
-			<p>Score: {score}/{maxScore}</p>
+			<p>
+				Score: {score}/{maxScore}
+			</p>
 		</MessageCard>
 	);
 }
@@ -103,24 +105,28 @@ export default function SampleQuiz() {
 		<SampleInstructions />
 	);
 
-	const submitAnswer = useCallback(({ timeout }) => {
-		const question = dummyApiResponse.questions[currentQuestion];
-		let isCorrect;
-		if (question.type === "mtf") {
-			const answerList = String(question.answer).split(",").map(Number);
-			isCorrect =
-				Array.isArray(userAnswer.current) &&
-				userAnswer.current.length === answerList.length &&
-				userAnswer.current.every((val, i) => +val === +answerList[i]);
-		} else {
-			isCorrect =
-				~~userAnswer.current === ~~question.answer && userAnswer.current !== "";
-		}
-		if (isCorrect) {
-			setScore((prevScore) => prevScore + question.score);
-		}
-		setState(timeout ? "timeout" : "submitted");
-	}, [currentQuestion]);
+	const submitAnswer = useCallback(
+		({ timeout }) => {
+			const question = dummyApiResponse.questions[currentQuestion];
+			let isCorrect;
+			if (question.type === "mtf") {
+				const answerList = String(question.answer).split(",").map(Number);
+				isCorrect =
+					Array.isArray(userAnswer.current) &&
+					userAnswer.current.length === answerList.length &&
+					userAnswer.current.every((val, i) => +val === +answerList[i]);
+			} else {
+				isCorrect =
+					~~userAnswer.current === ~~question.answer &&
+					userAnswer.current !== "";
+			}
+			if (isCorrect) {
+				setScore((prevScore) => prevScore + question.score);
+			}
+			setState(timeout ? "timeout" : "submitted");
+		},
+		[currentQuestion]
+	);
 
 	const updateAnswer = (answer) => {
 		userAnswer.current = answer;

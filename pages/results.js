@@ -16,7 +16,7 @@ const assignRank = (resultsJSON) => {
 			}
 		}
 	}
-}
+};
 
 export default function Results() {
 	const [results, setResults] = useState([]);
@@ -24,10 +24,10 @@ export default function Results() {
 
 	const fetchResults = useCallback(async () => {
 		try {
-			const adminResponse = await fetch('/api/admin/check-admin');
+			const adminResponse = await fetch("/api/admin/check-admin");
 			const isAdmin = (await adminResponse.json()).isAdmin;
-			if (isAdmin) await fetch('/api/admin/live/evaluate-answer');
-			const response = await fetch('/api/live/get-results');
+			if (isAdmin) await fetch("/api/admin/live/evaluate-answer");
+			const response = await fetch("/api/live/get-results");
 			return await response.json();
 		} catch (e) {
 			console.log(e);
@@ -58,7 +58,11 @@ export default function Results() {
 	}, [fetchResults]);
 
 	if (loading || !results || !results.length) {
-		return <MessageCard message={'Results are yet to be evaluated. Try again later.'} />;
+		return (
+			<MessageCard
+				message={"Results are yet to be evaluated. Try again later."}
+			/>
+		);
 	}
 
 	return (
@@ -66,7 +70,7 @@ export default function Results() {
 			<TextArea title="Results">
 				<h4>Real results were the friends we made along the way. jk.</h4>
 
-				<table className={styles['content-table']}>
+				<table className={styles["content-table"]}>
 					<thead>
 						<tr>
 							<th>Rank</th>
@@ -76,20 +80,17 @@ export default function Results() {
 						</tr>
 					</thead>
 					<tbody>
-						<tr onClick={() => window.open('/api/get-message', '_blank')}>
-						</tr>
-						{
-							results.map((elem) => {
-								return (
-									<tr key={elem.username}>
-										<td>{elem.rank}</td>
-										<td>{elem.name}</td>
-										<td>{elem.username}</td>
-										<td>{elem.points}</td>
-									</tr>
-								);
-							})
-						}
+						<tr onClick={() => window.open("/api/get-message", "_blank")}></tr>
+						{results.map((elem) => {
+							return (
+								<tr key={elem.username}>
+									<td>{elem.rank}</td>
+									<td>{elem.name}</td>
+									<td>{elem.username}</td>
+									<td>{elem.points}</td>
+								</tr>
+							);
+						})}
 					</tbody>
 				</table>
 			</TextArea>

@@ -13,12 +13,17 @@ const submitAnswerHandler = async (req, res) => {
 	const user = await User.findById(
 		(await Session.findById(req.cookies.sessionId))?.userId
 	);
-	if (!user) return res.status(401).send("Invalid session. Please login again.");
+	if (!user)
+		return res.status(401).send("Invalid session. Please login again.");
 
 	const { questionNo, response } = req.body;
-	if (response === '' || response == null) return res.status(400).send("Empty Response");
+	if (response === "" || response == null)
+		return res.status(400).send("Empty Response");
 
-	if (!quizState.isQuestionRunning || Number(quizState.currentQuestionNo) !== Number(questionNo))
+	if (
+		!quizState.isQuestionRunning ||
+		Number(quizState.currentQuestionNo) !== Number(questionNo)
+	)
 		return (
 			console.log({
 				serverQuestionNo: quizState.currentQuestionNo,
@@ -26,15 +31,20 @@ const submitAnswerHandler = async (req, res) => {
 			}) || res.status(400).send("Questions not in sync")
 		);
 
-	if (quizState.cachedRecords.some((e) => e.userId === user._id && Number(e.questionNo) === Number(questionNo)))
+	if (
+		quizState.cachedRecords.some(
+			(e) =>
+				e.userId === user._id && Number(e.questionNo) === Number(questionNo)
+		)
+	)
 		return res.status(400).send("Already answered");
 
 	const record = {
 		quizId: quizState.quizId,
 		userId: user._id,
 		questionNo,
-		response: Array.isArray(response) ? response.join(',') : response,
-	}
+		response: Array.isArray(response) ? response.join(",") : response,
+	};
 	quizState.cachedRecords.push(record);
 
 	return res.status(201).send("Response recorded");

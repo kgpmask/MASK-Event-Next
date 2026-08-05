@@ -11,12 +11,18 @@ const updateProfileHandler = async (req, res) => {
 
 		if (req.cookies.isAdmin) {
 			user = await User.findOne({ username });
-		}
-		else {
-			user = await User.findById((await Session.findById(req.cookies.sessionId))?.userId);
+		} else {
+			user = await User.findById(
+				(await Session.findById(req.cookies.sessionId))?.userId
+			);
 		}
 
-		if (!user) return res.status(401).send('You are NOT an admin or a registered user. Go away immediately.');
+		if (!user)
+			return res
+				.status(401)
+				.send(
+					"You are NOT an admin or a registered user. Go away immediately."
+				);
 
 		if (name !== undefined) user.name = name;
 		if (profilePic !== undefined) user.profilePic = profilePic;

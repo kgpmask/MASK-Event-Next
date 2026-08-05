@@ -1,7 +1,9 @@
-import MessageCard from './MessageCard';
+import MessageCard from "./MessageCard";
 
 const SubmitMessage = () => {
-	return <MessageCard message={'Your answer has been submitted successfully!'} />;
+	return (
+		<MessageCard message={"Your answer has been submitted successfully!"} />
+	);
 };
 
 export default SubmitMessage;

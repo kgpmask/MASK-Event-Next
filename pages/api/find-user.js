@@ -4,9 +4,7 @@ import Session from "@/database/models/Session";
 const findUserHandler = async (req, res) => {
 	if (!req.cookies.sessionId) return res.status(204).send("No sessionId");
 	const user = await User.findById(
-		(
-			await Session.findById(req.cookies.sessionId)
-		)?.userId
+		(await Session.findById(req.cookies.sessionId))?.userId
 	).select("-password");
 	return res.status(200).json(user);
 };

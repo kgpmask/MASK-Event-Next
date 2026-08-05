@@ -12,14 +12,17 @@ const statusCodes = {
 
 class ErrorPage extends React.Component {
 	static getInitialProps({ res, err }) {
-		const statusCode = res && res.statusCode ? res.statusCode : err ? err.statusCode : 404;
+		const statusCode =
+			res && res.statusCode ? res.statusCode : err ? err.statusCode : 404;
 		return { statusCode };
 	}
 
 	render() {
 		const { statusCode } = this.props;
 		const title =
-			this.props.title || statusCodes[statusCode] || "An unexpected error has occurred";
+			this.props.title ||
+			statusCodes[statusCode] ||
+			"An unexpected error has occurred";
 
 		return (
 			<div className={styles.error}>
@@ -31,11 +34,7 @@ class ErrorPage extends React.Component {
 					</title>
 				</Head>
 				<div className={styles.desc}>
-					{statusCode ? (
-						<h1 className={styles.h1}>
-							{statusCode}
-						</h1>
-					) : null}
+					{statusCode ? <h1 className={styles.h1}>{statusCode}</h1> : null}
 					<div className={styles.wrap}>
 						<h2 className={styles.h2}>{title}.</h2>
 					</div>

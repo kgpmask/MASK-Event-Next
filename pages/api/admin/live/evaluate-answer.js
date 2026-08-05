@@ -1,18 +1,18 @@
-import quizState from '@/utils/quizState';
-import cachedResults from '@/utils/cachedResults';
-import evaluateAnswer from '@/utils/evaluateAnswer';
-import dbInit from '@/database/dbInit';
-import Question from '@/database/models/Question';
-import Record from '@/database/models/Record';
-import Result from '@/database/models/Result';
-import User from '@/database/models/User';
-import flushCachedRecords from '@/utils/flushCachedRecords';
+import quizState from "@/utils/quizState";
+import cachedResults from "@/utils/cachedResults";
+import evaluateAnswer from "@/utils/evaluateAnswer";
+import dbInit from "@/database/dbInit";
+import Question from "@/database/models/Question";
+import Record from "@/database/models/Record";
+import Result from "@/database/models/Result";
+import User from "@/database/models/User";
+import flushCachedRecords from "@/utils/flushCachedRecords";
 
 let answerEvaluationLock = false;
 
 const evaluateAnswerHandler = async (_req, res) => {
 	if (answerEvaluationLock)
-		return res.status(201).send('Evaluation successful!');
+		return res.status(201).send("Evaluation successful!");
 	answerEvaluationLock = true;
 
 	try {
@@ -24,7 +24,7 @@ const evaluateAnswerHandler = async (_req, res) => {
 		const users = await User.find().lean();
 		const questions = await Question.find({ quizId })
 			.lean({ defaults: true })
-			.sort({ questionNo: 'asc' });
+			.sort({ questionNo: "asc" });
 		const records = await Record.find({ quizId }).lean();
 
 		records.forEach(({ userId, questionNo, response }) => {
@@ -35,25 +35,37 @@ const evaluateAnswerHandler = async (_req, res) => {
 			if (!ques) return;
 			let result = results.find((obj) => obj.userId === userId);
 			if (!result) {
-				result = { userId, username: user.username, name: user.name, points: 0 };
+				result = {
+					userId,
+					username: user.username,
+					name: user.name,
+					points: 0,
+				};
 				results.push(result);
 			}
-			result.points += evaluateAnswer(response, ques.answer, ques.type, ques.score);
+			result.points += evaluateAnswer(
+				response,
+				ques.answer,
+				ques.type,
+				ques.score
+			);
 		});
 
 		cachedResults.results = results;
 		await Promise.all(
 			results.map(async ({ userId, points }) => {
-				const result = (await Result.findOne({ userId, quizId })) || new Result({ userId, quizId });
+				const result =
+					(await Result.findOne({ userId, quizId })) ||
+					new Result({ userId, quizId });
 				result.score = points;
 				return await result.save();
 			})
 		);
 
-		return res.status(201).send('Evaluation successful!');
+		return res.status(201).send("Evaluation successful!");
 	} catch (error) {
 		console.error("Error evaluating answers:", error);
-		return res.status(500).send('Evaluation failed. Please try again.');
+		return res.status(500).send("Evaluation failed. Please try again.");
 	} finally {
 		answerEvaluationLock = false;
 	}

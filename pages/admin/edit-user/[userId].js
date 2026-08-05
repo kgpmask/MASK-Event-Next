@@ -13,13 +13,13 @@ export default function EditUserPage() {
 
   useEffect(() => {
     if (!userId) return;
-    let isMounted = false;
+    let isMounted = true;
 
     const fetchUser = async () => {
       try {
         const response = await fetch(`/api/admin/users/${userId}`);
         const userData = await response.json();
-        if (isMounted) return;
+        if (!isMounted) return;
         setUser(userData);
         setName(userData.name);
         setUsername(userData.username);
@@ -32,7 +32,7 @@ export default function EditUserPage() {
     fetchUser();
 
     return () => {
-      isMounted = true;
+      isMounted = false;
     };
   }, [userId]);
 

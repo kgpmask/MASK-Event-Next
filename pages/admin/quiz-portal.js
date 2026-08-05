@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import Timer from "@/components/Quiz/Timer";
@@ -15,7 +15,6 @@ export default function QuizPortalPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [start, setStart] = useState(false);
   const [resumeTime, setResumeTime] = useState(null);
-
   const [questions, setQuestions] = useState([]);
 
   const onTimeEnd = () => {
@@ -24,37 +23,8 @@ export default function QuizPortalPage() {
     setResumeTime(null);
   };
 
-  const loadQuestions = useCallback(async () => {
-    try {
-      let storedQuestions = JSON.parse(localStorage.getItem("questions") ?? "[]");
-      if (
-        !storedQuestions ||
-        !storedQuestions.length
-      ) {
-        const response = await fetch("/api/admin/live/get-questions");
-        if (response.status !== 201) throw new Error(await response.text());
-
-        const fetchedQuestions = await response.text();
-        localStorage.setItem("questions", fetchedQuestions);
-        storedQuestions = JSON.parse(fetchedQuestions);
-      }
-
-      setQuestions(storedQuestions);
-      return storedQuestions;
-    } catch (err) {
-      console.error("Error fetching questions:", err);
-      return [];
-    }
-  }, []);
-
-  const startQuiz = () => {
-    loadQuestions().then((loaded) => {
-      if (loaded.length) setStart(true);
-    });
-  };
-
   useEffect(() => {
-    let isMounted = false;
+    let isMounted = true;
 
     const resume = async () => {
       try {
@@ -63,28 +33,51 @@ export default function QuizPortalPage() {
         const state = await stateResponse.json();
         if (state.currentQuestionNumber == null && !state.lastQuestionNo) return;
 
-        const loadedQuestions = await loadQuestions();
-        if (!loadedQuestions.length || isMounted) return;
+        if (isMounted) {
+          setCurrentQuestion(state.currentQuestionNumber ?? state.lastQuestionNo);
+          setStart(true);
 
-        setCurrentQuestion(state.currentQuestionNumber ?? state.lastQuestionNo);
-        setStart(true);
-
-        if (state.currentQuestionNumber != null) {
-          setDisabled(true);
-          setQuestionState("Timer Started");
-          setResumeTime(state.timeRemaining);
+          if (state.currentQuestionNumber != null) {
+            setDisabled(true);
+            setQuestionState("Timer Started");
+            setResumeTime(state.timeRemaining);
+          }
         }
       } catch (err) {
         console.error("Error resuming quiz:", err);
       }
     };
 
+    const loadQuestions = async () => {
+      try {
+        let storedQuestions = JSON.parse(localStorage.getItem("questions") ?? "[]");
+        if (
+          !storedQuestions ||
+          !storedQuestions.length
+        ) {
+          const response = await fetch("/api/admin/live/get-questions");
+          if (response.status !== 201) throw new Error(await response.text());
+
+          const fetchedQuestions = await response.text();
+          localStorage.setItem("questions", fetchedQuestions);
+          storedQuestions = JSON.parse(fetchedQuestions);
+        }
+
+        if (isMounted) {
+          setQuestions(storedQuestions);
+        }
+      } catch (err) {
+        console.error("Error fetching questions:", err);
+      }
+    };
+
+    loadQuestions();
     resume();
 
     return () => {
-      isMounted = true;
+      isMounted = false;
     };
-  }, [loadQuestions]);
+  }, []);
 
   const startQuestion = async () => {
     try {
@@ -109,6 +102,10 @@ export default function QuizPortalPage() {
     } catch (error) {
       console.error("Error starting question:", error);
     }
+  };
+
+  const startQuiz = () => {
+    setStart(true);
   };
 
   const endQuiz = async () => {

@@ -30,7 +30,7 @@ const submitAnswerHandler = async (req, res) => {
 		quizId: quizState.quizId,
 		userId: user._id,
 		questionNo,
-		response,
+		response: Array.isArray(response) ? response.join(',') : response,
 	}
 	quizState.cachedRecords.push(record);
 

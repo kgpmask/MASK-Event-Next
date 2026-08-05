@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Link from "next/link";
 import { TextArea } from "@/components/Base/TextArea";
 import styles from "@/styles/Instructions.module.css";
 

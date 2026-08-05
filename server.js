@@ -92,6 +92,7 @@ app.prepare().then(async () => {
 				);
 				return socket.emit("unauthorized", "Only admins can start the quiz");
 			}
+			quizState.markStarted();
 			io.to(process.env.QUIZ_ID).emit("start-quiz", "");
 		});
 

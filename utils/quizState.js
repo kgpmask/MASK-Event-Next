@@ -81,6 +81,11 @@ const createQuizState = () => {
 			this.quizStatus = "ended";
 		},
 
+		/** Marks the quiz as started, so late joiners land on the instructions page. */
+		markStarted() {
+			this.quizStatus = "started";
+		},
+
 		/**
 		 * Computes the seconds remaining for the running question.
 		 * @returns {number} The remaining seconds, clamped at 0.

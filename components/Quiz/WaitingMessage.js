@@ -1,5 +1,4 @@
-import { useMemo, useState } from "react";
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import { MessageCard } from "./MessageCard";
 import styles from "@/styles/Quiz.module.css";
 
@@ -14,9 +13,9 @@ export const WaitingMessage = () => {
 	 * Cycles the animated ellipsis dots every second.
 	 * @param {number} ellipse - The current number of dots displayed.
 	 */
-	useMemo(() => {
-		setTimeout(() => setEllipse((ellipse % 3) + 1), 1000);
-	}, [ellipse]);
+	useEffect(() => {
+		setInterval(() => setEllipse((ellipse) => (ellipse + 1) % 3 + 1), 1000);
+	}, [setEllipse]);
 
 	return (
 		<MessageCard>
@@ -27,7 +26,12 @@ export const WaitingMessage = () => {
 					.fill("\u00A0")
 					.join("")}
 				<div className={styles["imgdiv"]}>
-					<Image src="/waiting.gif" alt="Waiting..." />
+					<img
+						src="/waiting.gif"
+						alt="Waiting..."
+						width={100}
+						height={100}
+					/>
 				</div>
 			</div>
 		</MessageCard>

@@ -4,11 +4,9 @@ import styles from "@/styles/Instructions.module.css";
 
 /**
  * LiveInstructions component that renders the instructions page for the live quiz.
- * @param {object} props - The component props.
- * @param {function} props.buttonCallback - Callback invoked when the start quiz button is clicked.
  * @returns {JSX.Element} The instructions markup.
  */
-export function LiveInstructions({ buttonCallback }) {
+export function LiveInstructions() {
 	return (
 		<>
 			<Head>
@@ -122,9 +120,6 @@ export function LiveInstructions({ buttonCallback }) {
 						</li>
 					</ul>
 				</div>
-				<button className={styles["submit-btn"]} onClick={buttonCallback}>
-					Start Quiz
-				</button>
 			</TextArea>
 		</>
 	);

@@ -42,6 +42,26 @@ export default function LivePage() {
 	const router = useRouter();
 
 	const stateRef = useRef(state);
+	const waitingTimerRef = useRef(null);
+
+	/**
+	 * Clears the pending timer that would move the user to the waiting screen.
+	 */
+	const clearWaitingTimer = useCallback(() => {
+		if (waitingTimerRef.current) clearTimeout(waitingTimerRef.current);
+		waitingTimerRef.current = null;
+	}, []);
+
+	/**
+	 * Shows the waiting screen unless a new question arrives within ten seconds.
+	 */
+	const scheduleWaiting = useCallback(() => {
+		clearWaitingTimer();
+		waitingTimerRef.current = setTimeout(() => {
+			waitingTimerRef.current = null;
+			setState("waiting");
+		}, 10_000);
+	}, [clearWaitingTimer]);
 
 	/**
 	 * Fetches the current quiz state and question to restore an in-progress quiz.
@@ -81,6 +101,7 @@ export default function LivePage() {
 	 */
 	const questionHandler = (question) => {
 		const type = question.type;
+		clearWaitingTimer();
 		setQuestion(question);
 		answer.current = null;
 
@@ -104,17 +125,17 @@ export default function LivePage() {
 			 */
 			const submitAnswer = async () => {
 				try {
-				const res = await fetch("/api/live/submit-answer", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ questionNo, response }),
-				});
-				if (res.status < 200 || res.status >= 300) return;
-				setTimeRemaining(0);
-				setQuestion(null);
-				setState(args?.timeout && response === "" ? "timeover" : "submitted");
-				} catch(err) {
-					console.error("Error submitting answer:", err)
+					const res = await fetch("/api/live/submit-answer", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ questionNo, response }),
+					});
+					if (res.status < 200 || res.status >= 300) return;
+					setTimeRemaining(0);
+					setQuestion(null);
+					setState(args?.timeout && response === "" ? "timeover" : "submitted");
+				} catch (err) {
+					console.error("Error submitting answer:", err);
 				}
 			};
 
@@ -157,12 +178,14 @@ export default function LivePage() {
 		}
 
 		/**
-		 * Marks the quiz as time over when the timeout event fires during an attempt.
+		 * Marks the quiz as time over when the timeout event fires during an attempt,
+		 * then schedules the waiting screen if no new question arrives.
 		 */
 		const onTimeout = () => {
 			if (stateRef.current === "attempting") {
 				setState("timeover");
 			}
+			scheduleWaiting();
 		};
 
 		socket.on("timeout", onTimeout);
@@ -175,13 +198,14 @@ export default function LivePage() {
 
 		return () => {
 			isMounted = false;
+			clearWaitingTimer();
 			socket.off("timeout", onTimeout);
 			socket.off("start-quiz", onStartQuiz);
 			socket.off("end-quiz", onEndQuiz);
 			socket.off("question", onQuestion);
 			socket.off("connect", resumeQuiz);
 		};
-	}, [onEndQuiz, resumeQuiz, router]);
+	}, [onEndQuiz, resumeQuiz, router, scheduleWaiting, clearWaitingTimer]);
 
 	useMemo(() => {
 		switch (state) {
@@ -192,9 +216,7 @@ export default function LivePage() {
 				setRenderComponent(<EndedNotStartedMessage />);
 				break;
 			case "instructions":
-				setRenderComponent(
-					<LiveInstructions buttonCallback={() => setState("waiting")} />
-				);
+				setRenderComponent(<LiveInstructions />);
 				break;
 			case "waiting":
 				setRenderComponent(<WaitingMessage />);

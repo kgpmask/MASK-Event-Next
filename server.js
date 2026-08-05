@@ -1,12 +1,11 @@
-require("dotenv").config();
-const { createServer } = require("node:http");
-const next = require("next");
-const { Server } = require("socket.io");
+import "dotenv/config";
+import { createServer } from "node:http";
+import next from "next";
+import { Server } from "socket.io";
 
-const mongoose = require("mongoose");
-const dbInit = require("./database/dbInit.js");
-const flushCachedRecords = require("./utils/flushCachedRecords.js");
-// import { getUserFromSession } from "./database/models/User.js";
+import mongoose from "mongoose";
+import dbInit from "./database/dbInit.js";
+import flushCachedRecords from "./utils/flushCachedRecords.js";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";

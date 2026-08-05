@@ -1,5 +1,5 @@
-const handlerContext = require("./handlerContext.js");
-const Record = require("../database/models/Record.js");
+import handlerContext from "./handlerContext.js";
+import Record from "../database/models/Record.js";
 
 const flushCachedRecords = async () => {
 	const count = handlerContext.cachedRecords.length;
@@ -9,4 +9,4 @@ const flushCachedRecords = async () => {
 	return count;
 };
 
-module.exports = flushCachedRecords;
+export default flushCachedRecords;

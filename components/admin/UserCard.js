@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Image from "next/image";
 import styles from "@/styles/Admin.module.css";
 
 export default function UserCard({ user, fetchUsers }) {
@@ -36,7 +37,7 @@ export default function UserCard({ user, fetchUsers }) {
   return (
     <div className={styles["card"]}>
       <div className={styles["user-img"]}>
-        <img src={user.profilePic} />
+        <Image src={user.profilePic} alt="" />
       </div>
       <div className={styles["user"]}>
         <div className={styles["user-info"]}>

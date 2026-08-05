@@ -9,13 +9,11 @@ import { useState, useEffect } from "react";
 
 export default function QuizContainer({
   question,
-  round,
   time,
   submitAnswer,
   updateAnswer,
 }) {
   const [answer, setAnswer] = useState("");
-  const [state, setState] = useState("before-start");
 
   const submitHandler = (timeout) => {
     return submitAnswer({ timeout });
@@ -23,7 +21,7 @@ export default function QuizContainer({
 
   useEffect(() => {
     updateAnswer(answer);
-  }, [answer]);
+  }, [answer, updateAnswer]);
 
   return (
     <div className={Styles["container"]}>

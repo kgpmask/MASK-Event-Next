@@ -5,12 +5,10 @@ import MatchTheFollowing from "./MatchTheFollowing";
 import { mcqOptions } from "@/utils/questionOptions";
 import { useState, useEffect } from "react";
 import Timer from "./Timer";
-import WaitingMessage from "./WaitingMessage";
 import DifficultyBadge from "./DifficultyBadge";
 
 export default function QuizContainer({
   question,
-  round,
   time,
   submitAnswer,
   updateAnswer,
@@ -25,11 +23,7 @@ export default function QuizContainer({
 
   useEffect(() => {
     updateAnswer(answer);
-  }, [answer]);
-
-  // useEffect(() => {
-  //   console.log(disabled);
-  // }, [disabled]);
+  }, [answer, updateAnswer]);
 
   return (
     <div className={Styles["container"]}>

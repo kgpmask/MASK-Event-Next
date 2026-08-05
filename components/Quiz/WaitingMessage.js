@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import MessageCard from "./MessageCard";
 import styles from "@/styles/Quiz.module.css";
 
@@ -18,7 +19,7 @@ const WaitingMessage = () => {
           .fill("\u00A0")
           .join("")}
         <div className={styles["imgdiv"]}>
-          <img src="/waiting.gif" />
+          <Image src="/waiting.gif" alt="Waiting..." />
         </div>
       </div>
     </MessageCard>

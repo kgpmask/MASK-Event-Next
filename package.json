@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "node server.js",
     "lint": "next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "update-branch": "git fetch $(git rev-parse --symbolic-full-name --abbrev-ref @{upstream} | sed 's!/! !') && git merge FETCH_HEAD"
   },
   "dependencies": {
@@ -28,6 +30,7 @@
     "@types/react": "18.3.3",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "prettier": "^3.9.6"
   }
 }

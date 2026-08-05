@@ -2,7 +2,7 @@ import nextImage from "next/image";
 const Image = nextImage.default || nextImage;
 import Styles from "@/styles/Navbar.module.css";
 import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import LogOutModal from "@/components/profile/LogOutModal.js";
 
@@ -56,7 +56,7 @@ const Navbar = () => {
 		const username = localStorage.getItem("username");
 		if (!username) setUsername("");
 		else setUsername(localStorage.getItem("name") || "User");
-	});
+	}, []);
 
 	return (
 		<div className={Styles["container"]}>

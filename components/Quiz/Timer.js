@@ -8,7 +8,7 @@ export default function Timer({ time, onTimeEnd }) {
     if (!timeLeft && onTimeEnd) {
       onTimeEnd();
     }
-  }, [timeLeft]);
+  }, [timeLeft, onTimeEnd]);
 
   useMemo(
     () => setTimeout(() => setTimeLeft((timeLeft || 1) - 1), 1_000),

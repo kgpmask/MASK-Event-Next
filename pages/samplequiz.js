@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import DummyQuizContainer from "@/components/Quiz/DummyQuizContainer";
 import WaitingMessage from "@/components/Quiz/WaitingMessage";
 import TimeoverMessage from "@/components/Quiz/TimeoverMessage";
@@ -103,7 +103,7 @@ export default function SampleQuiz() {
 		<SampleInstructions />
 	);
 
-	const submitAnswer = ({ timeout }) => {
+	const submitAnswer = useCallback(({ timeout }) => {
 		const question = dummyApiResponse.questions[currentQuestion];
 		let isCorrect;
 		if (question.type === "mtf") {
@@ -120,7 +120,7 @@ export default function SampleQuiz() {
 			setScore((prevScore) => prevScore + question.score);
 		}
 		setState(timeout ? "timeout" : "submitted");
-	};
+	}, [currentQuestion]);
 
 	const updateAnswer = (answer) => {
 		userAnswer.current = answer;

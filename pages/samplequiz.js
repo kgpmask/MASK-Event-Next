@@ -6,6 +6,7 @@ import { MessageCard } from "@/components/Quiz/MessageCard";
 import { SubmitMessage } from "@/components/Quiz/SubmitMessage";
 import { SampleInstructions } from "@/components/Quiz/SampleInstructions";
 import { questionTime } from "@/utils/questionTiming";
+import { questionScore } from "@/utils/questionScoring";
 import { evaluateAnswer } from "@/utils/evaluateAnswer";
 
 const dummyApiResponse = {
@@ -18,7 +19,6 @@ const dummyApiResponse = {
 			type: "mcq",
 			answer: "1",
 			difficulty: "easy",
-			score: 100,
 		},
 		{
 			questionNo: 2,
@@ -29,7 +29,6 @@ const dummyApiResponse = {
 			type: "mcq",
 			answer: "2",
 			difficulty: "medium",
-			score: 200,
 		},
 		{
 			questionNo: 3,
@@ -39,7 +38,6 @@ const dummyApiResponse = {
 			type: "mcq",
 			answer: "0",
 			difficulty: "medium",
-			score: 200,
 		},
 		{
 			questionNo: 4,
@@ -49,7 +47,6 @@ const dummyApiResponse = {
 			type: "mcq",
 			answer: "2",
 			difficulty: "hard",
-			score: 300,
 		},
 		{
 			questionNo: 5,
@@ -59,7 +56,6 @@ const dummyApiResponse = {
 			type: "mcq",
 			answer: "1",
 			difficulty: "insane",
-			score: 400,
 		},
 		{
 			questionNo: 6,
@@ -70,7 +66,6 @@ const dummyApiResponse = {
 			type: "mtf",
 			answer: "0,1,2",
 			difficulty: "hard",
-			score: 300,
 		},
 		{
 			questionNo: 7,
@@ -80,7 +75,6 @@ const dummyApiResponse = {
 			type: "multi-mcq",
 			answer: "0,1,2",
 			difficulty: "medium",
-			score: 300,
 		},
 		{
 			questionNo: 8,
@@ -90,7 +84,6 @@ const dummyApiResponse = {
 			type: "part-multi-mcq",
 			answer: "0,2",
 			difficulty: "medium",
-			score: 200,
 		},
 		{
 			questionNo: 9,
@@ -101,7 +94,6 @@ const dummyApiResponse = {
 			type: "part-mtf",
 			answer: "0,1",
 			difficulty: "hard",
-			score: 300,
 		},
 	],
 };
@@ -128,7 +120,7 @@ function Complete({ score }) {
 }
 
 const maxScore = dummyApiResponse.questions.reduce(
-	(total, q) => total + q.score,
+	(total, q) => total + questionScore(q.difficulty),
 	0
 );
 
@@ -162,7 +154,7 @@ export default function SampleQuiz() {
 						userAnswer.current,
 						question.answer,
 						question.type,
-						question.score
+						question.difficulty
 					)
 			);
 			setState(timeout ? "timeout" : "submitted");

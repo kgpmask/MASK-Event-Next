@@ -32,9 +32,7 @@ const questionSchema = new mongoose.Schema(
 			default: "medium",
 			required: false,
 		},
-		score: { type: Number, default: 200, required: false },
-
-		// DEPRECATED: deprecated since OCAQ 2026. Replaced by difficulty + score.
+		// DEPRECATED: deprecated since OCAQ 2026. Replaced by difficulty.
 		isHard: { type: Boolean, required: false },
 	},
 	{ collection: "ocaq-questions" }

@@ -53,7 +53,7 @@ export default async function evaluateAnswerHandler(_req, res) {
 				response,
 				ques.answer,
 				ques.type,
-				ques.score
+				ques.difficulty
 			);
 		});
 

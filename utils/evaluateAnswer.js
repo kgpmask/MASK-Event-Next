@@ -1,3 +1,5 @@
+import { questionScore, questionNegativeMarking } from "./questionScoring.js";
+
 /**
  * Computes the Levenshtein edit distance between two strings.
  * @param {string} a The first string.
@@ -72,54 +74,70 @@ const parseSet = (value) => new Set(parseList(value));
  * @param {unknown} answer The expected answer.
  * @param {string} type The question type ("text", "mcq", "mtf",
  *   "multi-mcq", "part-multi-mcq", or "part-mtf").
- * @param {number} [score] The maximum score for the question.
- * @returns {number} The awarded points.
+ * @param {string} [difficulty] The question difficulty, defaulting to "medium".
+ * @returns {number} The awarded points, minus the negative marking on a wrong answer.
  */
-export const evaluateAnswer = (response, answer, type, score = 200) => {
+export const evaluateAnswer = (
+	response,
+	answer,
+	type,
+	difficulty = "medium"
+) => {
 	if (response == null || response === "") return 0;
+	const score = questionScore(difficulty);
+	let points = 0;
 	switch (type) {
 		case "mcq": {
 			if (typeof response !== "number" && !/^\d+$/.test(String(response)))
-				return 0;
-			return score * (~~response === ~~answer);
+				break;
+			points = score * (~~response === ~~answer);
+			break;
 		}
 		case "multi-mcq": {
 			const responseSet = parseSet(response);
 			const answerSet = parseSet(answer);
-			if (!answerSet.size || responseSet.size !== answerSet.size) return 0;
-			return [...responseSet].every((val) => answerSet.has(val)) ? score : 0;
+			if (!answerSet.size || responseSet.size !== answerSet.size) break;
+			points = [...responseSet].every((val) => answerSet.has(val))
+				? score
+				: 0;
+			break;
 		}
 		case "part-multi-mcq": {
 			const responseSet = parseSet(response);
 			const answerSet = parseSet(answer);
-			if (!answerSet.size) return 0;
+			if (!answerSet.size) break;
 			const correctPicks = [...responseSet].filter((val) =>
 				answerSet.has(val)
 			).length;
-			return Math.floor((correctPicks / answerSet.size) * score);
+			points = Math.floor((correctPicks / answerSet.size) * score);
+			break;
 		}
 		case "mtf":
 		case "part-mtf": {
-			if (!Array.isArray(response) && typeof response !== "string") return 0;
+			if (!Array.isArray(response) && typeof response !== "string") break;
 			const responseList = parseList(response);
 			const answerList = parseList(answer);
 			if (!answerList.length || responseList.length !== answerList.length)
-				return 0;
+				break;
 			const correctMatches = responseList.filter(
 				(val, i) => +val === +answerList[i]
 			).length;
-			return type === "mtf"
-				? correctMatches === answerList.length
-					? score
-					: 0
-				: Math.floor((correctMatches / answerList.length) * score);
+			points =
+				type === "mtf"
+					? correctMatches === answerList.length
+						? score
+						: 0
+					: Math.floor((correctMatches / answerList.length) * score);
+			break;
 		}
 		case "text": {
-			if (typeof response !== "string") return 0;
+			if (typeof response !== "string") break;
 			const solutions = Array.isArray(answer) ? answer : [answer];
-			return evaluatedPoints(response, solutions, score);
+			points = evaluatedPoints(response, solutions, score);
+			break;
 		}
 		default:
-			return 0;
+			break;
 	}
+	return points || questionNegativeMarking(difficulty);
 };

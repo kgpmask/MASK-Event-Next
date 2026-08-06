@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import Image from "next/image";
+import nextImage from "next/image";
 import Styles from "@/styles/Profile.module.css";
 import { IoClose } from "react-icons/io5";
+
+const Image = nextImage.default || nextImage;
 
 const profilePictures = [
 	null,
@@ -70,6 +72,8 @@ export function EditProfilePicModal({ showModal, profilePic, submitFunction }) {
 								}
 								className={selected == pic ? Styles["selected"] : ""}
 								onClick={() => toggleSelect(pic)}
+								width={100}
+								height={100}
 							/>
 						))}
 					</div>

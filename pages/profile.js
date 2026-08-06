@@ -17,7 +17,7 @@ export default function Profile() {
 	const [showProfilePicModal, setShowProfilePicModal] = useState(false);
 	const [username, setUsername] = useState("");
 	const [name, setName] = useState("");
-	const [profilePic, setProfilePic] = useState("/default");
+	const [profilePic, setProfilePic] = useState("default");
 	const router = useRouter();
 
 	useEffect(() => {
@@ -31,7 +31,7 @@ export default function Profile() {
 			if (storedUser) {
 				setUsername(localStorage.getItem("username"));
 				setName(localStorage.getItem("name"));
-				setProfilePic(localStorage.getItem("profilePic") || "/default");
+				setProfilePic(localStorage.getItem("profilePic") || "default");
 			} else if (isMounted) {
 				return router.push("/login");
 			}
@@ -54,7 +54,7 @@ export default function Profile() {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					profilePic,
+					profilePic: ctx.profilePic,
 				}),
 			});
 			if (response.status >= 400) throw await response.text();
@@ -63,8 +63,8 @@ export default function Profile() {
 				localStorage.setItem("profilePic", ctx.profilePic);
 			}
 		} catch (err) {
-			console.error(err);
-			alert("Something went wrong");
+			console.error("Update profile failed:", err);
+			alert(String(err));
 		}
 	}
 
@@ -81,6 +81,8 @@ export default function Profile() {
 	const handleProfilePicModal = () => {
 		setShowProfilePicModal(true);
 	};
+
+	console.log(profilePic);
 
 	return (
 		<div className={Styles["container"]}>

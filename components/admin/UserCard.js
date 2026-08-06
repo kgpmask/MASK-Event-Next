@@ -1,6 +1,8 @@
 import { useRouter } from "next/router";
-import Image from "next/image";
+import nextImage from "next/image";
 import styles from "@/styles/Admin.module.css";
+
+const Image = nextImage.default || nextImage;
 
 /**
  * UserCard component that displays a user's details with edit and delete actions.
@@ -51,7 +53,15 @@ export function UserCard({ user, fetchUsers }) {
 	return (
 		<div className={styles["card"]}>
 			<div className={styles["user-img"]}>
-				<Image src={user.profilePic} alt="" />
+				<Image 
+					src={
+						user.profilePic != null
+							? `/profile-pics/${user.profilePic}.webp`
+							: `/profile-pics/default.webp`
+					}
+					alt="" 
+					fill 
+				/>
 			</div>
 			<div className={styles["user"]}>
 				<div className={styles["user-info"]}>

@@ -34,6 +34,8 @@ export default async function submitAnswerHandler(req, res) {
 			Number(quizState.currentQuestionNo) !== Number(questionNo)
 		)
 			return res.status(400).send("Questions not in sync");
+		if (quizState.clientTimeRemaining() <= 0)
+			return res.status(400).send("Time is over for this question");
 
 		if (
 			quizState.cachedRecords.some(

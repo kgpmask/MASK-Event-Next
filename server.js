@@ -55,6 +55,13 @@ app.prepare().then(async () => {
 		}
 		socket.join(process.env.QUIZ_ID);
 		if (socket.isAdmin) socket.join("admins");
+		const toClientQuestion = (question) => {
+			const { answer, _id, __v, ...safeQuestion } = question;
+			return {
+				...safeQuestion,
+				timeRemaining: quizState.clientTimeRemaining(),
+			};
+		};
 
 		// Socket events are not replayed for a participant who reconnects. Send
 		// the active question directly so they do not get stuck on the waiting
@@ -67,8 +74,7 @@ app.prepare().then(async () => {
 					questionNo: quizState.currentQuestionNo,
 				}).lean({ defaults: true });
 				if (!question) return;
-				const { answer, _id, __v, ...safeQuestion } = question;
-				socket.emit("question", safeQuestion);
+				socket.emit("question", toClientQuestion(question));
 			} catch (error) {
 				console.error("Error restoring current question for socket:", error);
 			}
@@ -96,7 +102,7 @@ app.prepare().then(async () => {
 				type: question.type,
 				difficulty: question.difficulty,
 			});
-			io.to(process.env.QUIZ_ID).emit("question", question);
+			io.to(process.env.QUIZ_ID).emit("question", toClientQuestion(question));
 			quizState.scheduleFlush(() => {
 				io.to(process.env.QUIZ_ID).emit("timeout", "");
 				io.to("admins").emit("question-respondents", {

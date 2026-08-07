@@ -1,4 +1,4 @@
-import { serverQuestionTime } from "./questionTiming.js";
+import { questionTime, serverQuestionTime } from "./questionTiming.js";
 
 const GLOBAL_KEY = "__maskQuizState";
 
@@ -14,6 +14,7 @@ const createQuizState = () => {
 		questionType: null,
 		questionDifficulty: null,
 		startedAt: null,
+		clientDurationSeconds: null,
 		durationSeconds: null,
 		lastQuestionNo: 0,
 		cachedRecords: [],
@@ -38,6 +39,7 @@ const createQuizState = () => {
 			this.questionType = type;
 			this.questionDifficulty = difficulty;
 			this.startedAt = Date.now();
+			this.clientDurationSeconds = questionTime(type, difficulty);
 			this.durationSeconds = serverQuestionTime(type, difficulty);
 			this.lastQuestionNo = questionNo;
 		},
@@ -67,6 +69,7 @@ const createQuizState = () => {
 			this.questionType = null;
 			this.questionDifficulty = null;
 			this.startedAt = null;
+			this.clientDurationSeconds = null;
 			this.durationSeconds = null;
 		},
 
@@ -120,6 +123,21 @@ const createQuizState = () => {
 		},
 
 		/**
+		 * Computes the participant answer time remaining from the server clock.
+		 * The longer server duration is only a buffer for processing responses.
+		 * @returns {number} The client-visible time remaining, clamped at 0.
+		 */
+		clientTimeRemaining() {
+			if (!this.isQuestionRunning) return 0;
+			const clientDuration =
+				this.clientDurationSeconds ??
+				questionTime(this.questionType, this.questionDifficulty);
+			const remainingMs =
+				this.startedAt + clientDuration * 1000 - Date.now();
+			return Math.max(0, Math.ceil(remainingMs / 1000));
+		},
+
+		/**
 		 * Returns a plain snapshot of the state safe for client consumption.
 		 * @returns {object} The client-facing quiz state.
 		 */
@@ -131,9 +149,11 @@ const createQuizState = () => {
 				questionType: this.questionType,
 				questionDifficulty: this.questionDifficulty,
 				startedAt: this.startedAt,
+				clientDurationSeconds: this.clientDurationSeconds,
 				durationSeconds: this.durationSeconds,
 				lastQuestionNo: this.lastQuestionNo,
 				timeRemaining: this.timeRemaining(),
+				clientTimeRemaining: this.clientTimeRemaining(),
 				respondentCounts: Object.fromEntries(
 					[...this.respondents].map(([questionNo, ids]) => [
 						questionNo,

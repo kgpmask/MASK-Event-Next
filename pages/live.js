@@ -54,6 +54,7 @@ export default function LivePage() {
 	const [state, setState] = useState("instructions");
 	const [question, setQuestion] = useState(null);
 	const [displayQuestionNo, setDisplayQuestionNo] = useState(null);
+	const [timeRemaining, setTimeRemaining] = useState(0);
 	const answer = useRef(null);
 	const questionRef = useRef(null);
 	const stateRef = useRef(state);
@@ -90,6 +91,11 @@ export default function LivePage() {
 			activeQuestionNoRef.current = questionNo;
 			submittingRef.current = false;
 			answer.current = null;
+			setTimeRemaining(
+				Number.isFinite(incomingQuestion.timeRemaining)
+					? Math.max(0, incomingQuestion.timeRemaining)
+					: questionTime(incomingQuestion.type, incomingQuestion.difficulty)
+			);
 			setDisplayQuestionNo(getRoundQuestionNumber(incomingQuestion));
 			setQuestion(incomingQuestion);
 			setState("attempting");
@@ -109,7 +115,10 @@ export default function LivePage() {
 
 			const questionResponse = await fetch("/api/live/get-current-question");
 			if (!questionResponse.ok) return;
-			questionHandler(await questionResponse.json());
+			questionHandler({
+				...(await questionResponse.json()),
+				timeRemaining: quizState.clientTimeRemaining,
+			});
 		} catch (error) {
 			console.error("Error resuming live quiz:", error);
 		}
@@ -217,7 +226,7 @@ export default function LivePage() {
 					key={question.questionNo}
 					question={question}
 					displayQuestionNo={displayQuestionNo}
-					time={questionTime(question.type, question.difficulty)}
+					time={timeRemaining}
 					submitAnswer={submissionHandler}
 					updateAnswer={(value) => (answer.current = value)}
 				/>

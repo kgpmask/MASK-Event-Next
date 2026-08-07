@@ -80,6 +80,12 @@ export default function LivePage() {
 	/** Displays a newly received question without re-starting an answered one. */
 	const questionHandler = useCallback(
 		(incomingQuestion) => {
+			if (incomingQuestion?.hasAnswered) {
+				clearWaitingTimer();
+				setQuestion(null);
+				setState("waiting");
+				return;
+			}
 			const questionNo = String(incomingQuestion?.questionNo);
 			if (
 				!incomingQuestion ||
@@ -115,8 +121,14 @@ export default function LivePage() {
 
 			const questionResponse = await fetch("/api/live/get-current-question");
 			if (!questionResponse.ok) return;
+			const currentQuestion = await questionResponse.json();
+			if (currentQuestion.hasAnswered) {
+				setQuestion(null);
+				setState("waiting");
+				return;
+			}
 			questionHandler({
-				...(await questionResponse.json()),
+				...currentQuestion,
 				timeRemaining: quizState.clientTimeRemaining,
 			});
 		} catch (error) {

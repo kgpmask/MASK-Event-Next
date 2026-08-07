@@ -9,6 +9,8 @@ import { flushCachedRecords } from "./utils/flushCachedRecords.js";
 import { quizState } from "./utils/quizState.js";
 import { checkAdmin } from "./utils/checkAdmin.js";
 import { Question } from "./database/models/Question.js";
+import { Session } from "./database/models/Session.js";
+import { hasAnsweredQuestion } from "./utils/hasAnsweredQuestion.js";
 import { toClientQuestion } from "./utils/clientPayloads.js";
 
 /**
@@ -40,6 +42,8 @@ app.prepare().then(async () => {
 	io.use(async (socket, next) => {
 		try {
 			const { sessionId } = parseCookies(socket.request.headers.cookie);
+			const session = sessionId ? await Session.findById(sessionId).lean() : null;
+			socket.userId = session?.userId ?? null;
 			socket.isAdmin = sessionId ? await checkAdmin(sessionId) : false;
 		} catch (error) {
 			socket.isAdmin = false;
@@ -67,14 +71,24 @@ app.prepare().then(async () => {
 		// the active question directly so they do not get stuck on the waiting
 		// screen while the question is still open.
 		const sendCurrentQuestion = async () => {
-			if (!quizState.isQuestionRunning) return;
+			if (!quizState.isQuestionRunning || !socket.userId) return;
 			try {
+				const hasAnswered = await hasAnsweredQuestion({
+					userId: socket.userId,
+					quizId: quizState.quizId,
+					questionNo: quizState.currentQuestionNo,
+				});
+				if (hasAnswered) return socket.emit("question", { hasAnswered: true });
+
 				const question = await Question.findOne({
 					quizId: quizState.quizId,
 					questionNo: quizState.currentQuestionNo,
 				}).lean({ defaults: true });
 				if (!question) return;
-				socket.emit("question", toTimedClientQuestion(question));
+				socket.emit("question", {
+					hasAnswered: false,
+					...toTimedClientQuestion(question),
+				});
 			} catch (error) {
 				console.error("Error restoring current question for socket:", error);
 			}

@@ -1,5 +1,6 @@
 import { User } from "@/database/models/User";
 import { Session } from "@/database/models/Session";
+import { toClientUser } from "@/utils/clientPayloads";
 
 /**
  * Returns the current logged-in user's public profile without the password.
@@ -11,6 +12,7 @@ export default async function findUserHandler(req, res) {
 	if (!req.cookies.sessionId) return res.status(204).send("No sessionId");
 	const user = await User.findById(
 		(await Session.findById(req.cookies.sessionId))?.userId
-	).select("-password");
-	return res.status(200).json(user);
+	).lean();
+	if (!user) return res.status(404).send("User not found");
+	return res.status(200).json(toClientUser(user));
 }

@@ -89,6 +89,19 @@ export default function QuizPortalPage() {
 					localStorage.setItem("questions", fetchedQuestions);
 					storedQuestions = JSON.parse(fetchedQuestions);
 				}
+				// Remove answer keys and database metadata left in localStorage by
+				// older versions of the admin endpoint before using its cache.
+				storedQuestions = storedQuestions.map(
+					({ questionNo, title, question, type, options, difficulty }) => ({
+						questionNo,
+						title,
+						question,
+						type,
+						options,
+						difficulty,
+					})
+				);
+				localStorage.setItem("questions", JSON.stringify(storedQuestions));
 
 				if (isMounted) {
 					setQuestions(storedQuestions);

@@ -9,6 +9,7 @@ import { flushCachedRecords } from "./utils/flushCachedRecords.js";
 import { quizState } from "./utils/quizState.js";
 import { checkAdmin } from "./utils/checkAdmin.js";
 import { Question } from "./database/models/Question.js";
+import { toClientQuestion } from "./utils/clientPayloads.js";
 
 /**
  * Parses a raw Cookie header string into a key-value object.
@@ -55,10 +56,9 @@ app.prepare().then(async () => {
 		}
 		socket.join(process.env.QUIZ_ID);
 		if (socket.isAdmin) socket.join("admins");
-		const toClientQuestion = (question) => {
-			const { answer, _id, __v, ...safeQuestion } = question;
+		const toTimedClientQuestion = (question) => {
 			return {
-				...safeQuestion,
+				...toClientQuestion(question),
 				timeRemaining: quizState.clientTimeRemaining(),
 			};
 		};
@@ -74,7 +74,7 @@ app.prepare().then(async () => {
 					questionNo: quizState.currentQuestionNo,
 				}).lean({ defaults: true });
 				if (!question) return;
-				socket.emit("question", toClientQuestion(question));
+				socket.emit("question", toTimedClientQuestion(question));
 			} catch (error) {
 				console.error("Error restoring current question for socket:", error);
 			}
@@ -109,7 +109,10 @@ app.prepare().then(async () => {
 				difficulty: question.difficulty,
 			});
 			io.to(process.env.QUIZ_ID).emit("quiz-state", quizState.toClient());
-			io.to(process.env.QUIZ_ID).emit("question", toClientQuestion(question));
+			io.to(process.env.QUIZ_ID).emit(
+				"question",
+				toTimedClientQuestion(question)
+			);
 			quizState.scheduleFlush(() => {
 				io.to(process.env.QUIZ_ID).emit("timeout", "");
 				io.to(process.env.QUIZ_ID).emit("quiz-state", quizState.toClient());

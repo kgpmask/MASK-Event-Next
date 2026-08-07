@@ -1,6 +1,7 @@
 import { quizState } from "@/utils/quizState";
 import { dbInit } from "@/database/dbInit";
 import { Question } from "@/database/models/Question";
+import { toClientQuestion } from "@/utils/clientPayloads";
 
 /**
  * Returns the currently running question with its answer stripped out.
@@ -23,6 +24,5 @@ export default async function getCurrentQuestionHandler(req, res) {
 
 	if (!question) return res.status(404).send("Current question not found");
 
-	const { answer, _id, __v, ...safeQuestion } = question;
-	return res.status(200).json(safeQuestion);
+	return res.status(200).json(toClientQuestion(question));
 }

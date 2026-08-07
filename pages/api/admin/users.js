@@ -1,4 +1,5 @@
 import { User } from "@/database/models/User";
+import { toAdminUser } from "@/utils/clientPayloads";
 
 /**
  * Fetches all users (passwords excluded), invoked via a GET request.
@@ -9,9 +10,9 @@ import { User } from "@/database/models/User";
 export default async function fetchAllUsers(req, res) {
 	try {
 		if (req.method === "GET") {
-			const users = await User.find({}).select("-password");
+			const users = await User.find({}).lean();
 
-			return res.status(200).json(users);
+			return res.status(200).json(users.map(toAdminUser));
 		} else {
 			return res.status(405).json({ message: "Method not allowed" });
 		}

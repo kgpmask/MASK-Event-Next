@@ -41,13 +41,13 @@ const normaliseText = (value) =>
 
 /**
  * Parses a text question's accepted answers. Multiple aliases are stored in
- * the database as a pipe-separated list, e.g. "MHA|My Hero Academia|Boku no
- * Hero Academia".
+ * the database as a pipe- or comma-separated list, e.g. "MHA|My Hero
+ * Academia|Boku no Hero Academia".
  * @param {unknown} answer The stored answer value.
  * @returns {string[]} The accepted aliases.
  */
 const textSolutions = (answer) =>
-	(Array.isArray(answer) ? answer : String(answer).split("|"))
+	(Array.isArray(answer) ? answer : String(answer).split(/[|,]/))
 		.map(normaliseText)
 		.filter(Boolean);
 

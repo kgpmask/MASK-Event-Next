@@ -20,7 +20,7 @@ const questionSchema = new mongoose.Schema(
 		options: { type: String, required: false },
 		// Correct answer, encoded per type:
 		//   mcq  - raw string of the option index, e.g. "2"
-		//   text - one or more pipe-separated accepted answers, e.g.
+		//   text - one or more pipe- or comma-separated accepted answers, e.g.
 		//          "MHA|My Hero Academia|Boku no Hero Academia"
 		//   multi-mcq / part-multi-mcq - comma-separated option indices; order
 		//          does not matter, e.g. "1,2,3" equals "3,1,2"

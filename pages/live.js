@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 import { QuizContainer } from "@/components/Quiz/QuizContainer";
 import { MessageCard } from "@/components/Quiz/MessageCard";
@@ -13,48 +13,61 @@ import { questionTime } from "@/utils/questionTiming";
 
 import { socket } from "@/socket";
 
+const QUESTION_ORDER_STORAGE_PREFIX = "ocaq-question-order";
+
+const LivePageHead = () => (
+	<Head>
+		<title>Live Quiz Portal</title>
+		<meta name="description" content="Quiz is starting, good luck!" />
+	</Head>
+);
+
 /**
- * LivePageHead component that renders the page head with title and description.
- * @returns {JSX.Element} The head markup.
+ * Returns the participant-facing number for a question within its round. The
+ * database number remains the stable ID used when recording answers.
+ * @param {object} question The incoming live question.
+ * @returns {number} The question's number within its round for this browser.
  */
-const LivePageHead = () => {
-	return (
-		<Head>
-			<title>Live Quiz Portal</title>
-			<meta name="description" content="Quiz is starting, good luck!" />
-		</Head>
-	);
+const getRoundQuestionNumber = (question) => {
+	if (typeof window === "undefined") return 1;
+	const storageKey = `${QUESTION_ORDER_STORAGE_PREFIX}:${question.quizId ?? "live"}`;
+	const round = question.title?.split(":")[0]?.trim() || "Quiz";
+	let order = { rounds: {}, questions: {} };
+
+	try {
+		order = JSON.parse(localStorage.getItem(storageKey)) || order;
+	} catch {
+		// A malformed old value should not prevent a participant from joining.
+	}
+
+	const questionKey = String(question.questionNo);
+	if (order.questions[questionKey] != null) return order.questions[questionKey];
+	const number = (order.rounds[round] || 0) + 1;
+	order.rounds[round] = number;
+	order.questions[questionKey] = number;
+	localStorage.setItem(storageKey, JSON.stringify(order));
+	return number;
 };
 
-/**
- * LivePage page that streams live quiz questions over a socket and manages quiz states.
- * @returns {JSX.Element} The live quiz page markup.
- */
+/** Live quiz page that receives questions and records participant answers. */
 export default function LivePage() {
 	const [state, setState] = useState("instructions");
-	const [timeRemaining, setTimeRemaining] = useState(0);
-
-	const [renderComponent, setRenderComponent] = useState(<LiveInstructions />);
-
 	const [question, setQuestion] = useState(null);
+	const [displayQuestionNo, setDisplayQuestionNo] = useState(null);
 	const answer = useRef(null);
-
-	const router = useRouter();
-
+	const questionRef = useRef(null);
 	const stateRef = useRef(state);
 	const waitingTimerRef = useRef(null);
+	const completedQuestionsRef = useRef(new Set());
+	const activeQuestionNoRef = useRef(null);
+	const submittingRef = useRef(false);
+	const router = useRouter();
 
-	/**
-	 * Clears the pending timer that would move the user to the waiting screen.
-	 */
 	const clearWaitingTimer = useCallback(() => {
 		if (waitingTimerRef.current) clearTimeout(waitingTimerRef.current);
 		waitingTimerRef.current = null;
 	}, []);
 
-	/**
-	 * Shows the waiting screen unless a new question arrives within ten seconds.
-	 */
 	const scheduleWaiting = useCallback(() => {
 		clearWaitingTimer();
 		waitingTimerRef.current = setTimeout(() => {
@@ -63,189 +76,169 @@ export default function LivePage() {
 		}, 10_000);
 	}, [clearWaitingTimer]);
 
-	/**
-	 * Fetches the current quiz state and question to restore an in-progress quiz.
-	 */
+	/** Displays a newly received question without re-starting an answered one. */
+	const questionHandler = useCallback(
+		(incomingQuestion) => {
+			const questionNo = String(incomingQuestion?.questionNo);
+			if (
+				!incomingQuestion ||
+				completedQuestionsRef.current.has(questionNo) ||
+				activeQuestionNoRef.current === questionNo
+			)
+				return;
+			clearWaitingTimer();
+			activeQuestionNoRef.current = questionNo;
+			submittingRef.current = false;
+			answer.current = null;
+			setDisplayQuestionNo(getRoundQuestionNumber(incomingQuestion));
+			setQuestion(incomingQuestion);
+			setState("attempting");
+		},
+		[clearWaitingTimer]
+	);
+
+	/** Restores the visible server state after a page load or socket reconnect. */
 	const resumeQuiz = useCallback(async () => {
 		try {
 			const stateResponse = await fetch("/api/live/get-quiz-state");
-			if (stateResponse.status !== 200) return;
-			const state = await stateResponse.json();
-			if (state.quizStatus === "ended") {
-				setState("late");
-				return;
-			}
-			if (state.quizStatus === "idle") {
-				setState("early");
-				return;
-			}
-			if (state.currentQuestionNo == null) return;
+			if (!stateResponse.ok) return;
+			const quizState = await stateResponse.json();
+			if (quizState.quizStatus === "ended") return setState("late");
+			if (quizState.quizStatus === "idle") return setState("early");
+			if (quizState.currentQuestionNo == null) return setState("waiting");
 
 			const questionResponse = await fetch("/api/live/get-current-question");
-			if (questionResponse.status !== 200) return;
-			const question = await questionResponse.json();
-
-			const remaining = Math.max(0, state.timeRemaining - 5);
-			setQuestion(question);
-			answer.current = null;
-			setTimeRemaining(remaining);
-			setState(remaining > 0 ? "attempting" : "timeover");
-		} catch (err) {
-			console.error("Error resuming live quiz:", err);
+			if (!questionResponse.ok) return;
+			questionHandler(await questionResponse.json());
+		} catch (error) {
+			console.error("Error resuming live quiz:", error);
 		}
-	}, []);
+	}, [questionHandler]);
 
-	/**
-	 * Handles an incoming question event by setting the question and starting its timer.
-	 * @param {object} question - The question object received from the socket.
-	 */
-	const questionHandler = (question) => {
-		const type = question.type;
-		clearWaitingTimer();
-		setQuestion(question);
-		answer.current = null;
-
-		setTimeRemaining(questionTime(type, question.difficulty));
-		setState("attempting");
-	};
-
-	/**
-	 * Submits the current answer to the API and updates the quiz state.
-	 * @param {object} args - The submission arguments.
-	 * @param {boolean} args.timeout - Whether the submission was due to a timeout.
-	 */
 	const submissionHandler = useCallback(
-		(args) => {
-			const questionNo = question.questionNo;
+		({ timeout } = {}) => {
+			if (!question || submittingRef.current) return;
+			const currentAnswer = answer.current;
 			const response =
-				question.type === "text" ? answer.current.trim() : answer.current;
+				question.type === "text"
+					? String(currentAnswer ?? "").trim()
+					: currentAnswer;
+			if (!timeout && (response == null || response === "")) return;
 
-			/**
-			 * Makes the API call to submit the answer
-			 */
-			const submitAnswer = async () => {
+			submittingRef.current = true;
+			const questionNo = question.questionNo;
+			completedQuestionsRef.current.add(String(questionNo));
+			if (timeout) setState("timeover");
+
+			void (async () => {
 				try {
-					const res = await fetch("/api/live/submit-answer", {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ questionNo, response }),
-					});
-					if (res.status < 200 || res.status >= 300) return;
-					setTimeRemaining(0);
+					if (response != null && response !== "") {
+						await fetch("/api/live/submit-answer", {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({ questionNo, response }),
+						});
+					}
+				} catch (error) {
+					console.error("Error submitting answer:", error);
+				} finally {
 					setQuestion(null);
-					setState(args?.timeout && response === "" ? "timeover" : "submitted");
-				} catch (err) {
-					console.error("Error submitting answer:", err);
+					if (!timeout) setState("submitted");
 				}
-			};
-
-			submitAnswer();
+			})();
 		},
 		[question]
 	);
 
-	/**
-	 * Shows the instructions to users who were waiting for the quiz to start.
-	 */
-	const onStartQuiz = () =>
-		setState((prev) => (prev === "early" ? "instructions" : prev));
-	/**
-	 * Navigates to the results page when the quiz ends.
-	 */
-	const onEndQuiz = useCallback(() => router.push("/results"), [router]);
-	/**
-	 * Forwards an incoming question event to the latest question handler.
-	 * @param {object} question - The question object received from the socket.
-	 */
-	const onQuestion = (question) => questionHandlerRef.current(question);
-
-	const questionHandlerRef = useRef(questionHandler);
-
 	useEffect(() => {
 		stateRef.current = state;
-		questionHandlerRef.current = questionHandler;
-	});
+	}, [state]);
 
 	useEffect(() => {
-		let isMounted = true;
+		questionRef.current = question;
+	}, [question]);
 
-		if (
-			(!document.cookie.includes("sessionId=") ||
-				document.cookie.split("sessionId=").pop().split(";")[0] === "") &&
-			isMounted
-		) {
+	useEffect(() => {
+		if (!document.cookie.match(/(?:^|; )sessionId=([^;]*)/)?.[1]) {
 			router.push("/login");
+			return;
 		}
 
-		/**
-		 * Marks the quiz as time over when the timeout event fires during an attempt,
-		 * then schedules the waiting screen if no new question arrives.
-		 */
 		const onTimeout = () => {
 			if (stateRef.current === "attempting") {
+				if (questionRef.current) {
+					completedQuestionsRef.current.add(
+						String(questionRef.current.questionNo)
+					);
+				}
+				setQuestion(null);
 				setState("timeover");
 			}
 			scheduleWaiting();
 		};
+		const onStartQuiz = () =>
+			setState((current) => (current === "early" ? "instructions" : current));
+		const onEndQuiz = () => router.push("/results");
 
 		socket.on("timeout", onTimeout);
 		socket.on("start-quiz", onStartQuiz);
 		socket.on("end-quiz", onEndQuiz);
-		socket.on("question", onQuestion);
+		socket.on("question", questionHandler);
 		socket.on("connect", resumeQuiz);
-
-		if (socket.connected) resumeQuiz();
+		if (socket.connected) void resumeQuiz();
 
 		return () => {
-			isMounted = false;
 			clearWaitingTimer();
 			socket.off("timeout", onTimeout);
 			socket.off("start-quiz", onStartQuiz);
 			socket.off("end-quiz", onEndQuiz);
-			socket.off("question", onQuestion);
+			socket.off("question", questionHandler);
 			socket.off("connect", resumeQuiz);
 		};
-	}, [onEndQuiz, resumeQuiz, router, scheduleWaiting, clearWaitingTimer]);
+	}, [clearWaitingTimer, questionHandler, resumeQuiz, router, scheduleWaiting]);
 
-	useMemo(() => {
-		switch (state) {
-			case "early":
-				setRenderComponent(<EndedNotStartedMessage isEarly={true} />);
-				break;
-			case "late":
-				setRenderComponent(<EndedNotStartedMessage />);
-				break;
-			case "instructions":
-				setRenderComponent(<LiveInstructions />);
-				break;
-			case "waiting":
-				setRenderComponent(<WaitingMessage />);
-				break;
-			case "attempting":
-				setRenderComponent(
-					<QuizContainer
-						question={question}
-						time={timeRemaining}
-						submitAnswer={submissionHandler}
-						updateAnswer={(val) => (answer.current = val)}
-					/>
-				);
-				break;
-			case "submitted":
-				setRenderComponent(<SubmitMessage />);
-				break;
-			case "timeover":
-				setRenderComponent(<TimeoverMessage />);
-				break;
-			default:
-				setRenderComponent(<MessageCard message={"Polayadi Mone"} />);
-		}
-	}, [state, question, submissionHandler, timeRemaining]);
+	let content;
+	switch (state) {
+		case "early":
+			content = <EndedNotStartedMessage isEarly />;
+			break;
+		case "late":
+			content = <EndedNotStartedMessage />;
+			break;
+		case "instructions":
+			content = <LiveInstructions />;
+			break;
+		case "waiting":
+			content = <WaitingMessage />;
+			break;
+		case "attempting":
+			content = question ? (
+				<QuizContainer
+					key={question.questionNo}
+					question={question}
+					displayQuestionNo={displayQuestionNo}
+					time={questionTime(question.type, question.difficulty)}
+					submitAnswer={submissionHandler}
+					updateAnswer={(value) => (answer.current = value)}
+				/>
+			) : (
+				<WaitingMessage />
+			);
+			break;
+		case "submitted":
+			content = <SubmitMessage />;
+			break;
+		case "timeover":
+			content = <TimeoverMessage />;
+			break;
+		default:
+			content = <MessageCard message="Something went wrong loading the quiz." />;
+	}
 
 	return (
 		<>
 			<LivePageHead />
-			{renderComponent}
+			{content}
 		</>
 	);
 }

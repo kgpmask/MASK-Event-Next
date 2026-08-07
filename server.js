@@ -8,6 +8,7 @@ import { dbInit } from "./database/dbInit.js";
 import { flushCachedRecords } from "./utils/flushCachedRecords.js";
 import { quizState } from "./utils/quizState.js";
 import { checkAdmin } from "./utils/checkAdmin.js";
+import { Question } from "./database/models/Question.js";
 
 /**
  * Parses a raw Cookie header string into a key-value object.
@@ -54,6 +55,25 @@ app.prepare().then(async () => {
 		}
 		socket.join(process.env.QUIZ_ID);
 		if (socket.isAdmin) socket.join("admins");
+
+		// Socket events are not replayed for a participant who reconnects. Send
+		// the active question directly so they do not get stuck on the waiting
+		// screen while the question is still open.
+		const sendCurrentQuestion = async () => {
+			if (!quizState.isQuestionRunning) return;
+			try {
+				const question = await Question.findOne({
+					quizId: quizState.quizId,
+					questionNo: quizState.currentQuestionNo,
+				}).lean({ defaults: true });
+				if (!question) return;
+				const { answer, _id, __v, ...safeQuestion } = question;
+				socket.emit("question", safeQuestion);
+			} catch (error) {
+				console.error("Error restoring current question for socket:", error);
+			}
+		};
+		void sendCurrentQuestion();
 
 		socket.on("question", (question) => {
 			if (!socket.isAdmin) {

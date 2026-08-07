@@ -1,6 +1,6 @@
 import { quizState } from "@/utils/quizState";
 import { cachedResults } from "@/utils/cachedResults";
-import { evaluateAnswer } from "@/utils/evaluateAnswer";
+import { calculateLeaderboard } from "@/utils/calculateLeaderboard";
 import { dbInit } from "@/database/dbInit";
 import { Question } from "@/database/models/Question";
 import { Record } from "@/database/models/Record";
@@ -23,8 +23,6 @@ export default async function evaluateAnswerHandler(_req, res) {
 
 	try {
 		const quizId = quizState.quizId;
-		const results = [];
-
 		await dbInit();
 		await flushCachedRecords();
 		const users = await User.find().lean();
@@ -33,29 +31,7 @@ export default async function evaluateAnswerHandler(_req, res) {
 			.sort({ questionNo: "asc" });
 		const records = await Record.find({ quizId }).lean();
 
-		records.forEach(({ userId, questionNo, response }) => {
-			if (~~questionNo <= 0) return;
-			const user = users.find((u) => u._id === userId);
-			if (!user) return;
-			const ques = questions.find((q) => q.questionNo === questionNo);
-			if (!ques) return;
-			let result = results.find((obj) => obj.userId === userId);
-			if (!result) {
-				result = {
-					userId,
-					username: user.username,
-					name: user.name,
-					points: 0,
-				};
-				results.push(result);
-			}
-			result.points += evaluateAnswer(
-				response,
-				ques.answer,
-				ques.type,
-				ques.difficulty
-			);
-		});
+		const results = calculateLeaderboard({ records, users, questions });
 
 		cachedResults.results = results;
 		await Promise.all(

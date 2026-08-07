@@ -45,6 +45,7 @@ export default function QuizPortalPage() {
 				const stateResponse = await fetch("/api/live/get-quiz-state");
 				if (stateResponse.status !== 200) return;
 				const state = await stateResponse.json();
+				if (state.quizStatus === "idle") return;
 				if (state.currentQuestionNo == null && !state.lastQuestionNo) return;
 
 				if (isMounted) {

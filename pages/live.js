@@ -109,7 +109,6 @@ export default function LivePage() {
 			const stateResponse = await fetch("/api/live/get-quiz-state");
 			if (!stateResponse.ok) return;
 			const quizState = await stateResponse.json();
-			if (quizState.quizStatus === "ended") return setState("late");
 			if (quizState.quizStatus === "idle") return setState("early");
 			if (quizState.currentQuestionNo == null) return setState("waiting");
 
@@ -210,9 +209,6 @@ export default function LivePage() {
 	switch (state) {
 		case "early":
 			content = <EndedNotStartedMessage isEarly />;
-			break;
-		case "late":
-			content = <EndedNotStartedMessage />;
 			break;
 		case "instructions":
 			content = <LiveInstructions />;

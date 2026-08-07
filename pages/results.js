@@ -31,15 +31,20 @@ export default function Results() {
 	const [loading, setLoading] = useState(true);
 
 	/**
-	 * Evaluates answers as admin if applicable and fetches the results list.
+	 * Fetches the persisted results for participants, or a non-persisted live
+	 * leaderboard for an admin while the quiz is in progress.
 	 * @returns {Promise<Array<object>>} The list of result objects.
 	 */
 	const fetchResults = useCallback(async () => {
 		try {
 			const adminResponse = await fetch("/api/admin/check-admin");
 			const isAdmin = (await adminResponse.json()).isAdmin;
-			if (isAdmin) await fetch("/api/admin/live/evaluate-answer");
-			const response = await fetch("/api/live/get-results");
+			const response = await fetch(
+				isAdmin
+					? "/api/admin/live/preview-results"
+					: "/api/live/get-results"
+			);
+			if (!response.ok) return [];
 			return await response.json();
 		} catch (e) {
 			return [];

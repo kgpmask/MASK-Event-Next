@@ -134,7 +134,7 @@ app.prepare().then(async () => {
 				);
 				return socket.emit("unauthorized", "Only admins can end the quiz");
 			}
-			quizState.markEnded();
+			quizState.resetForNextQuiz();
 			io.to(process.env.QUIZ_ID).emit("end-quiz", "");
 		});
 	});

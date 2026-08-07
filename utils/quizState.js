@@ -100,10 +100,12 @@ const createQuizState = () => {
 			this.resetQuestionState();
 		},
 
-		/** Ends the running question and marks the quiz as ended. */
-		markEnded() {
+		/** Stops the quiz and returns it to its ready-to-start state. */
+		resetForNextQuiz() {
 			this.endQuestion();
-			this.quizStatus = "ended";
+			this.quizStatus = "idle";
+			this.lastQuestionNo = 0;
+			this.respondents.clear();
 		},
 
 		/** Marks the quiz as started, so late joiners land on the instructions page. */

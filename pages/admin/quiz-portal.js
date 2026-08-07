@@ -247,7 +247,6 @@ export default function QuizPortalPage() {
 									: questions[currentQuestion]?.title}
 							</p>
 							<h2>Shiri Masu Ka?</h2>
-							<p>{`Question #${questions[currentQuestion]?.questionNo}`}</p>
 							<DifficultyBadge
 								difficulty={questions[currentQuestion]?.difficulty}
 							/>

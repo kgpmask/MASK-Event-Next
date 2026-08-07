@@ -13,8 +13,6 @@ import { questionTime } from "@/utils/questionTiming";
 
 import { socket } from "@/socket";
 
-const QUESTION_ORDER_STORAGE_PREFIX = "ocaq-question-order";
-
 const LivePageHead = () => (
 	<Head>
 		<title>Live Quiz Portal</title>
@@ -22,38 +20,10 @@ const LivePageHead = () => (
 	</Head>
 );
 
-/**
- * Returns the participant-facing number for a question within its round. The
- * database number remains the stable ID used when recording answers.
- * @param {object} question The incoming live question.
- * @returns {number} The question's number within its round for this browser.
- */
-const getRoundQuestionNumber = (question) => {
-	if (typeof window === "undefined") return 1;
-	const storageKey = `${QUESTION_ORDER_STORAGE_PREFIX}:${question.quizId ?? "live"}`;
-	const round = question.title?.split(":")[0]?.trim() || "Quiz";
-	let order = { rounds: {}, questions: {} };
-
-	try {
-		order = JSON.parse(localStorage.getItem(storageKey)) || order;
-	} catch {
-		// A malformed old value should not prevent a participant from joining.
-	}
-
-	const questionKey = String(question.questionNo);
-	if (order.questions[questionKey] != null) return order.questions[questionKey];
-	const number = (order.rounds[round] || 0) + 1;
-	order.rounds[round] = number;
-	order.questions[questionKey] = number;
-	localStorage.setItem(storageKey, JSON.stringify(order));
-	return number;
-};
-
 /** Live quiz page that receives questions and records participant answers. */
 export default function LivePage() {
 	const [state, setState] = useState("instructions");
 	const [question, setQuestion] = useState(null);
-	const [displayQuestionNo, setDisplayQuestionNo] = useState(null);
 	const [timeRemaining, setTimeRemaining] = useState(0);
 	const answer = useRef(null);
 	const questionRef = useRef(null);
@@ -102,7 +72,6 @@ export default function LivePage() {
 					? Math.max(0, incomingQuestion.timeRemaining)
 					: questionTime(incomingQuestion.type, incomingQuestion.difficulty)
 			);
-			setDisplayQuestionNo(getRoundQuestionNumber(incomingQuestion));
 			setQuestion(incomingQuestion);
 			setState("attempting");
 		},
@@ -245,7 +214,6 @@ export default function LivePage() {
 				<QuizContainer
 					key={question.questionNo}
 					question={question}
-					displayQuestionNo={displayQuestionNo}
 					time={timeRemaining}
 					submitAnswer={submissionHandler}
 					updateAnswer={(value) => (answer.current = value)}

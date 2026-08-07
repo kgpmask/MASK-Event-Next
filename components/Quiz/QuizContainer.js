@@ -13,14 +13,12 @@ import { DifficultyBadge } from "./DifficultyBadge";
  * @param {object} props - The component props.
  * @param {object} props.question - The question object containing type, text, options and difficulty.
  * @param {number} props.time - The time in seconds allotted for the question.
- * @param {number} props.displayQuestionNo - The question's number within its round.
  * @param {function} props.submitAnswer - Callback invoked to submit the answer.
  * @param {function} props.updateAnswer - Callback invoked when the answer changes.
  * @returns {JSX.Element} The quiz question markup.
  */
 export function QuizContainer({
 	question,
-	displayQuestionNo,
 	time,
 	submitAnswer,
 	updateAnswer,
@@ -71,9 +69,6 @@ export function QuizContainer({
 					<div className={Styles["info"]}>
 						<p className={Styles["round-no"]}>
 							{question.title.split(":")[0].trim()}
-						</p>
-						<p className={Styles["round-name"]}>
-							Question #{displayQuestionNo}
 						</p>
 						<DifficultyBadge difficulty={question.difficulty} />
 					</div>

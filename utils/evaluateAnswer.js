@@ -31,6 +31,27 @@ const editDistance = (a, b) => {
 };
 
 /**
+ * Normalises a text answer before comparing it, so accepted answers are not
+ * affected by casing or accidental leading, trailing, or repeated spaces.
+ * @param {unknown} value The text to normalise.
+ * @returns {string} The normalised text.
+ */
+const normaliseText = (value) =>
+	String(value).trim().replace(/\s+/g, " ").toLocaleLowerCase();
+
+/**
+ * Parses a text question's accepted answers. Multiple aliases are stored in
+ * the database as a pipe-separated list, e.g. "MHA|My Hero Academia|Boku no
+ * Hero Academia".
+ * @param {unknown} answer The stored answer value.
+ * @returns {string[]} The accepted aliases.
+ */
+const textSolutions = (answer) =>
+	(Array.isArray(answer) ? answer : String(answer).split("|"))
+		.map(normaliseText)
+		.filter(Boolean);
+
+/**
  * Awards partial or full score based on how close a text response is to the answers.
  * @param {string} response The submitted text response.
  * @param {string[]} solutions The accepted answer strings.
@@ -38,11 +59,12 @@ const editDistance = (a, b) => {
  * @returns {number} The awarded points.
  */
 const evaluatedPoints = (response, solutions, score) => {
+	const normalisedResponse = normaliseText(response);
 	const normalisedDistances = solutions
 		.map((answer) => {
 			const minDistance = editDistance(
-				response.toLowerCase(),
-				answer.toLowerCase()
+				normalisedResponse,
+				answer
 			);
 			return minDistance / answer.length;
 		})
@@ -132,7 +154,8 @@ export const evaluateAnswer = (
 		}
 		case "text": {
 			if (typeof response !== "string") break;
-			const solutions = Array.isArray(answer) ? answer : [answer];
+			const solutions = textSolutions(answer);
+			if (!solutions.length) break;
 			points = evaluatedPoints(response, solutions, score);
 			break;
 		}

@@ -46,6 +46,13 @@ export default function QuizPortalPage() {
 				if (stateResponse.status !== 200) return;
 				const state = await stateResponse.json();
 				if (state.quizStatus === "idle") return;
+				if (state.quizStatus === "started") {
+					if (isMounted) {
+						setCurrentQuestion(0);
+						setStart(true);
+					}
+					return;
+				}
 				if (state.currentQuestionNo == null && !state.lastQuestionNo) return;
 
 				if (isMounted) {

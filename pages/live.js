@@ -110,6 +110,7 @@ export default function LivePage() {
 			if (!stateResponse.ok) return;
 			const quizState = await stateResponse.json();
 			if (quizState.quizStatus === "idle") return setState("early");
+			if (quizState.quizStatus === "started") return setState("instructions");
 			if (quizState.currentQuestionNo == null) return setState("waiting");
 
 			const questionResponse = await fetch("/api/live/get-current-question");

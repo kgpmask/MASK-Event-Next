@@ -33,14 +33,21 @@ export function LiveInstructions() {
 						</li>
 						<li>
 							<p>
-								There are two types of questions: MCQs and text-based. Only the
-								answer part will be displayed on the website.
+								There are various types of questions: MCQs, text-based, match the
+								following, etc. Only the answer part will be displayed on the
+								website.
 							</p>
 						</li>
 						<li>
 							<p>
 								It’s advised not to rely on the auto-submit feature of MCQs and
 								to use the submit button.
+							</p>
+						</li>
+						<li>
+							<p>
+								The progress is saved after each question, so do not panic if the
+								page refreshes.
 							</p>
 						</li>
 					</ul>
@@ -50,32 +57,28 @@ export function LiveInstructions() {
 					<div className={styles["hr"]} />
 					<ul>
 						<li>
-							<p>The quiz consists of five rounds.</p>
-						</li>
-						<li>
 							<p>
-								Each round has a specific theme, which will be revealed at the
-								start of each round.
+								The quiz consists of four rounds — easy, medium, hard, and insane
+								— designating the level of difficulty.
 							</p>
 						</li>
 						<li>
 							<p>
-								Each round, except the last, has 10 questions, and each question
-								is worth 200 points.
+								The rounds have 15, 15, 12, and 10 questions respectively.
 							</p>
 						</li>
 						<li>
 							<p>
-								The fifth round will consist of only 5 questions, but each is
-								worth twice as many points due to increased difficulty.
+								Every correct answer is worth 10, 15, 20, and 30 points
+								respectively.
 							</p>
 						</li>
 						<li>
 							<p>
 								In the text-based questions, 10% errors are tolerable. If your
-								answer has an error of 20% or less, you will get 150 marks, for
-								errors of 30% or less, there will be 100 marks. Any more errors
-								will not be tolerated.
+								answer has an error of 20% or less, you will get full marks; for
+								errors of 30% or less, there will be partial marks. Any more
+								errors will not be tolerated.
 							</p>
 						</li>
 						<li>
@@ -87,24 +90,18 @@ export function LiveInstructions() {
 						<li>
 							<p>
 								Only the options (if any) or text box will be displayed on your
-								laptop/phone. The question will not be shown in the quiz
+								laptop/phone. The full question will not be shown in the quiz
 								interface; it can only be seen in this PPT.
 							</p>
 						</li>
 						<li>
 							<p>
 								After the anchors have read the questions and the answer options
-								(if any), you will be given a <b>fixed time</b> to answer the
-								questions.
+								(if any), you will be given a fixed time to answer the questions.
+								Time allotted per question is dynamic and depends on the difficulty
+								level and question type. Kindly note the timer at the start of every
+								question.
 							</p>
-							<ol type="a">
-								<li>
-									<p>MCQ-based questions: 20 seconds.</p>
-								</li>
-								<li>
-									<p>Text-based questions: 30 seconds.</p>
-								</li>
-							</ol>
 						</li>
 						<li>
 							<p>
@@ -116,6 +113,19 @@ export function LiveInstructions() {
 							<p>
 								Popular short names of shows will also be valid. Eg. MHA or BNHA
 								is accepted as the answer.
+							</p>
+						</li>
+						<li>
+							<p>
+								If you face any difficulty with the interface or anything else,
+								kindly raise your hand and the nearest coordinator will reach you
+								to resolve your issue.
+							</p>
+						</li>
+						<li>
+							<p>
+								<b>DO NOT</b> use the Gemini shortcut or open other tabs, as it
+								might force the website to give a penalty of -400 points.
 							</p>
 						</li>
 					</ul>

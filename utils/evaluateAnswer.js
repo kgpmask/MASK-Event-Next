@@ -128,6 +128,14 @@ export const evaluateAnswer = (
 			const responseSet = parseSet(response);
 			const answerSet = parseSet(answer);
 			if (!answerSet.size) break;
+			// Partial credit is only available when every selected option is
+			// correct. A wrong extra pick (including selecting more options than
+			// exist in the answer key) invalidates the response.
+			if (
+				responseSet.size > answerSet.size ||
+				![...responseSet].every((val) => answerSet.has(val))
+			)
+				break;
 			const correctPicks = [...responseSet].filter((val) =>
 				answerSet.has(val)
 			).length;

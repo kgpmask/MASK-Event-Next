@@ -10,13 +10,12 @@ import { Option } from "./Option";
  * @returns {JSX.Element} The options list markup.
  */
 export function OptionContainer({ options, selected, setSelected }) {
-	const letters = ["A", "B", "C", "D"];
 	return (
 		<div className={Styles["options"]}>
 			{options.map((e, i) => (
 				<Option
 					key={i}
-					letter={letters[i]}
+					letter={String.fromCharCode(65 + i)}
 					text={e}
 					selected={selected === i}
 					onClick={() => setSelected(i)}

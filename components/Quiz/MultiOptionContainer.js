@@ -10,8 +10,6 @@ import { Option } from "./Option";
  * @returns {JSX.Element} The multi-select options list markup.
  */
 export function MultiOptionContainer({ options, selected, setSelected }) {
-	const letters = ["A", "B", "C", "D"];
-
 	/**
 	 * Toggles an option's selection state and notifies the parent.
 	 * @param {number} index - The option index being toggled.
@@ -28,7 +26,7 @@ export function MultiOptionContainer({ options, selected, setSelected }) {
 			{options.map((option, i) => (
 				<Option
 					key={i}
-					letter={letters[i]}
+					letter={String.fromCharCode(65 + i)}
 					text={option}
 					selected={selected.includes(i)}
 					onClick={() => toggle(i)}

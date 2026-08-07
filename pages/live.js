@@ -22,7 +22,7 @@ const LivePageHead = () => (
 
 /** Live quiz page that receives questions and records participant answers. */
 export default function LivePage() {
-	const [state, setState] = useState("instructions");
+	const [state, setState] = useState("connecting");
 	const [question, setQuestion] = useState(null);
 	const [timeRemaining, setTimeRemaining] = useState(0);
 	const answer = useRef(null);
@@ -85,7 +85,12 @@ export default function LivePage() {
 			if (!stateResponse.ok) return;
 			const quizState = await stateResponse.json();
 			if (quizState.quizStatus === "idle") return setState("early");
-			if (quizState.quizStatus === "started") return setState("instructions");
+			if (quizState.quizStatus === "started") {
+				// A socket question may have arrived while this slower state request
+				// was in flight. Do not replace that question with instructions.
+				if (!activeQuestionNoRef.current) setState("instructions");
+				return;
+			}
 			if (quizState.currentQuestionNo == null) return setState("waiting");
 
 			const questionResponse = await fetch("/api/live/get-current-question");
@@ -200,6 +205,9 @@ export default function LivePage() {
 
 	let content;
 	switch (state) {
+		case "connecting":
+			content = <MessageCard message="Connecting to the quiz..." />;
+			break;
 		case "early":
 			content = <EndedNotStartedMessage isEarly />;
 			break;

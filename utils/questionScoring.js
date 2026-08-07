@@ -2,13 +2,13 @@ const QUESTION_SCORES = {
 	easy: 10,
 	medium: 15,
 	hard: 20,
-	insane: 25,
+	insane: 30,
 };
 
 const NEGATIVE_MARKING = {
 	easy: 0,
 	medium: 0,
-	hard: -10,
+	hard: -5,
 	insane: -10,
 };
 

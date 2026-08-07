@@ -107,6 +107,36 @@ export default function QuizPortalPage() {
 	}, []);
 
 	useEffect(() => {
+		/** Restores the portal controls from the socket server's shared state. */
+		const onQuizState = (state) => {
+			if (state.quizStatus === "idle") {
+				setStart(false);
+				setDisabled(false);
+				setQuestionState("Start Question");
+				return;
+			}
+
+			setStart(true);
+			if (state.respondentCounts) setRespondentCounts(state.respondentCounts);
+			if (state.currentQuestionNo == null) return;
+
+			const questionIndex = questions.findIndex(
+				(question) => Number(question.questionNo) === Number(state.currentQuestionNo)
+			);
+			const index = questionIndex >= 0 ? questionIndex : 0;
+			activeQuestionRef.current = index;
+			setCurrentQuestion(index);
+			setDisabled(true);
+			setQuestionState("Timer Started");
+			setResumeTime(state.timeRemaining);
+		};
+
+		socket.on("quiz-state", onQuizState);
+		socket.emit("get-quiz-state");
+		return () => socket.off("quiz-state", onQuizState);
+	}, [questions]);
+
+	useEffect(() => {
 		/**
 		 * Alerts the quizmaster and resets controls when an unauthorized action is attempted.
 		 * @param {string} message - The unauthorized message received from the socket.

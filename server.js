@@ -79,6 +79,12 @@ app.prepare().then(async () => {
 				console.error("Error restoring current question for socket:", error);
 			}
 		};
+		const sendQuizState = () => socket.emit("quiz-state", quizState.toClient());
+		socket.on("get-quiz-state", () => {
+			sendQuizState();
+			void sendCurrentQuestion();
+		});
+		sendQuizState();
 		void sendCurrentQuestion();
 
 		socket.on("question", (question) => {
@@ -102,9 +108,11 @@ app.prepare().then(async () => {
 				type: question.type,
 				difficulty: question.difficulty,
 			});
+			io.to(process.env.QUIZ_ID).emit("quiz-state", quizState.toClient());
 			io.to(process.env.QUIZ_ID).emit("question", toClientQuestion(question));
 			quizState.scheduleFlush(() => {
 				io.to(process.env.QUIZ_ID).emit("timeout", "");
+				io.to(process.env.QUIZ_ID).emit("quiz-state", quizState.toClient());
 				io.to("admins").emit("question-respondents", {
 					questionNo: quizState.lastQuestionNo,
 					count: quizState.respondentCount(quizState.lastQuestionNo),
@@ -124,6 +132,7 @@ app.prepare().then(async () => {
 				return socket.emit("unauthorized", "Only admins can start the quiz");
 			}
 			quizState.markStarted();
+			io.to(process.env.QUIZ_ID).emit("quiz-state", quizState.toClient());
 			io.to(process.env.QUIZ_ID).emit("start-quiz", "");
 		});
 
@@ -135,6 +144,7 @@ app.prepare().then(async () => {
 				return socket.emit("unauthorized", "Only admins can end the quiz");
 			}
 			quizState.resetForNextQuiz();
+			io.to(process.env.QUIZ_ID).emit("quiz-state", quizState.toClient());
 			io.to(process.env.QUIZ_ID).emit("end-quiz", "");
 		});
 	});

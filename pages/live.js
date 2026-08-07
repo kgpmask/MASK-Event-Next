@@ -188,21 +188,32 @@ export default function LivePage() {
 		const onStartQuiz = () =>
 			setState((current) => (current === "early" ? "instructions" : current));
 		const onEndQuiz = () => router.push("/results");
+		const onQuizState = (quizState) => {
+			if (quizState.quizStatus === "idle") return setState("early");
+			if (quizState.quizStatus === "started") return setState("instructions");
+			if (quizState.currentQuestionNo == null) setState("waiting");
+		};
+		const onConnect = () => {
+			socket.emit("get-quiz-state");
+			void resumeQuiz();
+		};
 
 		socket.on("timeout", onTimeout);
 		socket.on("start-quiz", onStartQuiz);
 		socket.on("end-quiz", onEndQuiz);
+		socket.on("quiz-state", onQuizState);
 		socket.on("question", questionHandler);
-		socket.on("connect", resumeQuiz);
-		if (socket.connected) void resumeQuiz();
+		socket.on("connect", onConnect);
+		if (socket.connected) onConnect();
 
 		return () => {
 			clearWaitingTimer();
 			socket.off("timeout", onTimeout);
 			socket.off("start-quiz", onStartQuiz);
 			socket.off("end-quiz", onEndQuiz);
+			socket.off("quiz-state", onQuizState);
 			socket.off("question", questionHandler);
-			socket.off("connect", resumeQuiz);
+			socket.off("connect", onConnect);
 		};
 	}, [clearWaitingTimer, questionHandler, resumeQuiz, router, scheduleWaiting]);
 

@@ -21,6 +21,7 @@ export default function QuizPortalPage() {
 	const [resumeTime, setResumeTime] = useState(null);
 	const [questions, setQuestions] = useState([]);
 	const [respondentCounts, setRespondentCounts] = useState({});
+	const [isResetting, setIsResetting] = useState(false);
 	const activeQuestionRef = useRef(0);
 
 	/**
@@ -218,6 +219,38 @@ export default function QuizPortalPage() {
 		setStart(true);
 	};
 
+	/** Clears all responses and results so this quiz can be run again from scratch. */
+	const resetQuiz = async () => {
+		if (isResetting) return;
+		if (
+			!window.confirm(
+				"Reset this quiz? This permanently deletes all submitted responses and results."
+			)
+		)
+			return;
+
+		setIsResetting(true);
+		try {
+			const response = await fetch("/api/admin/live/reset-quiz", {
+				method: "POST",
+			});
+			if (!response.ok) throw new Error(await response.text());
+			activeQuestionRef.current = 0;
+			setStart(false);
+			setDisabled(false);
+			setQuestionState("Start Question");
+			setResumeTime(null);
+			setCurrentQuestion(0);
+			setRespondentCounts({});
+			socket.emit("reset-quiz");
+		} catch (error) {
+			console.error("Error resetting quiz:", error);
+			alert("Unable to reset the quiz. Please try again.");
+		} finally {
+			setIsResetting(false);
+		}
+	};
+
 	/**
 	 * Evaluates answers, emits the end-quiz event and navigates to the results page.
 	 */
@@ -313,9 +346,18 @@ export default function QuizPortalPage() {
 							</div>
 						</>
 					) : (
-						<button onClick={startQuiz} className={styles["end-quiz"]}>
-							Start Quiz
-						</button>
+						<>
+							<button onClick={startQuiz} className={styles["end-quiz"]}>
+								Start Quiz
+							</button>
+							<button
+								onClick={resetQuiz}
+								disabled={isResetting}
+								className={styles["reset-quiz"]}
+							>
+								{isResetting ? "Resetting..." : "Reset Quiz"}
+							</button>
+						</>
 					)}
 					<button
 						onClick={endQuiz}

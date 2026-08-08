@@ -233,6 +233,27 @@
 	cursor: pointer;
 }
 
+.reset-quiz {
+	width: 100%;
+	padding: 12px 10px;
+	border: 1px solid #e43332;
+	outline: none;
+	border-radius: 5px;
+	background-color: transparent;
+	color: #fff;
+	cursor: pointer;
+}
+
+.reset-quiz:hover:not(:disabled) {
+	background-color: #e43332;
+}
+
+.reset-quiz:disabled {
+	background-color: #9a9a9a;
+	border-color: #9a9a9a;
+	cursor: not-allowed;
+}
+
 .disabled {
 	background-color: #9a9a9a;
 	cursor: not-allowed !important;

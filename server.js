@@ -164,6 +164,25 @@ app.prepare().then(async () => {
 			io.to(process.env.QUIZ_ID).emit("quiz-state", quizState.toClient());
 			io.to(process.env.QUIZ_ID).emit("end-quiz", "");
 		});
+
+		// Database cleanup is performed by the protected reset API before this
+		// event is emitted. This keeps every connected client in sync afterwards.
+		socket.on("reset-quiz", () => {
+			if (!socket.isAdmin) {
+				console.warn(
+					`Unauthorized 'reset-quiz' emit rejected from socket ${socket.id}`
+				);
+				return socket.emit("unauthorized", "Only admins can reset the quiz");
+			}
+			if (quizState.quizStatus !== "idle") {
+				return socket.emit(
+					"unauthorized",
+					"The quiz can only be reset before it starts or after it ends."
+				);
+			}
+			quizState.resetForNextQuiz();
+			io.to(process.env.QUIZ_ID).emit("quiz-state", quizState.toClient());
+		});
 	});
 
 	httpServer

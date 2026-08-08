@@ -19,16 +19,8 @@ export function LiveInstructions() {
 					<ul>
 						<li>
 							<p>
-								For a bug-less experience, please do not refresh or go back
-								during the quiz. This might lead to a loss of progress and
-								glitches in the quiz.
-							</p>
-						</li>
-						<li>
-							<p>
 								Please ensure that you have a stable internet connection during
-								the quiz. If the internet connection is lost, you&apos;ll be
-								forced to reload, which is undesirable.
+								the quiz.
 							</p>
 						</li>
 						<li>
@@ -58,27 +50,8 @@ export function LiveInstructions() {
 					<ul>
 						<li>
 							<p>
-								The quiz consists of four rounds — easy, medium, hard, and insane
-								— designating the level of difficulty.
-							</p>
-						</li>
-						<li>
-							<p>
-								The rounds have 15, 15, 12, and 10 questions respectively.
-							</p>
-						</li>
-						<li>
-							<p>
-								Every correct answer is worth 10, 15, 20, and 30 points
-								respectively.
-							</p>
-						</li>
-						<li>
-							<p>
-								In the text-based questions, 10% errors are tolerable. If your
-								answer has an error of 20% or less, you will get full marks; for
-								errors of 30% or less, there will be partial marks. Any more
-								errors will not be tolerated.
+								The quiz consists of four rounds, each more difficult than the
+								previous and hence more rewarding.
 							</p>
 						</li>
 						<li>
@@ -105,27 +78,27 @@ export function LiveInstructions() {
 						</li>
 						<li>
 							<p>
-								Both Japanese and English names of shows will be valid. Eg. My
-								Hero Academia and Boku no Hero Academia are both valid answers.
+								In the text-based answers, both Japanese and English names of shows
+								will be valid. Eg. My Hero Academia, Boku no Hero Academia, MHA
+								and BNHA are all valid answers.
 							</p>
 						</li>
 						<li>
 							<p>
-								Popular short names of shows will also be valid. Eg. MHA or BNHA
-								is accepted as the answer.
+								Also note that minor spelling mistakes may lead to partial marks.
 							</p>
 						</li>
 						<li>
 							<p>
-								If you face any difficulty with the interface or anything else,
+								If you face any difficulty with the interface or any other thing,
 								kindly raise your hand and the nearest coordinator will reach you
 								to resolve your issue.
 							</p>
 						</li>
 						<li>
 							<p>
-								<b>DO NOT</b> use the Gemini shortcut or open other tabs, as it
-								might force the website to give a penalty of -400 points.
+								<b>DO NOT</b> open other tabs as it might force the website to log
+								you out.
 							</p>
 						</li>
 					</ul>

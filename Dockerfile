@@ -1,6 +1,9 @@
 # 1. Base image
 FROM node:20-alpine
 
+# Ensure the custom Next.js server runs in production mode (without HMR).
+ENV NODE_ENV=production
+
 # 2. Set working directory
 WORKDIR /app
 

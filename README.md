@@ -1,6 +1,20 @@
+<div align="center">
+
 # MASK-Event-Next
 
-> _The website for Open Campus Anime Quiz, 2024, but this time, in Next :)_
+_The website for Open Campus Anime Quiz, 2024-2026 :)_
+
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js\&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react\&logoColor=white)](https://react.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-22-339933?logo=node.js\&logoColor=white)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb\&logoColor=white)](https://www.mongodb.com/)
+[![Socket.IO](https://img.shields.io/badge/Socket.IO-Real--time-010101?logo=socket.io\&logoColor=white)](https://socket.io/) <br>
+![bcrypt](https://img.shields.io/badge/bcrypt-338?logo=npm&logoColor=white)
+[![ESLint](https://img.shields.io/badge/ESLint-Configured-4B32C3?logo=eslint\&logoColor=white)](https://eslint.org/)
+[![GitHub](https://img.shields.io/badge/GitHub-MASK--Event--Next-181717?logo=github\&logoColor=white)](https://github.com/)
+[![License](https://img.shields.io/github/license/kgpmask/MASK-Event-Next)](./LICENSE)
+
+</div>
 
 ## Dependencies
 
@@ -91,22 +105,18 @@ Note: When merging dev into main, ensure that all necessary database migrations 
 
 ## Contributors
 
-### Team Head
+### Current Maintainers
+
+- [Arpit Chakladar](https://github.com/arpitchakladar)
+- [Joshua Raj](https://github.com/Jx-ls)
+
+### Previous Contributors
 
 - [Ankan Saha](https://github.com/ItsAnkan)
-
-### Executives
-
 - [Saroja Bamra](https://github.com/sarojabamra)
 - [Sharanya Chakraborty](https://github.com/destryptor)
-
-### Team Sub Head
-
 - [Animesh Raj](https://github.com/wildcraft958)
 - [Arnab Jena](https://github.com/arnabara4)
-
-### Associates
-
 - [Dalli Manideep](https://github.com/DalliMani)
 - [Parth Mane](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 - [Tridibesh Sarkar](https://github.com/tridibesh9)

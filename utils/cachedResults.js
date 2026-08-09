@@ -1,5 +1,1 @@
-const cachedResults = {
-	results: []
-};
-
-export default cachedResults;
+export const cachedResults = { results: [] };

@@ -1,7 +1,11 @@
-import MessageCard from './MessageCard';
+import { MessageCard } from "./MessageCard";
 
-const SubmitMessage = () => {
-	return <MessageCard message={'Your answer has been submitted successfully!'} />;
+/**
+ * SubmitMessage component that confirms a quiz answer was submitted successfully.
+ * @returns {JSX.Element} The message card markup.
+ */
+export const SubmitMessage = () => {
+	return (
+		<MessageCard message={"Your answer has been submitted successfully!"} />
+	);
 };
-
-export default SubmitMessage;

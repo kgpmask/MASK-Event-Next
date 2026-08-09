@@ -1,196 +1,249 @@
 import Head from "next/head";
-import Link from "next/link";
-import { Inter } from "next/font/google";
 import { useRouter } from "next/router";
-import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
-import QuizContainer from "@/components/Quiz/QuizContainer";
-import MessageCard from "@/components/Quiz/MessageCard";
-import EndedNotStartedMessage from "@/components/Quiz/EndedNotStartedMessage";
-import SubmitMessage from "@/components/Quiz/SubmitMessage";
-import WaitingMessage from "@/components/Quiz/WaitingMessage";
-import TimeoverMessage from "@/components/Quiz/TimeoverMessage";
-import LiveInstructions from "@/components/Quiz/LiveInstructions";
+import { QuizContainer } from "@/components/Quiz/QuizContainer";
+import { MessageCard } from "@/components/Quiz/MessageCard";
+import { EndedNotStartedMessage } from "@/components/Quiz/EndedNotStartedMessage";
+import { SubmitMessage } from "@/components/Quiz/SubmitMessage";
+import { WaitingMessage } from "@/components/Quiz/WaitingMessage";
+import { TimeoverMessage } from "@/components/Quiz/TimeoverMessage";
+import { LiveInstructions } from "@/components/Quiz/LiveInstructions";
+import { questionTime } from "@/utils/questionTiming";
 
-import socket from "@/socket";
+import { socket } from "@/socket";
 
-const LivePageHead = () => {
-  return (
-    <Head>
-      <title>Live Quiz Portal</title>
-      <meta name="description" content="Quiz is starting, good luck!" />
-    </Head>
-  );
-};
+const LivePageHead = () => (
+	<Head>
+		<title>Live Quiz Portal</title>
+		<meta name="description" content="Quiz is starting, good luck!" />
+	</Head>
+);
 
-// let idx = 0;
-const LivePage = () => {
-  const [state, setState] = useState("instructions");
-  const [timeRemaining, setTimeRemaining] = useState(0);
+/** Live quiz page that receives questions and records participant answers. */
+export default function LivePage() {
+	const [state, setState] = useState("connecting");
+	const [question, setQuestion] = useState(null);
+	const [timeRemaining, setTimeRemaining] = useState(0);
+	const answer = useRef(null);
+	const questionRef = useRef(null);
+	const stateRef = useRef(state);
+	const waitingTimerRef = useRef(null);
+	const completedQuestionsRef = useRef(new Set());
+	const activeQuestionNoRef = useRef(null);
+	const submittingRef = useRef(false);
+	const router = useRouter();
 
-  const [renderComponent, setRenderComponent] = useState(<LiveInstructions />);
+	const clearWaitingTimer = useCallback(() => {
+		if (waitingTimerRef.current) clearTimeout(waitingTimerRef.current);
+		waitingTimerRef.current = null;
+	}, []);
 
-  const [question, setQuestion] = useState(null);
-  const answer = useRef(null);
-  const [timeoutId, setTimeoutId] = useState(null);
+	const scheduleWaiting = useCallback(() => {
+		clearWaitingTimer();
+		waitingTimerRef.current = setTimeout(() => {
+			waitingTimerRef.current = null;
+			setState("waiting");
+		}, 10_000);
+	}, [clearWaitingTimer]);
 
-  const [socketConnected, setSocketConnected] = useState(false);
-  const [socketTransport, setSocketTransport] = useState("N/A");
+	/** Displays a newly received question without re-starting an answered one. */
+	const questionHandler = useCallback(
+		(incomingQuestion) => {
+			if (incomingQuestion?.hasAnswered) {
+				clearWaitingTimer();
+				setQuestion(null);
+				setState("waiting");
+				return;
+			}
+			const questionNo = String(incomingQuestion?.questionNo);
+			if (
+				!incomingQuestion ||
+				completedQuestionsRef.current.has(questionNo) ||
+				activeQuestionNoRef.current === questionNo
+			)
+				return;
+			clearWaitingTimer();
+			activeQuestionNoRef.current = questionNo;
+			submittingRef.current = false;
+			answer.current = null;
+			setTimeRemaining(
+				Number.isFinite(incomingQuestion.timeRemaining)
+					? Math.max(0, incomingQuestion.timeRemaining)
+					: questionTime(incomingQuestion.type, incomingQuestion.difficulty)
+			);
+			setQuestion(incomingQuestion);
+			setState("attempting");
+		},
+		[clearWaitingTimer]
+	);
 
-  const router = useRouter();
+	/** Restores the visible server state after a page load or socket reconnect. */
+	const resumeQuiz = useCallback(async () => {
+		try {
+			const stateResponse = await fetch("/api/live/get-quiz-state");
+			if (!stateResponse.ok) return;
+			const quizState = await stateResponse.json();
+			if (quizState.quizStatus === "idle") return setState("early");
+			if (quizState.quizStatus === "started") {
+				// A socket question may have arrived while this slower state request
+				// was in flight. Do not replace that question with instructions.
+				if (!activeQuestionNoRef.current) setState("instructions");
+				return;
+			}
+			if (quizState.currentQuestionNo == null) return setState("waiting");
 
-  const questionHandler = (question) => {
-    // console.log(question);
-    if (state !== "waiting") return;
-
-    const type = question.type;
-    setQuestion(question);
-    answer.current = null;
-
-		setTimeRemaining(type === "mcq" ? 20 : 30);
-		setState("attempting");
-	};
-
-  const submissionHandler = (args) => {
-    const questionNo = question.questionNo;
-    const response =
-      question.type === "mcq" ? answer.current : answer.current.trim();
-    console.log(args);
-    // if(response == '') return;
-
-    // console.log({questionNo, response});
-
-    fetch("/api/live/submit-answer", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ questionNo, response }),
-    })
-      .then((res) => res.text())
-      .then((res) => {
-        // console.log(res);
-        setTimeRemaining(0);
-        setQuestion(null);
-        setState(args?.timeout && response === "" ? "timeover" : "submitted");
-      });
-
-    // fetch('/api/live/submit-answer', {
-    // 	method: 'POST',
-    // 	headers: { 'Content-Type': 'application/json' },
-    // 	body: JSON.stringify({ questionNo, response })
-    // }).then(res => res.text()).then(res => {
-    // 	// console.log(res);
-    // 	setTimeRemaining(0);
-    // 	setQuestion(null);
-    // 	setState(args?.timeout && (response === '') ? 'timeover' : 'submitted');
-    // });
-  };
-
-  const timeoutSubmit = useCallback(() => {
-    if (state !== "attempting") return;
-    submissionHandler({ timeout: true });
-  });
-
-  useEffect(() => {
-    if (
-      !document.cookie.includes("sessionId=") ||
-      document.cookie.split("sessionId=").pop().split(";")[0] === ""
-    ) {
-      router.push("/login");
-    }
-
-    const onSocketConnect = () => {
-      setSocketConnected(true);
-      setSocketTransport(socket.io.engine.transport.name);
-    };
-
-    const onSocketDisconnect = () => {
-      setSocketConnected(false);
-      setSocketTransport("N/A");
-    };
-
-    if (socket.connected) onSocketConnect();
-
-		socket.on("connect", onSocketConnect);
-		socket.on("disconnect", onSocketDisconnect);
-		socket.on("timeout", () => setTimeout(() => {setState('waiting')}, 3000));
-		socket.on("start-quiz", () => setState("instructions"));
-		socket.on("end-quiz", () => router.push("/results"));
-
-    return () => {
-      socket.off("connect", onSocketConnect);
-      socket.off("disconnect", onSocketDisconnect);
-    };
-  }, []);
-
-  // useMemo(() => {
-  // 	if (state !== "attempting") return setTimeRemaining(0);
-  // 	if (timeRemaining) {
-  // 		setTimeoutId(
-  // 			setTimeout(
-  // 				() =>
-  // 					console.log({ timeRemaining }) ||
-  // 					(timeRemaining && setTimeRemaining((timeRemaining || 1) - 1)),
-  // 				1_000
-  // 			)
-  // 		);
-  // 		return () => clearTimeout(timeoutId);
-  // 	}
-  // 	submissionHandler({ timeout: true });
-  // }, [timeRemaining]);
-
-	useMemo(() => {
-		switch (state) {
-			case "early":
-				setRenderComponent(<EndedNotStartedMessage isEarly={true} />);
-				break;
-			case "late":
-				setRenderComponent(<EndedNotStartedMessage />);
-				break;
-			case "instructions":
-				setRenderComponent(
-					<LiveInstructions buttonCallback={() => setState("waiting")} />
-				);
-				break;
-			case "waiting":
-				socket.on("question", (question) => questionHandler(question));
-				setRenderComponent(<WaitingMessage />);
-				break;
-			case "attempting":
-				setRenderComponent(
-					<QuizContainer
-						question={question}
-						time={timeRemaining}
-						submitAnswer={submissionHandler}
-						updateAnswer={(val) => answer.current = val}
-					/>
-				);
-				break;
-			case "submitted":
-				socket
-					.listeners("question")
-					.splice(0, socket.listeners("question").length);
-				clearTimeout(timeoutId);
-				setRenderComponent(<SubmitMessage />);
-				// setTimeoutId(setTimeout(() => setState("waiting"), 3000));
-				break;
-			case "timeover":
-				socket
-					.listeners("question")
-					.splice(0, socket.listeners("question").length);
-				setRenderComponent(<TimeoverMessage />);
-				setTimeoutId(setTimeout(() => setState("waiting"), 3_000));
-				break;
-			default:
-				setRenderComponent(<MessageCard message={"Polayadi Mone"} />);
+			const questionResponse = await fetch("/api/live/get-current-question");
+			if (!questionResponse.ok) return;
+			const currentQuestion = await questionResponse.json();
+			if (currentQuestion.hasAnswered) {
+				setQuestion(null);
+				setState("waiting");
+				return;
+			}
+			questionHandler({
+				...currentQuestion,
+				timeRemaining: quizState.clientTimeRemaining,
+			});
+		} catch (error) {
+			console.error("Error resuming live quiz:", error);
 		}
+	}, [questionHandler]);
+
+	const submissionHandler = useCallback(
+		({ timeout } = {}) => {
+			if (!question || submittingRef.current) return;
+			const currentAnswer = answer.current;
+			const response =
+				question.type === "text"
+					? String(currentAnswer ?? "").trim()
+					: currentAnswer;
+			if (!timeout && (response == null || response === "")) return;
+
+			submittingRef.current = true;
+			const questionNo = question.questionNo;
+			completedQuestionsRef.current.add(String(questionNo));
+			if (timeout) setState("timeover");
+
+			void (async () => {
+				try {
+					if (response != null && response !== "") {
+						await fetch("/api/live/submit-answer", {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify({ questionNo, response }),
+						});
+					}
+				} catch (error) {
+					console.error("Error submitting answer:", error);
+				} finally {
+					setQuestion(null);
+					if (!timeout) setState("submitted");
+				}
+			})();
+		},
+		[question]
+	);
+
+	useEffect(() => {
+		stateRef.current = state;
 	}, [state]);
+
+	useEffect(() => {
+		questionRef.current = question;
+	}, [question]);
+
+	useEffect(() => {
+		if (!document.cookie.match(/(?:^|; )sessionId=([^;]*)/)?.[1]) {
+			router.push("/login");
+			return;
+		}
+
+		const onTimeout = () => {
+			if (stateRef.current === "attempting") {
+				if (questionRef.current) {
+					completedQuestionsRef.current.add(
+						String(questionRef.current.questionNo)
+					);
+				}
+				setQuestion(null);
+				setState("timeover");
+			}
+			scheduleWaiting();
+		};
+		const onStartQuiz = () =>
+			setState((current) => (current === "early" ? "instructions" : current));
+		const onEndQuiz = () => router.push("/results");
+		const onQuizState = (quizState) => {
+			if (quizState.quizStatus === "idle") return setState("early");
+			if (quizState.quizStatus === "started") return setState("instructions");
+			if (quizState.currentQuestionNo == null) setState("waiting");
+		};
+		const onConnect = () => {
+			socket.emit("get-quiz-state");
+			void resumeQuiz();
+		};
+
+		socket.on("timeout", onTimeout);
+		socket.on("start-quiz", onStartQuiz);
+		socket.on("end-quiz", onEndQuiz);
+		socket.on("quiz-state", onQuizState);
+		socket.on("question", questionHandler);
+		socket.on("connect", onConnect);
+		if (socket.connected) onConnect();
+
+		return () => {
+			clearWaitingTimer();
+			socket.off("timeout", onTimeout);
+			socket.off("start-quiz", onStartQuiz);
+			socket.off("end-quiz", onEndQuiz);
+			socket.off("quiz-state", onQuizState);
+			socket.off("question", questionHandler);
+			socket.off("connect", onConnect);
+		};
+	}, [clearWaitingTimer, questionHandler, resumeQuiz, router, scheduleWaiting]);
+
+	let content;
+	switch (state) {
+		case "connecting":
+			content = <MessageCard message="Connecting to the quiz..." />;
+			break;
+		case "early":
+			content = <EndedNotStartedMessage isEarly />;
+			break;
+		case "instructions":
+			content = <LiveInstructions />;
+			break;
+		case "waiting":
+			content = <WaitingMessage />;
+			break;
+		case "attempting":
+			content = question ? (
+				<QuizContainer
+					key={question.questionNo}
+					question={question}
+					time={timeRemaining}
+					submitAnswer={submissionHandler}
+					updateAnswer={(value) => (answer.current = value)}
+				/>
+			) : (
+				<WaitingMessage />
+			);
+			break;
+		case "submitted":
+			content = <SubmitMessage />;
+			break;
+		case "timeover":
+			content = <TimeoverMessage />;
+			break;
+		default:
+			content = <MessageCard message="Something went wrong loading the quiz." />;
+	}
 
 	return (
 		<>
 			<LivePageHead />
-			{renderComponent}
+			{content}
 		</>
 	);
-};
-
-export default LivePage;
+}

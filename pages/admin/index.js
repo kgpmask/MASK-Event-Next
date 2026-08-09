@@ -1,44 +1,13 @@
-import { useEffect, useState } from "react";
+import { AdminContent } from "@/components/admin/AdminContent";
 
-import ForbiddenCard from "@/components/admin/ForbiddenCard";
-import AdminContent from "@/components/admin/AdminContent";
-import styles from "@/styles/Admin.module.css";
-
+/**
+ * AdminPage that renders the admin dashboard content.
+ * @returns {JSX.Element} The admin page markup.
+ */
 export default function AdminPage() {
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      const isAdmin = JSON.parse(localStorage.getItem("is-admin") || "{}").isAdmin;
-	  // console.log(isAdmin);
-      if (!localStorage.getItem("username")) {
-        setIsAdmin(false);
-        return;
-      }
-
-      if (!isAdmin) {
-        try {
-          const response = await fetch("/api/check-admin");
-          const isAdminResponse = await response.json();
-          localStorage.setItem("is-admin", JSON.stringify(isAdminResponse));
-          setIsAdmin(isAdminResponse.isAdmin);
-        } catch (error) {
-          console.error("Error checking admin status:", error);
-          setIsAdmin(false);
-        }
-      } else {
-        setIsAdmin(isAdmin);
-      }
-    };
-
-    checkAdminStatus();
-  }, []);
-
-  if (!isAdmin) return <ForbiddenCard />;
-
-  return (
-    <>
-      <AdminContent />
-    </>
-  );
+	return (
+		<>
+			<AdminContent />
+		</>
+	);
 }

@@ -1,7 +1,11 @@
-import dbInit from "@/database/dbInit";
-import User from "@/database/models/User";
-import checkAdmin from "@/utils/checkAdmin";
+import { checkAdmin } from "@/utils/checkAdmin";
 
+/**
+ * Checks whether the requesting session belongs to an admin user.
+ * @param {object} req The incoming HTTP request.
+ * @param {object} res The outgoing HTTP response.
+ * @returns {Promise<object>} The HTTP response.
+ */
 export default async function checkAdminHandler(req, res) {
 	try {
 		const { sessionId } = req.cookies;

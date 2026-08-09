@@ -1,210 +1,376 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 
-import ForbiddenCard from "@/components/admin/ForbiddenCard";
-import AdminContent from "@/components/admin/AdminContent";
-import Timer from "@/components/Quiz/Timer";
+import { Timer } from "@/components/Quiz/Timer";
+import { DifficultyBadge } from "@/components/Quiz/DifficultyBadge";
+import { serverQuestionTime } from "@/utils/questionTiming";
 import styles from "@/styles/Admin.module.css";
 
-import socket from "@/socket";
+import { socket } from "@/socket";
 
+/**
+ * QuizPortalPage that lets the quizmaster start, time and navigate live quiz questions.
+ * @returns {JSX.Element} The quiz portal page markup.
+ */
 export default function QuizPortalPage() {
-  const router = useRouter();
-  const [hasChecked, setHasChecked] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [disabled, setDisabled] = useState(false);
-  const [questionState, setQuestionState] = useState("Start Question");
-  const [currentQ, setCurrentQ] = useState(0);
-  const [start, setStart] = useState(false);
+	const router = useRouter();
+	const [disabled, setDisabled] = useState(false);
+	const [questionState, setQuestionState] = useState("Start Question");
+	const [currentQuestion, setCurrentQuestion] = useState(0);
+	const [start, setStart] = useState(false);
+	const [resumeTime, setResumeTime] = useState(null);
+	const [questions, setQuestions] = useState([]);
+	const [respondentCounts, setRespondentCounts] = useState({});
+	const [isResetting, setIsResetting] = useState(false);
+	const activeQuestionRef = useRef(0);
 
-  const [questions, setQuestions] = useState([]);
+	/**
+	 * Resets the question controls when the current question's timer ends.
+	 * The portal snaps back to the question that was active during the timer.
+	 */
+	const onTimeEnd = () => {
+		setDisabled(false);
+		setQuestionState("Start Question");
+		setResumeTime(null);
+		setCurrentQuestion(activeQuestionRef.current);
+	};
 
-  const [socketConnected, setSocketConnected] = useState(false);
-  const [socketTransport, setSocketTransport] = useState("N/A");
+	useEffect(() => {
+		let isMounted = true;
 
-  useEffect(() => {
-    if (!localStorage.getItem("username")) router.push("/login");
+		/**
+		 * Restores the in-progress question state when the page loads or reconnects.
+		 */
+		const resume = async () => {
+			try {
+				const stateResponse = await fetch("/api/live/get-quiz-state");
+				if (stateResponse.status !== 200) return;
+				const state = await stateResponse.json();
+				if (state.quizStatus === "idle") return;
+				if (state.quizStatus === "started") {
+					if (isMounted) {
+						setCurrentQuestion(0);
+						setStart(true);
+					}
+					return;
+				}
+				if (state.currentQuestionNo == null && !state.lastQuestionNo) return;
 
-    const onSocketConnect = () => {
-      setSocketConnected(true);
-      setSocketTransport(socket.io.engine.transport.name);
-    };
+				if (isMounted) {
+					setCurrentQuestion(state.currentQuestionNo ?? state.lastQuestionNo);
+					setStart(true);
+					if (state.respondentCounts)
+						setRespondentCounts(state.respondentCounts);
 
-    const onSocketDisconnect = () => {
-      setSocketConnected(false);
-      setSocketTransport("N/A");
-    };
+					if (state.currentQuestionNo != null) {
+						activeQuestionRef.current = state.currentQuestionNo;
+						setDisabled(true);
+						setQuestionState("Timer Started");
+						setResumeTime(state.timeRemaining);
+					}
+				}
+			} catch (err) {
+				console.error("Error resuming quiz:", err);
+			}
+		};
 
-    if (socket.connected) onSocketConnect();
+		/**
+		 * Loads the question list from localStorage or the admin API and caches it.
+		 */
+		const loadQuestions = async () => {
+			try {
+				let storedQuestions = JSON.parse(
+					localStorage.getItem("questions") ?? "[]"
+				);
+				if (!storedQuestions || !storedQuestions.length) {
+					const response = await fetch("/api/admin/live/get-questions");
+					if (response.status !== 201) throw new Error(await response.text());
 
-    socket.on("connect", onSocketConnect);
-    socket.on("disconnect", onSocketDisconnect);
+					const fetchedQuestions = await response.text();
+					localStorage.setItem("questions", fetchedQuestions);
+					storedQuestions = JSON.parse(fetchedQuestions);
+				}
+				// Remove answer keys and database metadata left in localStorage by
+				// older versions of the admin endpoint before using its cache.
+				storedQuestions = storedQuestions.map(
+					({ questionNo, title, question, type, options, difficulty }) => ({
+						questionNo,
+						title,
+						question,
+						type,
+						options,
+						difficulty,
+					})
+				);
+				localStorage.setItem("questions", JSON.stringify(storedQuestions));
 
-    return () => {
-      socket.off("connect", onSocketConnect);
-      socket.off("disconnect", onSocketDisconnect);
-    };
-  }, []);
+				if (isMounted) {
+					setQuestions(storedQuestions);
+				}
+			} catch (err) {
+				console.error("Error fetching questions:", err);
+			}
+		};
 
-  const onTimeEnd = () => {
-    setQuestionState("Start Question");
-  };
+		loadQuestions();
+		resume();
 
-  const toggleQuestionState = () => {
-    setQuestionState("Timer Started");
-  };
+		return () => {
+			isMounted = false;
+		};
+	}, []);
 
-  // useEffect(() => {
-  // 	setHasChecked(localStorage.getItem("is-admin"));
-  // 	setIsAdmin(eval(localStorage.getItem("is-admin") || "false"));
-  // }, []);
+	useEffect(() => {
+		/** Restores the portal controls from the socket server's shared state. */
+		const onQuizState = (state) => {
+			if (state.quizStatus === "idle") {
+				setStart(false);
+				setDisabled(false);
+				setQuestionState("Start Question");
+				return;
+			}
 
-  useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const response = (await (await fetch("/api/check-admin")).json())
-          .isAdmin;
-        setIsAdmin(response);
-      } catch (err) {
-        console.error("Error checking admin status:", err);
-      }
-    };
+			setStart(true);
+			if (state.respondentCounts) setRespondentCounts(state.respondentCounts);
+			if (state.currentQuestionNo == null) return;
 
-    checkAdmin();
-  }, []);
+			const questionIndex = questions.findIndex(
+				(question) => Number(question.questionNo) === Number(state.currentQuestionNo)
+			);
+			const index = questionIndex >= 0 ? questionIndex : 0;
+			activeQuestionRef.current = index;
+			setCurrentQuestion(index);
+			setDisabled(true);
+			setQuestionState("Timer Started");
+			setResumeTime(state.timeRemaining);
+		};
 
-  const startQuiz = () => {
-    const fetchQuestions = async () => {
-      try {
-        if (questions.length) return;
-        if (
-          !localStorage.getItem("questions") ||
-          !localStorage.getItem("questions").length
-        ) {
-          const response = await fetch("/api/live/get-questions");
-          if (response.status !== 201) throw new Error(await response.text());
+		socket.on("quiz-state", onQuizState);
+		socket.emit("get-quiz-state");
+		return () => socket.off("quiz-state", onQuizState);
+	}, [questions]);
 
-          const fetchedQuestions = await response.text();
-          localStorage.setItem("questions", fetchedQuestions);
-        }
+	useEffect(() => {
+		/**
+		 * Alerts the quizmaster and resets controls when an unauthorized action is attempted.
+		 * @param {string} message - The unauthorized message received from the socket.
+		 */
+		const onUnauthorized = (message) => {
+			alert(message);
+			setDisabled(false);
+			setQuestionState("Start Question");
+		};
+		socket.on("unauthorized", onUnauthorized);
+		return () => {
+			socket.off("unauthorized", onUnauthorized);
+		};
+	}, []);
 
-        setQuestions(JSON.parse(localStorage.getItem("questions")));
-        setStart(true);
-      } catch (err) {
-        console.error("Error fetching questions:", err);
-        //alert("Something went wrong while fetching questions.");
-      }
-    };
+	useEffect(() => {
+		/**
+		 * Stores the respondent count for a question once it times out.
+		 * @param {object} payload The question-respondents payload.
+		 * @param {number} payload.questionNo The question that ended.
+		 * @param {number} payload.count The number of respondents for it.
+		 */
+		const onQuestionRespondents = ({ questionNo, count }) => {
+			setRespondentCounts((prev) => ({ ...prev, [questionNo]: count }));
+		};
+		socket.on("question-respondents", onQuestionRespondents);
+		return () => {
+			socket.off("question-respondents", onQuestionRespondents);
+		};
+	}, []);
 
-    fetchQuestions();
-  };
+	/**
+	 * Starts the current question by notifying the server and emitting it over the socket.
+	 */
+	const startQuestion = async () => {
+		try {
+			const question = questions[currentQuestion];
+			if (!question) return;
+			const response = await fetch("/api/admin/live/start-question", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					questionNo: question.questionNo,
+					type: question.type,
+					difficulty: question.difficulty,
+				}),
+			});
 
-  // useEffect(() => {
-  //   console.log(currentQ);
-  // }, [currentQ]);
+			if (response.status < 400) {
+				activeQuestionRef.current = currentQuestion;
+				socket.emit("question", question);
+				setDisabled(true);
+				setQuestionState("Timer Started");
+				setResumeTime(null);
+			}
+		} catch (error) {
+			console.error("Error starting question:", error);
+		}
+	};
 
-  const startQuestion = async () => {
-    try {
-      const question = questions[currentQ];
-      const response1 = await fetch("/api/live/start-question", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          questionNo: question.questionNo,
-          type: question.type,
-        }),
-      });
+	/**
+	 * Marks the quiz as started and notifies all connected clients.
+	 */
+	const startQuiz = () => {
+		socket.emit("start-quiz");
+		setStart(true);
+	};
 
-      const result1 = await response1.text();
-      // console.log(result1);
+	/** Clears all responses and results so this quiz can be run again from scratch. */
+	const resetQuiz = async () => {
+		if (isResetting) return;
+		if (
+			!window.confirm(
+				"Reset this quiz? This permanently deletes all submitted responses and results."
+			)
+		)
+			return;
 
-      // const response = { status: 0 };
-      if (response1.status < 400) {
-        socket.emit("question", question);
-        setDisabled(true);
-        setQuestionState("Timer Started");
-        const response2 = await fetch("/api/live/start-question", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            questionNo: question.questionNo,
-            type: question.type,
-          }),
-        });
-        const result2 = await response2.text();
-        // console.log(result2);
-        setTimeout(
-          () => {
-            setDisabled(false);
-            setQuestionState("Start Question");
-          },
-          question.type === "mcq" ? 20000 : 30000
-        );
-      }
-    } catch (error) {
-      console.error("Error starting question:", error);
-    }
-  };
+		setIsResetting(true);
+		try {
+			const response = await fetch("/api/admin/live/reset-quiz", {
+				method: "POST",
+			});
+			if (!response.ok) throw new Error(await response.text());
+			activeQuestionRef.current = 0;
+			setStart(false);
+			setDisabled(false);
+			setQuestionState("Start Question");
+			setResumeTime(null);
+			setCurrentQuestion(0);
+			setRespondentCounts({});
+			socket.emit("reset-quiz");
+		} catch (error) {
+			console.error("Error resetting quiz:", error);
+			alert("Unable to reset the quiz. Please try again.");
+		} finally {
+			setIsResetting(false);
+		}
+	};
 
-  //if (!isAdmin) return <ForbiddenCard />;
+	/**
+	 * Evaluates answers, emits the end-quiz event and navigates to the results page.
+	 */
+	const endQuiz = async () => {
+		if (!start || disabled) return;
+		if (!window.confirm("Are you sure you want to end the quiz?")) return;
+		try {
+			await fetch("/api/admin/live/evaluate-answer");
+		} catch (err) {
+			console.error("Error evaluating answers:", err);
+		}
+		socket.emit("end-quiz");
+		router.push("/results");
+	};
 
-  return (
-    <>
-      <div className={styles["questions-navigator"]}>
-        {start && (
-          <div className={styles["question-info"]}>
-            <div className={styles["round-info"]}>
-              <p>
-                {currentQ
-                  ? questions[currentQ]?.title.split(":")[0].trim()
-                  : questions[currentQ]?.title}
-              </p>
-              <h2>Shiri Masu Ka?</h2>
-              <p>{`Question #${currentQ}`}</p>
-            </div>
-            {questionState === "Timer Started" && (
-              <Timer time={questions[currentQ]?.type === "mcq" ? 20 : 30} />
-            )}
-          </div>
-        )}
-        <div className={styles["question"]}>
-          <p>{questions[currentQ]?.question}</p>
-          {start ? (
-            <div className={styles["quiz-nav-buttons"]}>
-              <button
-                className={currentQ ? "" : styles["disabled"]}
-                onClick={() => (currentQ ? setCurrentQ(currentQ - 1) : null)}
-              >
-                Previous
-              </button>
-              <button
-                disabled={disabled}
-                className={styles["start-question"]}
-                onClick={startQuestion}
-              >
-                {questionState}
-              </button>
-              <button
-                className={
-                  questions.length - (currentQ + 1) ? "" : styles["disabled"]
-                }
-                onClick={() =>
-                  questions.length - (currentQ + 1)
-                    ? setCurrentQ(currentQ + 1)
-                    : null
-                }
-              >
-                Next
-              </button>
-            </div>
-          ) : (
-            <button onClick={startQuiz} className={styles["end-quiz"]}>
-              Start Quiz
-            </button>
-          )}
-          <button className={styles["end-quiz"]}>End Quiz</button>
-        </div>
-      </div>
-    </>
-  );
+	if (start && !questions.length) return <div>Loading...</div>;
+
+	return (
+		<>
+			<div className={styles["questions-navigator"]}>
+				{start && (
+					<div className={styles["question-info"]}>
+						<div className={styles["round-info"]}>
+							<p>
+								{currentQuestion
+									? questions[currentQuestion]?.title?.split(":")?.[0]?.trim()
+									: questions[currentQuestion]?.title}
+							</p>
+							<h2>Shiri Masu Ka?</h2>
+							<DifficultyBadge
+								difficulty={questions[currentQuestion]?.difficulty}
+							/>
+						</div>
+						{questionState === "Timer Started" ? (
+							<Timer
+								time={
+									resumeTime ??
+									serverQuestionTime(
+										questions[currentQuestion]?.type,
+										questions[currentQuestion]?.difficulty
+									)
+								}
+								onTimeEnd={onTimeEnd}
+							/>
+						) : (
+							respondentCounts[questions[currentQuestion]?.questionNo] !=
+								null && (
+								<div className={styles["respondents"]}>
+									{respondentCounts[questions[currentQuestion]?.questionNo]}
+								</div>
+							)
+						)}
+					</div>
+				)}
+				<div className={styles["question"]}>
+					{start ? (
+						<>
+							<p className={styles["active-question"]}>
+								{questions[currentQuestion]?.question}
+							</p>
+							<div className={styles["quiz-nav-buttons"]}>
+								<button
+									className={currentQuestion ? "" : styles["disabled"]}
+									onClick={() =>
+										currentQuestion
+											? setCurrentQuestion(currentQuestion - 1)
+											: null
+									}
+								>
+									Previous
+								</button>
+								<button
+									disabled={disabled}
+									className={styles["start-question"]}
+									onClick={startQuestion}
+								>
+									{questionState}
+								</button>
+								<button
+									className={
+										questions.length - (currentQuestion + 1)
+											? ""
+											: styles["disabled"]
+									}
+									onClick={() =>
+										questions.length - (currentQuestion + 1)
+											? setCurrentQuestion(currentQuestion + 1)
+											: null
+									}
+								>
+									Next
+								</button>
+							</div>
+						</>
+					) : (
+						<>
+							<button onClick={startQuiz} className={styles["end-quiz"]}>
+								Start Quiz
+							</button>
+							<button
+								onClick={resetQuiz}
+								disabled={isResetting}
+								className={styles["reset-quiz"]}
+							>
+								{isResetting ? "Resetting..." : "Reset Quiz"}
+							</button>
+						</>
+					)}
+					<button
+						onClick={endQuiz}
+						disabled={!start || disabled}
+						className={[
+							styles["end-quiz"],
+							!start || disabled ? styles["disabled"] : "",
+						].join(" ")}
+					>
+						End Quiz
+					</button>
+				</div>
+			</div>
+		</>
+	);
 }

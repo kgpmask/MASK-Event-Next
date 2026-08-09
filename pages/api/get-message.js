@@ -1,11 +1,15 @@
-const getMessageHandler = async (req, res) => {
+/**
+ * Returns the static welcome message for the home screen.
+ * @param {object} req The incoming HTTP request.
+ * @param {object} res The outgoing HTTP response.
+ * @returns {Promise<object>} The HTTP response.
+ */
+export default async function getMessageHandler(_req, res) {
 	return res.status(200).json({
 		_id: "I4m4t0mic",
 		name: "??????",
-		password: "$2b$10$WV2BZkiVbsNpgIHGlFB2Yeov2CHqMwwjkmn01selkfClLGdU9.Rpq",
 		username: "??????",
-		message: "My name is Shadow: he who lurks in the shadows to hunt the shadows."
+		message:
+			"My name is Shadow: he who lurks in the shadows to hunt the shadows.",
 	});
-};
-
-export default getMessageHandler;
+}

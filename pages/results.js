@@ -1,114 +1,95 @@
-import Head from "next/head";
 import styles from "@/styles/Results.module.css";
-import TextArea from "@/components/Base/TextArea";
-import MessageCard from "@/components/Quiz/MessageCard";
-import { useState } from "react";
-import { useMemo } from "react";
+import { TextArea } from "@/components/Base/TextArea";
+import { MessageCard } from "@/components/Quiz/MessageCard";
+import { useCallback, useEffect, useState } from "react";
 
-// const resultsJSON=[
-//     {
-//         name: "D. Manideep",
-//         username: "DMan",
-//         points: 2000,
-//         rank: null
-//     },
-//     {
-//         name:"Sora",
-//         username:"AkaChan",
-//         points: 5000,
-//         rank: null
-//     },
-//     {
-//         name:"Sakura Miko",
-//         username:"Mikochi",
-//         points: 3535,
-//         rank: null
-//     },
-//     {
-//         name:"Suisei Hoshimachi",
-//         username:"Sui-chan",
-//         points: 5000,
-//         rank: null
-//     },
-//     {
-//         name:"Hakos Baelz",
-//         username:"PPTaro",
-//         points: 7770,
-//         rank: null
-//     },
-//     {
-//         name:"Oozora Subaru",
-//         username:"ThaSun",
-//         points: 4000,
-//         rank: null
-//     },
-//     {
-//         name:"Ceres Fauna",
-//         username:"KonFaunaa",
-//         points: 7770,
-//         rank: null
-//     },
-// ];
-
-const assignRank1 = (resultsJSON) => {
-	//Ranks will look like 1,1,2,3,4
+/**
+ * Assigns competition ranks to the results based on points, using standard competition ranking.
+ * @param {Array<object>} resultsJSON - Array of result objects with points fields.
+ */
+const assignRank = (resultsJSON) => {
+	// Ranks will look like 1,1,3,4,5
 	resultsJSON.sort((a, b) => b.points - a.points);
-	resultsJSON[0].rank = 1;
-	for (let i = 1; i < resultsJSON.length; ++i) {
-		if (resultsJSON[i - 1].points > resultsJSON[i].points) {
-			resultsJSON[i].rank = resultsJSON[i - 1].rank + 1;
-		} else {
-			resultsJSON[i].rank = resultsJSON[i - 1].rank;
+	if (resultsJSON.length > 0) {
+		resultsJSON[0].rank = 1;
+		for (let i = 1; i < resultsJSON.length; ++i) {
+			if (resultsJSON[i - 1].points > resultsJSON[i].points) {
+				resultsJSON[i].rank = i + 1;
+			} else {
+				resultsJSON[i].rank = resultsJSON[i - 1].rank;
+			}
 		}
 	}
-}
+};
 
-const assignRank2 = (resultsJSON) => {
-	//Ranks will look like 1,1,3,4,5
-	resultsJSON.sort((a, b) => b.points - a.points);
-	resultsJSON[0].rank = 1;
-	for (let i = 1; i < resultsJSON.length; ++i) {
-		if (resultsJSON[i - 1].points > resultsJSON[i].points) {
-			resultsJSON[i].rank = i + 1;
-		} else {
-			resultsJSON[i].rank = resultsJSON[i - 1].rank;
-		}
-	}
-}
-
-
+/**
+ * Results page that evaluates and displays the quiz leaderboard with ranks.
+ * @returns {JSX.Element} The results page markup.
+ */
 export default function Results() {
-	const [results, setResults] = useState(null);
-	const [lastQuestion, setLastQuestion] = useState(0);
+	const [results, setResults] = useState([]);
+	const [loading, setLoading] = useState(true);
 
-	const fetchResults = async () => {
+	/**
+	 * Fetches the persisted results for participants, or a non-persisted live
+	 * leaderboard for an admin while the quiz is in progress.
+	 * @returns {Promise<Array<object>>} The list of result objects.
+	 */
+	const fetchResults = useCallback(async () => {
 		try {
-			const adminResponse = await fetch('/api/check-admin');
+			const adminResponse = await fetch("/api/admin/check-admin");
 			const isAdmin = (await adminResponse.json()).isAdmin;
-			if (isAdmin) await fetch('/api/live/evaluate-answer');
-			const response = await fetch('/api/live/get-results');
-			const data = await response.json();
-			// console.log(data)
-			setResults(data);
-			setLastQuestion((await (await fetch('/api/live/get-last-question')).json()).lastQuestion);
+			const response = await fetch(
+				isAdmin
+					? "/api/admin/live/preview-results"
+					: "/api/live/get-results"
+			);
+			if (!response.ok) return [];
+			return await response.json();
 		} catch (e) {
-			console.log(e);
+			return [];
 		}
+	}, []);
+
+	useEffect(() => {
+		let isMounted = true;
+
+		/**
+		 * Fetches the results, assigns ranks and updates state once data arrives.
+		 */
+		async function loadData() {
+			setLoading(true);
+			const data = await fetchResults();
+			if (isMounted) {
+				if (data && data.length > 0) {
+					assignRank(data);
+					setResults(data);
+				}
+				setLoading(false);
+			}
+		}
+
+		loadData();
+
+		return () => {
+			isMounted = false;
+		};
+	}, [fetchResults]);
+
+	if (loading || !results || !results.length) {
+		return (
+			<MessageCard
+				message={"Results are yet to be evaluated. Try again later."}
+			/>
+		);
 	}
 
-	useMemo(() => {
-		if (!results) fetchResults();
-	}, [results]);
-
-	if (!results || !results.length) return <MessageCard message={'Results are yet to be evaluated. Try again later.'} />;
-
-	assignRank2(results);
 	return (
 		<div>
 			<TextArea title="Results">
 				<h4>Real results were the friends we made along the way. jk.</h4>
 
-				<table className={styles['content-table']}>
+				<table className={styles["content-table"]}>
 					<thead>
 						<tr>
 							<th>Rank</th>
@@ -118,29 +99,20 @@ export default function Results() {
 						</tr>
 					</thead>
 					<tbody>
-						{results.length !== 0} {
-							<tr onClick={() => window.open('/api/get-message', '_blank')}>
-								<td>{lastQuestion >= 45 ? 0 : 1}</td>
-								<td>{lastQuestion >= 45 ? '??????' : 'Cid'}</td>
-								<td>{lastQuestion >= 45 ? '??????' : 'kagenou_cid'}</td>
-								<td>{lastQuestion >= 45 ? 10001 : (lastQuestion > 40 ? 40 * 200 + (lastQuestion - 40) * 400 : lastQuestion * 200)}</td>
-							</tr>
-						}
-						{
-							results.map((elem) => {
-								return (
-									<tr key={elem.username}>
-										<td>{elem.rank}</td>
-										<td>{elem.name}</td>
-										<td>{elem.username}</td>
-										<td>{elem.points}</td>
-									</tr>
-								);
-							})
-						}
+						<tr onClick={() => window.open("/api/get-message", "_blank")}></tr>
+						{results.map((elem) => {
+							return (
+								<tr key={elem.username}>
+									<td>{elem.rank}</td>
+									<td>{elem.name}</td>
+									<td>{elem.username}</td>
+									<td>{elem.points}</td>
+								</tr>
+							);
+						})}
 					</tbody>
 				</table>
 			</TextArea>
 		</div>
-	)
+	);
 }

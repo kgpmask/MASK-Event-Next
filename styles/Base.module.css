@@ -1,24 +1,24 @@
 .text-container {
-    position: relative;
-    height: 100%;
-	width: 100vw;
-    display: flex;
-    justify-content: center;
+	position: relative;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	justify-content: center;
 	margin: 40px 0px;
-    align-items: center;
+	align-items: center;
 }
 
 .card {
-    border-radius: 10px;
-	width: 70%;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 5rem;
+	border-radius: 10px;
+	width: 70vw;
+	background: rgba(0, 0, 0, 0.8);
+	padding: 5rem;
 	max-width: 1400px;
 	box-sizing: border-box;
 }
 
 .title {
-	color: #FFFFFF;
+	color: #ffffff;
 	font-size: 34px;
 	font-weight: 700;
 	text-align: left;
@@ -26,14 +26,14 @@
 
 @media screen and (max-width: 1100px) {
 	.card {
-		width: 80%;
+		width: 80vw;
 		padding: 3rem;
 	}
 }
 
 @media screen and (max-width: 800px) {
 	.card {
-		width: 90%;
+		width: 90vw;
 		padding: 2.5rem;
 	}
 

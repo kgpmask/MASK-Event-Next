@@ -1,9 +1,13 @@
-import handlerContext from "@/utils/handlerContext";
+import { quizState } from "@/utils/quizState";
 
-const getLastQuestionHandler = async (req, res) => {
+/**
+ * Returns the number of the last question that was started.
+ * @param {object} _req The incoming HTTP request (unused).
+ * @param {object} res The outgoing HTTP response.
+ * @returns {object} The HTTP response.
+ */
+export default async function getLastQuestionHandler(_req, res) {
 	return res.status(200).json({
-		lastQuestion: handlerContext.lastQuestion,
+		lastQuestion: quizState.lastQuestionNo,
 	});
-};
-
-export default getLastQuestionHandler;
+}

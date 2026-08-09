@@ -2,7 +2,7 @@
 	position: relative;
 	bottom: 0;
 	left: 0;
-	width: 100vw;
+	width: 100%;
 	background-color: black;
 	padding: 10px 20px;
 }
@@ -45,7 +45,7 @@
 		gap: 0.2rem;
 	}
 
-	.socials>div {
+	.socials > div {
 		transform: scale(0.5);
 	}
 
